@@ -9,6 +9,8 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -20,6 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
@@ -45,17 +48,26 @@ class UserResource extends Resource
                             ->email()
                             ->unique(ignoreRecord: true),
                         TextInput::make('password')
+                        ->rules([
+                            Password::min(8)
+                                ->letters()
+                                ->mixedCase()
+                                ->numbers()
+                                ->uncompromised(3),
+//                            'regex:/[\W]/'
+                        ])
                             ->required()
-                            ->minLength(12)
                             ->revealable()
                             ->password()
                             ->dehydrateStateUsing(fn($state) => Hash::make($state))
                             ->dehydrated(fn($state) => filled($state))
                             ->required(fn(string $context): bool => $context === 'create'),
+                        DateTimePicker::make('email_verified_at')
+                        ->default(now()),
                         Select::make('roles')
                             ->relationship('roles', 'name')
                             ->required()
-                            ->label('Role')
+                            ->label('Role'),
                     ])
             ]);
     }
@@ -70,7 +82,10 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')->sortable(),
+                TextColumn::make('email_verified_at')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->sortable(),
             ])
             ->filters([
                 //
