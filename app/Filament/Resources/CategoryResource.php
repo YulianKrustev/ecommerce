@@ -19,6 +19,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -99,7 +100,6 @@ class CategoryResource extends Resource
                             TextInput::make('meta_title')->required()->maxLength(60)
                                 ->required()
                                 ->maxLength(60)
-                                ->label('Meta title')
                                 ->live(debounce: 500)
                                 ->hint(function ($state) {
                                     $maxCount = 60;
@@ -132,22 +132,17 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('image'),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('products_count')
+                    ->counts('products')
+                    ->sortable()
+                    ->label('Products'),
                 TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('meta_title')
-                    ->searchable(),
-                TextColumn::make('meta_description')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 //

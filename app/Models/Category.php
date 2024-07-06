@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
  use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -30,5 +31,20 @@ class Category extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            if ($model->isDirty('image') && ($model->getOriginal('image') !== null)) {
+                Storage::disk('public')->delete($model->getOriginal('image'));
+            }
+        });
+
+        static::deleting(function ($model) {
+            Storage::disk('public')->delete($model->getOriginal('image'));
+        } );
     }
 }

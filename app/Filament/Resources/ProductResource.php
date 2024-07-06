@@ -32,7 +32,7 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('images')
+                Forms\Components\FileUpload::make('images')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('description')
