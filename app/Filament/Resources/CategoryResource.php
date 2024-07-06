@@ -134,15 +134,13 @@ class CategoryResource extends Resource
             ->columns([
                 ImageColumn::make('image'),
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('products_count')
                     ->counts('products')
-                    ->sortable()
                     ->label('Products'),
-                TextColumn::make('slug')
-                    ->searchable(),
-
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Active')
+                    ->boolean(),
             ])
             ->filters([
                 //

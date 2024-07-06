@@ -44,7 +44,9 @@ class Category extends Model
         });
 
         static::deleting(function ($model) {
-            Storage::disk('public')->delete($model->getOriginal('image'));
+
+            if ($model->getOriginal('image') !== null)
+            Storage::disk('public')->delete($model?->getOriginal('image'));
         } );
     }
 }
