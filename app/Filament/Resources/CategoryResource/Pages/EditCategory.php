@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\CategoryResource\Pages;
 
+use App\Filament\EditRedirect;
 use App\Filament\Resources\CategoryResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
 
-class EditCategory extends EditRecord
+class EditCategory extends EditRedirect
 {
     protected static string $resource = CategoryResource::class;
 
