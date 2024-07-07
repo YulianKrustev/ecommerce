@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('quantity');
             $table->decimal('price',10,2);
+            $table->decimal('on_sale_price',10,2);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->boolean('in_stock')->default(true);
