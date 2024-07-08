@@ -9,20 +9,23 @@ use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use voku\helper\ASCII;
@@ -32,6 +35,16 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record->name;
+    }
 
     public static function form(Form $form): Form
     {
@@ -43,7 +56,7 @@ class CategoryResource extends Resource
                             'sm' => 1,
                         ])
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->required()
                                     ->unique(ignoreRecord: true)
                                     ->maxLength(60)
@@ -76,7 +89,7 @@ class CategoryResource extends Resource
                                     ->directory('categories')
                                     ->imageEditor(),
                                 TextInput::make('image_alt'),
-                                Forms\Components\Textarea::make('description')
+                                RichEditor::make('description')
                                     ->required()
                                     ->columnSpanFull()
                                     ->live(onBlur: true)
@@ -84,7 +97,8 @@ class CategoryResource extends Resource
                                         if ($operation == 'edit' || $state == null) {
                                             return;
                                         }
-                                        $truncatedState = mb_substr($state, 0, 155);
+                                        $plainTextState = strip_tags($state);
+                                        $truncatedState = mb_substr($plainTextState, 0, 155);
                                         $truncatedState = rtrim($truncatedState);
                                         $truncatedState .= '...';
                                         $set('meta_description', $truncatedState);
@@ -138,7 +152,7 @@ class CategoryResource extends Resource
                 TextColumn::make('products_count')
                     ->counts('products')
                     ->label('Products'),
-                Tables\Columns\IconColumn::make('is_active')
+                IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
             ])
@@ -149,6 +163,18 @@ class CategoryResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
+                        ->before(function (Tables\Actions\DeleteAction $action, Category $record) {
+                            if ($record->products()->exists()) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Failed to delete!')
+                                    ->body('Category has products.')
+                                    ->send();
+
+                                // This will halt and cancel the delete action modal.
+                                $action->cancel();
+                            }
+                        }),
                 ])
             ])
             ->bulkActions([
