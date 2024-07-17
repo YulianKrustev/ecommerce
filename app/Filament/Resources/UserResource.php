@@ -5,11 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -53,28 +48,32 @@ class UserResource extends Resource
                             ->required()
                             ->maxLength(80)
                             ->unique(ignoreRecord: true),
+
                         TextInput::make('email')
                             ->maxLength(80)
                             ->required()
                             ->email()
                             ->unique(ignoreRecord: true),
+
                         TextInput::make('password')
-                        ->rules([
-                            Password::min(8)
-                                ->letters()
-                                ->mixedCase()
-                                ->numbers()
-                                ->uncompromised(3),
+                            ->rules([
+                                Password::min(8)
+                                    ->letters()
+                                    ->mixedCase()
+                                    ->numbers()
+                                    ->uncompromised(3),
 //                            'regex:/[\W]/'
-                        ])
+                            ])
                             ->required()
                             ->revealable()
                             ->password()
                             ->dehydrateStateUsing(fn($state) => Hash::make($state))
                             ->dehydrated(fn($state) => filled($state))
                             ->required(fn(string $context): bool => $context === 'create'),
+
                         DateTimePicker::make('email_verified_at')
-                        ->default(now()),
+                            ->default(now()),
+
                         Select::make('roles')
                             ->relationship('roles', 'name')
                             ->required()
@@ -90,11 +89,14 @@ class UserResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('email_verified_at')
                     ->sortable(),
+
                 TextColumn::make('created_at')
                     ->sortable(),
             ])
@@ -118,7 +120,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           RelationManagers\OrdersRelationManager::class,
         ];
     }
 

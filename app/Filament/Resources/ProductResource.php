@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
 use Filament\Forms;
@@ -15,6 +14,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -22,7 +22,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,9 +55,12 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Tabs::make('Create New Product')->tabs([
-                    Tab::make('Create Product')->schema([
-                        Group::make()->schema([
+                Tabs::make('Create New Product')
+                    ->tabs([
+                    Tab::make('Create Product')
+                        ->schema([
+                        Group::make()
+                            ->schema([
                             Section::make('Product Info')
                                 ->columns([
                                     'sm' => 2,
@@ -75,6 +82,7 @@ class ProductResource extends Resource
                                             $set('slug', ASCII::to_ascii(Str::slug($state)));
                                             $set('image_alt', $state);
                                         }),
+
                                     TextInput::make('slug')
                                         ->columnSpan(3)
                                         ->required()
@@ -87,6 +95,7 @@ class ProductResource extends Resource
                                             $leftCharacters = $maxCount - $charactersCount;
                                             return 'Characters left: ' . $leftCharacters;
                                         }),
+
                                     RichEditor::make('description')
                                         ->disableToolbarButtons([
                                             'attachFiles',
@@ -109,6 +118,7 @@ class ProductResource extends Resource
                                             $set('meta_description', $truncatedState);
                                         }),
                                 ]),
+
                             Section::make('Images')->schema([
                                 FileUpload::make('images')
                                     ->required()
@@ -124,34 +134,37 @@ class ProductResource extends Resource
                         ])->columnSpan(3),
 
                         Group::make()->schema([
-                            Section::make('Prices and quantity')->schema([
+                            Section::make('Prices and Quantity')->schema([
                                 TextInput::make('price')
                                     ->numeric()
                                     ->required()
                                     ->prefix('BGN'),
+
                                 TextInput::make('on_sale_price')
                                     ->numeric()
                                     ->prefix('BGN')
                                     ->disabled(fn(callable $get) => !$get('on_sale')),
+
                                 TextInput::make('quantity')
                                     ->required()
                                     ->numeric(),
                             ]),
 
-                            Section::make('Categories and tags')->schema([
+                            Section::make('Categories and Tags')->schema([
                                 Select::make('categories')
-                                    ->label('')
+                                    ->label('Categories')
                                     ->relationship('categories', 'name')
                                     ->preload()
                                     ->required()
                                     ->multiple()
-                                    ->placeholder('Select categories'),
+                                    ->placeholder(''),
+
                                 Select::make('tags')
                                     ->relationship('tags', 'name')
                                     ->multiple()
                                     ->preload()
                                     ->required()
-                                    ->placeholder('Select tags')
+                                    ->placeholder('')
                                     ->createOptionForm([
                                         TextInput::make('name')
                                             ->required()
@@ -169,28 +182,26 @@ class ProductResource extends Resource
                                     ->label('Sale')
                                     ->live()
                                     ->required(),
+
                                 Toggle::make('is_active')
                                     ->label('Active')
                                     ->required()
                                     ->default(true),
+
                                 Toggle::make('in_stock')
                                     ->default(true)
                                     ->required(),
+
                                 Toggle::make('is_featured')
                                     ->required(),
                             ])
                         ])->columnSpan(1),
                     ])->columns(4),
 
-                    Tab::make('SEO')->columns([
-                        'sm' => 2,
-                        'xl' => 4,
-                        '2xl' => 6,
-                    ])->schema([
+                    Tab::make('SEO')->schema([
                         TextInput::make('meta_title')
                             ->required()
                             ->maxLength(60)
-                            ->columnSpan(3)
                             ->live(debounce: 500)
                             ->hint(function ($state) {
                                 $maxCount = 60;
@@ -198,11 +209,8 @@ class ProductResource extends Resource
                                 $leftCharacters = $maxCount - $charactersCount;
                                 return 'Characters left: ' . $leftCharacters;
                             }),
-                        Forms\Components\TagsInput::make('meta_keywords')
-                            ->placeholder('New keyword')
-                            ->columnSpan(3),
+
                         Textarea::make('meta_description')
-                            ->columnSpan(6)
                             ->required()
                             ->maxLength(160)
                             ->live(debounce: 500)
@@ -212,6 +220,9 @@ class ProductResource extends Resource
                                 $leftCharacters = $maxCount - $charactersCount;
                                 return 'Characters left: ' . $leftCharacters;
                             }),
+
+                        TagsInput::make('meta_keywords')
+                            ->placeholder('New keyword')
                     ])
                 ])->columnSpan(2),
             ]);
@@ -221,34 +232,50 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('first_image'),
-                Tables\Columns\TextColumn::make('name')
+                ImageColumn::make('first_image'),
+
+                TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('categories')
+
+                TextColumn::make('categories')
                     ->getStateUsing(function ($record) {
                         return $record->categories->pluck('name')->join(', ');
                     })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
+
+                TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('price')
+
+                TextColumn::make('price')
                     ->money('BGN')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_active')
+
+                IconColumn::make('is_active')
                     ->boolean(),
-                Tables\Columns\IconColumn::make('on_sale')
+
+                IconColumn::make('on_sale')
                     ->boolean(),
             ])
             ->filters([
                 SelectFilter::make('category')
                     ->relationship('categories', 'name'),
-                SelectFilter::make('is_active'),
+
+                SelectFilter::make('is_active')
+                ->options([
+                    '1' => 'Yes',
+                    '0' => 'No',
+                ]),
+
                 SelectFilter::make('on_sale')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
+                    EditAction::make(),
                     DeleteAction::make(),
                 ])
             ])

@@ -5,13 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
-use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -19,10 +19,10 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +69,7 @@ class CategoryResource extends Resource
                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                         $set('image_alt', $state);
                                     }),
+
                                 TextInput::make('slug')
                                     ->required()
                                     ->maxLength(60)
@@ -82,13 +83,16 @@ class CategoryResource extends Resource
                                         return 'Characters left: ' . $leftCharacters;
 
                                     }),
+
                                 FileUpload::make('image')
                                     ->image()
 //                                    ->optimize('webp')
                                     ->columnSpanFull()
                                     ->directory('categories')
                                     ->imageEditor(),
+
                                 TextInput::make('image_alt'),
+
                                 RichEditor::make('description')
                                     ->required()
                                     ->columnSpanFull()
@@ -103,6 +107,7 @@ class CategoryResource extends Resource
                                         $truncatedState .= '...';
                                         $set('meta_description', $truncatedState);
                                     }),
+
                                 Toggle::make('is_active')
                                     ->label('Active')
                                     ->required()
@@ -123,6 +128,7 @@ class CategoryResource extends Resource
                                     return 'Characters left: ' . $leftCharacters;
 
                                 }),
+
                             Textarea::make('meta_description')
                                 ->required()
                                 ->maxLength(160)
@@ -135,7 +141,8 @@ class CategoryResource extends Resource
                                     return 'Characters left: ' . $leftCharacters;
 
                                 }),
-                            Forms\Components\TagsInput::make('meta_keywords')
+
+                            TagsInput::make('meta_keywords')
                                 ->placeholder('New keyword')
                         ])
                 ])
@@ -147,17 +154,24 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('image'),
+
                 TextColumn::make('name')
                     ->searchable(),
+
                 TextColumn::make('products_count')
                     ->counts('products')
                     ->label('Products'),
+
                 IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
             ])
             ->filters([
-                //
+                SelectFilter::make('is_active')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -171,7 +185,6 @@ class CategoryResource extends Resource
                                     ->body('Category has products.')
                                     ->send();
 
-                                // This will halt and cancel the delete action modal.
                                 $action->cancel();
                             }
                         }),
@@ -180,7 +193,7 @@ class CategoryResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ])->label('Delete'),
+                ])->label('Delete')
             ]);
     }
 
