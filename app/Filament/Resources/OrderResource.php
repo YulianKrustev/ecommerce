@@ -36,9 +36,11 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
+    protected static ?int $navigationSort = 4;
+
     public static function getGloballySearchableAttributes(): array
     {
-        return ['id'];
+        return ['id', 'user.name'];
     }
 
     public static function getGlobalSearchResultTitle(Model $record): string
