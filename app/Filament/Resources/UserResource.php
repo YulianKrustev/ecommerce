@@ -89,6 +89,11 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->numeric(),
+
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -104,7 +109,7 @@ class UserResource extends Resource
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->sortable(),
-            ])
+            ])->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

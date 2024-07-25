@@ -74,8 +74,7 @@ class OrderResource extends Resource
                             ->options([
                                 'stripe' => 'Stripe',
 //                                'cod' => 'Cash on delivery',
-                            ])
-                            ->placeholder('Select a payment method'),
+                            ]),
 
                         Select::make('payment_status')
                             ->label('Payment Status')
@@ -262,7 +261,7 @@ class OrderResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

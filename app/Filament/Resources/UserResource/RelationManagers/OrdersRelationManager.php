@@ -36,17 +36,14 @@ class OrdersRelationManager extends RelationManager
                     ->searchable(),
 
                 TextColumn::make('payment_status')
+                    ->label('Payment')
                     ->sortable()
                     ->searchable()
                     ->badge(),
 
 
-                TextColumn::make('payment_method')
-                    ->label('Payment type')
-                    ->sortable()
-                    ->searchable(),
-
                 TextColumn::make('status')
+                    ->label('Order Status')
                     ->sortable()
                     ->badge()
                     ->color(fn(string $state):string => match($state)
@@ -67,12 +64,13 @@ class OrdersRelationManager extends RelationManager
                     }),
 
                 TextColumn::make('total_price')
+                    ->label('Total Price')
                     ->money('BGN')
                     ->sortable(),
 
                 TextColumn::make('created_at')
+                    ->label('Created')
                     ->sortable()
-                    ->label('Order date')
                     ->dateTime(),
 
             ])

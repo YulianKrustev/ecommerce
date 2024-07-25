@@ -94,7 +94,7 @@ class CategoryResource extends Resource
                                     ->imageEditor(),
 
                                 TextInput::make('image_alt')
-                                ->label('Image Alt'),
+                                    ->label('Image Alt'),
 
                                 RichEditor::make('description')
                                     ->required()
@@ -166,10 +166,12 @@ class CategoryResource extends Resource
 
                 TextColumn::make('products_count')
                     ->counts('products')
-                    ->label('Products'),
+                    ->label('Products')
+                    ->sortable(),
 
                 SelectColumn::make('is_active')
                     ->label('Active')
+                    ->selectablePlaceholder(false)
                     ->options([
                         '0' => 'Inactive',
                         '1' => 'Active',

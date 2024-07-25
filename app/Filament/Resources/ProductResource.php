@@ -201,10 +201,12 @@ class ProductResource extends Resource
                                             ->default(true),
 
                                         Toggle::make('in_stock')
+                                            ->label('Stock')
                                             ->default(true)
                                             ->required(),
 
                                         Toggle::make('is_featured')
+                                            ->label('Featured')
                                             ->required(),
                                     ])
                                 ])->columnSpan(1),
@@ -212,6 +214,7 @@ class ProductResource extends Resource
 
                         Tab::make('SEO')->schema([
                             TextInput::make('meta_title')
+                                ->label('Meta Title')
                                 ->required()
                                 ->maxLength(60)
                                 ->live(debounce: 500)
@@ -223,6 +226,7 @@ class ProductResource extends Resource
                                 }),
 
                             Textarea::make('meta_description')
+                                ->label('Meta Description')
                                 ->required()
                                 ->maxLength(160)
                                 ->live(debounce: 500)
@@ -234,7 +238,8 @@ class ProductResource extends Resource
                                 }),
 
                             TagsInput::make('meta_keywords')
-                                ->placeholder('New keyword')
+                                ->label('Keywords')
+                                ->placeholder('Add New keyword')
                         ])
                     ])->columnSpan(2),
             ]);
@@ -244,6 +249,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->label('ID')
+                ->numeric(),
+
                 ImageColumn::make('first_image')
                     ->label('Image'),
 
@@ -254,8 +263,7 @@ class ProductResource extends Resource
                     ->label('Category')
                     ->getStateUsing(function ($record) {
                         return $record->categories->pluck('name')->join(', ');
-                    })
-                    ->sortable(),
+                    }),
 
                 IconColumn::make('on_sale')
                     ->label('Sale')
@@ -272,12 +280,13 @@ class ProductResource extends Resource
 
                 SelectColumn::make('is_active')
                     ->label('Active')
+                    ->selectablePlaceholder(false)
                     ->options([
                         '0' => 'Inactive',
                         '1' => 'Active',
                     ])
                     ->sortable(),
-            ])
+            ])->defaultSort('id', 'desc')
             ->filters([
                 SelectFilter::make('category')
                     ->relationship('categories', 'name'),
