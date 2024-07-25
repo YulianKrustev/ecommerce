@@ -57,9 +57,6 @@ class OrderResource extends Resource
                 Group::make()->schema([
                     Section::make('Order Information')->schema([
 
-                        TextInput::make('id')
-                            ->disabled(),
-
                         Select::make('user_id')
                             ->label('Customer')
                             ->relationship('user', 'name')
@@ -69,15 +66,19 @@ class OrderResource extends Resource
                             ->placeholder('Select a customer'),
 
                         Select::make('payment_method')
-                            ->label('Payment type')
+                            ->label('Payment Type')
                             ->required()
+                            ->dehydrated()
+                            ->disabled()
+                            ->default('stripe')
                             ->options([
                                 'stripe' => 'Stripe',
-                                'cod' => 'Cash on delivery',
+//                                'cod' => 'Cash on delivery',
                             ])
                             ->placeholder('Select a payment method'),
 
                         Select::make('payment_status')
+                            ->label('Payment Status')
                             ->options([
                                 'pending' => 'Pending',
                                 'paid' => 'Paid',
@@ -112,23 +113,11 @@ class OrderResource extends Resource
                                 'cancelled' => 'heroicon-m-x-circle',
                             ]),
 
-                        Select::make('currency')
-                            ->options([
-                                'BGN' => 'BGN',
-                            ])
-                            ->default('BGN')
+                        Hidden::make('currency')
+                            ->default('EUR')
                             ->required()
                             ->disabled()
                             ->dehydrated(),
-
-                        Select::make('shipping_method')
-                            ->options([
-                                'speedy' => 'Speedy',
-                                'econt' => 'Econt',
-                                'other' => 'Other'
-                            ])
-                            ->required()
-                            ->placeholder('Select a shipping method'),
 
                         Textarea::make('notes')
                             ->columnSpanFull(),
@@ -178,8 +167,8 @@ class OrderResource extends Resource
                                     }),
 
                                 TextInput::make('unit_price')
-                                    ->prefix('BGN')
-                                    ->label('Product price')
+                                    ->prefix('EUR')
+                                    ->label('Unit Price')
                                     ->numeric()
                                     ->required()
                                     ->disabled()
@@ -187,8 +176,8 @@ class OrderResource extends Resource
                                     ->columnSpan(3),
 
                                 TextInput::make('total_units_price')
-                                    ->prefix('BGN')
-                                    ->label('Total sum')
+                                    ->prefix('EUR')
+                                    ->label('Total Sum')
                                     ->numeric()
                                     ->required()
                                     ->disabled()
@@ -199,7 +188,8 @@ class OrderResource extends Resource
                             ->addActionLabel('Add new product'),
 
                         Placeholder::make('total_price')
-                            ->label('Order total price')
+                            ->label('Total Price:')
+                            ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500; text-decoration: underline;'])
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
                                 $repeaters = $get('items');
@@ -214,7 +204,7 @@ class OrderResource extends Resource
 
                                 $set("total_price", $total);
 
-                                return Number::currency($total, 'BGN');
+                                return Number::currency($total, 'EUR');
                             })
                     ]),
 
@@ -239,17 +229,20 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('total_price')
-                    ->numeric()
-                    ->sortable()
-                    ->money('BGN'),
-
-                TextColumn::make('payment_method')
-                    ->label('Payment type')
-                    ->sortable(),
+//                TextColumn::make('payment_method')
+//                    ->label('Payment type')
+//                    ->sortable(),
 
                 TextColumn::make('payment_status')
+                    ->label('Payment')
                     ->sortable(),
+
+
+                TextColumn::make('total_price')
+                    ->label('Price')
+                    ->numeric()
+                    ->sortable()
+                    ->money('EUR'),
 
                 SelectColumn::make('status')
                     ->options([

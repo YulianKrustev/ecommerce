@@ -57,11 +57,11 @@ class AddressRelationManager extends RelationManager
                 TextColumn::make('fullname')
                 ->label('Name'),
 
-                TextColumn::make('city'),
+                TextColumn::make('phone'),
 
                 TextColumn::make('address'),
 
-                TextColumn::make('zip_code'),
+                TextColumn::make('city'),
             ])
             ->filters([
                 //
@@ -76,9 +76,9 @@ class AddressRelationManager extends RelationManager
                 ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ])->label('Delete'),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ])->label('Delete'),
             ]);
     }
 }

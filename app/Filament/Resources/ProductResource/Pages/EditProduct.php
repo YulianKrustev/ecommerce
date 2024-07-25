@@ -11,6 +11,11 @@ class EditProduct extends EditRedirect
 {
     protected static string $resource = ProductResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Edit ' . $this->record->name;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

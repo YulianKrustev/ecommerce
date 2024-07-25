@@ -74,6 +74,7 @@ class UserResource extends Resource
                             ->required(fn(string $context): bool => $context === 'create'),
 
                         DateTimePicker::make('email_verified_at')
+                            ->label('Email Verified')
                             ->default(now()),
 
                         Select::make('roles')
@@ -97,9 +98,11 @@ class UserResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('email_verified_at')
+                    ->label('Verified')
                     ->sortable(),
 
                 TextColumn::make('created_at')
+                    ->label('Created')
                     ->sortable(),
             ])
             ->filters([

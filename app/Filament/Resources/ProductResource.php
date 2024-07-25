@@ -26,6 +26,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -59,174 +60,183 @@ class ProductResource extends Resource
             ->schema([
                 Tabs::make('Create New Product')
                     ->tabs([
-                    Tab::make('Create Product')
-                        ->schema([
-                        Group::make()
+                        Tab::make('Create Product')
                             ->schema([
-                            Section::make('Product Info')
-                                ->columns([
-                                    'sm' => 2,
-                                    'xl' => 4,
-                                    '2xl' => 6,
-                                ])
-                                ->schema([
-                                    TextInput::make('name')
-                                        ->columnSpan(3)
-                                        ->required()
-                                        ->unique(ignoreRecord: true)
-                                        ->maxLength(60)
-                                        ->live(onBlur: true)
-                                        ->afterStateUpdated(function (string $operation, ?string $state, Forms\Set $set) {
-                                            if ($operation == 'edit' || $state == null) {
-                                                return;
-                                            }
-                                            $set('meta_title', ASCII::to_ascii($state) . " - " . config("app.name"));
-                                            $set('slug', ASCII::to_ascii(Str::slug($state)));
-                                            $set('image_alt', $state);
-                                        }),
+                                Group::make()
+                                    ->schema([
+                                        Section::make('Product Info')
+                                            ->columns([
+                                                'sm' => 2,
+                                                'xl' => 4,
+                                                '2xl' => 6,
+                                            ])
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->columnSpan(3)
+                                                    ->required()
+                                                    ->unique(ignoreRecord: true)
+                                                    ->maxLength(60)
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(function (
+                                                        string $operation,
+                                                        ?string $state,
+                                                        Forms\Set $set
+                                                    ) {
+                                                        if ($operation == 'edit' || $state == null) {
+                                                            return;
+                                                        }
+                                                        $set('meta_title',
+                                                            ASCII::to_ascii($state) . " - " . config("app.name"));
+                                                        $set('slug', ASCII::to_ascii(Str::slug($state)));
+                                                        $set('image_alt', $state);
+                                                    }),
 
-                                    TextInput::make('slug')
-                                        ->columnSpan(3)
-                                        ->required()
-                                        ->maxLength(60)
-                                        ->unique(ignoreRecord: true)
-                                        ->live(debounce: 500)
-                                        ->hint(function ($state) {
-                                            $maxCount = 50;
-                                            $charactersCount = mb_strlen($state);
-                                            $leftCharacters = $maxCount - $charactersCount;
-                                            return 'Characters left: ' . $leftCharacters;
-                                        }),
+                                                TextInput::make('slug')
+                                                    ->columnSpan(3)
+                                                    ->required()
+                                                    ->maxLength(60)
+                                                    ->unique(ignoreRecord: true)
+                                                    ->live(debounce: 500)
+                                                    ->hint(function ($state) {
+                                                        $maxCount = 50;
+                                                        $charactersCount = mb_strlen($state);
+                                                        $leftCharacters = $maxCount - $charactersCount;
+                                                        return 'Characters left: ' . $leftCharacters;
+                                                    }),
 
-                                    RichEditor::make('description')
-                                        ->disableToolbarButtons([
-                                            'attachFiles',
-                                            'codeBlock',
-                                            'strike',
-                                            'underline',
-                                            'blockquote',
+                                                RichEditor::make('description')
+                                                    ->disableToolbarButtons([
+                                                        'attachFiles',
+                                                        'codeBlock',
+                                                        'strike',
+                                                        'underline',
+                                                        'blockquote',
+                                                    ])
+                                                    ->required()
+                                                    ->columnSpanFull()
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(function (
+                                                        string $operation,
+                                                        ?string $state,
+                                                        Forms\Set $set
+                                                    ) {
+                                                        if ($operation == 'edit' || $state == null) {
+                                                            return;
+                                                        }
+                                                        $plainTextState = strip_tags($state);
+                                                        $truncatedState = mb_substr($plainTextState, 0, 155);
+                                                        $truncatedState = rtrim($truncatedState);
+                                                        $truncatedState .= '...';
+                                                        $set('meta_description', $truncatedState);
+                                                    }),
+                                            ]),
+
+                                        Section::make('Images')->schema([
+                                            FileUpload::make('images')
+                                                ->required()
+                                                ->label('')
+                                                ->multiple()
+                                                ->maxFiles(6)
+                                                ->reorderable()
+                                                ->columnSpanFull()
+                                                ->directory('products')
+                                                ->imageEditor()
+                                                ->imagePreviewHeight('150'),
                                         ])
-                                        ->required()
-                                        ->columnSpanFull()
-                                        ->live(onBlur: true)
-                                        ->afterStateUpdated(function (string $operation, ?string $state, Forms\Set $set) {
-                                            if ($operation == 'edit' || $state == null) {
-                                                return;
-                                            }
-                                            $plainTextState = strip_tags($state);
-                                            $truncatedState = mb_substr($plainTextState, 0, 155);
-                                            $truncatedState = rtrim($truncatedState);
-                                            $truncatedState .= '...';
-                                            $set('meta_description', $truncatedState);
-                                        }),
-                                ]),
+                                    ])->columnSpan(3),
 
-                            Section::make('Images')->schema([
-                                FileUpload::make('images')
-                                    ->required()
-                                    ->label('')
-                                    ->multiple()
-                                    ->maxFiles(6)
-                                    ->reorderable()
-                                    ->columnSpanFull()
-                                    ->directory('products')
-                                    ->imageEditor()
-                                    ->imagePreviewHeight('150'),
-                            ])
-                        ])->columnSpan(3),
-
-                        Group::make()->schema([
-                            Section::make('Prices and Quantity')->schema([
-                                TextInput::make('price')
-                                    ->numeric()
-                                    ->required()
-                                    ->prefix('BGN'),
-
-                                TextInput::make('on_sale_price')
-                                    ->numeric()
-                                    ->prefix('BGN')
-                                    ->disabled(fn(callable $get) => !$get('on_sale')),
-
-                                TextInput::make('quantity')
-                                    ->required()
-                                    ->numeric(),
-                            ]),
-
-                            Section::make('Categories and Tags')->schema([
-                                Select::make('categories')
-                                    ->label('Categories')
-                                    ->relationship('categories', 'name')
-                                    ->preload()
-                                    ->required()
-                                    ->multiple()
-                                    ->placeholder(''),
-
-                                Select::make('tags')
-                                    ->relationship('tags', 'name')
-                                    ->multiple()
-                                    ->preload()
-                                    ->required()
-                                    ->placeholder('')
-                                    ->createOptionForm([
-                                        TextInput::make('name')
+                                Group::make()->schema([
+                                    Section::make('Prices and Quantity')->schema([
+                                        TextInput::make('price')
+                                            ->numeric()
                                             ->required()
-                                            ->label('Tag Name')
-                                            ->unique(ignoreRecord: true)
+                                            ->prefix('EUR'),
+
+                                        TextInput::make('on_sale_price')
+                                            ->numeric()
+                                            ->prefix('EUR')
+                                            ->disabled(fn(callable $get) => !$get('on_sale')),
+
+                                        TextInput::make('quantity')
+                                            ->required()
+                                            ->numeric(),
+                                    ]),
+
+                                    Section::make('Categories and Tags')->schema([
+                                        Select::make('categories')
+                                            ->label('Categories')
+                                            ->relationship('categories', 'name')
+                                            ->preload()
+                                            ->required()
+                                            ->multiple()
+                                            ->placeholder(''),
+
+                                        Select::make('tags')
+                                            ->relationship('tags', 'name')
+                                            ->multiple()
+                                            ->preload()
+                                            ->required()
+                                            ->placeholder('')
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->label('Tag Name')
+                                                    ->unique(ignoreRecord: true)
+                                            ])
+                                            ->createOptionUsing(function (Select $component, array $data) {
+                                                $tag = Tag::create($data);
+                                                return $tag->id;
+                                            }),
+                                    ]),
+
+                                    Section::make('Status')->schema([
+                                        Toggle::make('on_sale')
+                                            ->label('Sale')
+                                            ->live()
+                                            ->required(),
+
+                                        Toggle::make('is_active')
+                                            ->label('Active')
+                                            ->required()
+                                            ->default(true),
+
+                                        Toggle::make('in_stock')
+                                            ->default(true)
+                                            ->required(),
+
+                                        Toggle::make('is_featured')
+                                            ->required(),
                                     ])
-                                    ->createOptionUsing(function (Select $component, array $data) {
-                                        $tag = Tag::create($data);
-                                        return $tag->id;
-                                    }),
-                            ]),
+                                ])->columnSpan(1),
+                            ])->columns(4),
 
-                            Section::make('Status')->schema([
-                                Toggle::make('on_sale')
-                                    ->label('Sale')
-                                    ->live()
-                                    ->required(),
+                        Tab::make('SEO')->schema([
+                            TextInput::make('meta_title')
+                                ->required()
+                                ->maxLength(60)
+                                ->live(debounce: 500)
+                                ->hint(function ($state) {
+                                    $maxCount = 60;
+                                    $charactersCount = mb_strlen($state);
+                                    $leftCharacters = $maxCount - $charactersCount;
+                                    return 'Characters left: ' . $leftCharacters;
+                                }),
 
-                                Toggle::make('is_active')
-                                    ->label('Active')
-                                    ->required()
-                                    ->default(true),
+                            Textarea::make('meta_description')
+                                ->required()
+                                ->maxLength(160)
+                                ->live(debounce: 500)
+                                ->hint(function ($state) {
+                                    $maxCount = 160;
+                                    $charactersCount = mb_strlen($state);
+                                    $leftCharacters = $maxCount - $charactersCount;
+                                    return 'Characters left: ' . $leftCharacters;
+                                }),
 
-                                Toggle::make('in_stock')
-                                    ->default(true)
-                                    ->required(),
-
-                                Toggle::make('is_featured')
-                                    ->required(),
-                            ])
-                        ])->columnSpan(1),
-                    ])->columns(4),
-
-                    Tab::make('SEO')->schema([
-                        TextInput::make('meta_title')
-                            ->required()
-                            ->maxLength(60)
-                            ->live(debounce: 500)
-                            ->hint(function ($state) {
-                                $maxCount = 60;
-                                $charactersCount = mb_strlen($state);
-                                $leftCharacters = $maxCount - $charactersCount;
-                                return 'Characters left: ' . $leftCharacters;
-                            }),
-
-                        Textarea::make('meta_description')
-                            ->required()
-                            ->maxLength(160)
-                            ->live(debounce: 500)
-                            ->hint(function ($state) {
-                                $maxCount = 160;
-                                $charactersCount = mb_strlen($state);
-                                $leftCharacters = $maxCount - $charactersCount;
-                                return 'Characters left: ' . $leftCharacters;
-                            }),
-
-                        TagsInput::make('meta_keywords')
-                            ->placeholder('New keyword')
-                    ])
-                ])->columnSpan(2),
+                            TagsInput::make('meta_keywords')
+                                ->placeholder('New keyword')
+                        ])
+                    ])->columnSpan(2),
             ]);
     }
 
@@ -234,42 +244,60 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('first_image'),
+                ImageColumn::make('first_image')
+                    ->label('Image'),
 
                 TextColumn::make('name')
                     ->searchable(),
 
                 TextColumn::make('categories')
+                    ->label('Category')
                     ->getStateUsing(function ($record) {
                         return $record->categories->pluck('name')->join(', ');
                     })
                     ->sortable(),
 
-                TextColumn::make('quantity')
-                    ->numeric()
-                    ->sortable(),
+                IconColumn::make('on_sale')
+                    ->label('Sale')
+                    ->boolean(),
+
+                IconColumn::make('in_stock')
+                    ->label('Stock')
+                    ->boolean(),
+
 
                 TextColumn::make('price')
                     ->money('BGN')
                     ->sortable(),
 
-                IconColumn::make('is_active')
-                    ->boolean(),
-
-                IconColumn::make('on_sale')
-                    ->boolean(),
+                SelectColumn::make('is_active')
+                    ->label('Active')
+                    ->options([
+                        '0' => 'Inactive',
+                        '1' => 'Active',
+                    ])
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('category')
                     ->relationship('categories', 'name'),
 
                 SelectFilter::make('is_active')
-                ->options([
-                    '1' => 'Yes',
-                    '0' => 'No',
-                ]),
+                    ->label('Active')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ]),
 
                 SelectFilter::make('on_sale')
+                    ->label('Sale')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ]),
+
+                SelectFilter::make('in_stock')
+                    ->label('Stock')
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',

@@ -16,16 +16,17 @@ class ListOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('New Order'),
         ];
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-          OrderResource\Widgets\OrderStats::class
-        ];
-    }
+//    protected function getHeaderWidgets(): array
+//    {
+//        return [
+//          OrderResource\Widgets\OrderStats::class
+//        ];
+//    }
 
     public function getTabs(): array
     {

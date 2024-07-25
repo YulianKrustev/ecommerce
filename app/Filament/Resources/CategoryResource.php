@@ -21,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -92,7 +93,8 @@ class CategoryResource extends Resource
                                     ->directory('categories')
                                     ->imageEditor(),
 
-                                TextInput::make('image_alt'),
+                                TextInput::make('image_alt')
+                                ->label('Image Alt'),
 
                                 RichEditor::make('description')
                                     ->required()
@@ -119,6 +121,7 @@ class CategoryResource extends Resource
                         ->schema([
                             TextInput::make('meta_title')->required()->maxLength(60)
                                 ->required()
+                                ->label('Meta Title')
                                 ->maxLength(60)
                                 ->live(debounce: 500)
                                 ->hint(function ($state) {
@@ -132,6 +135,7 @@ class CategoryResource extends Resource
 
                             Textarea::make('meta_description')
                                 ->required()
+                                ->label('Meta Description')
                                 ->maxLength(160)
                                 ->live(debounce: 500)
                                 ->hint(function ($state) {
@@ -144,7 +148,8 @@ class CategoryResource extends Resource
                                 }),
 
                             TagsInput::make('meta_keywords')
-                                ->placeholder('New keyword')
+                                ->label('Keywords')
+                                ->placeholder('Add New Keyword')
                         ])
                 ])
             ])->columns(1);
@@ -163,12 +168,17 @@ class CategoryResource extends Resource
                     ->counts('products')
                     ->label('Products'),
 
-                IconColumn::make('is_active')
+                SelectColumn::make('is_active')
                     ->label('Active')
-                    ->boolean(),
+                    ->options([
+                        '0' => 'Inactive',
+                        '1' => 'Active',
+                    ])
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('is_active')
+                    ->label('Active')
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',
