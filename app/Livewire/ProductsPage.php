@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
 use App\Models\Product;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -15,7 +16,8 @@ class ProductsPage extends Component
     {
         $productQuerry = Product::query()->where('is_active', 1);
         return view('livewire.products-page', [
-            'products' => $productQuerry->paginate(6)
+            'products' => $productQuerry->paginate(2),
+            'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
         ]);
     }
 }
