@@ -4,10 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
- use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
@@ -29,6 +26,7 @@ class Category extends Model
     protected $casts = [
         'meta_keywords' => 'array'
     ];
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
@@ -45,8 +43,15 @@ class Category extends Model
         });
 
         static::deleting(function ($model) {
-            if ($model->getOriginal('image') !== null)
-            Storage::disk('public')->delete($model?->getOriginal('image'));
-        } );
+            if ($model->getOriginal('image') !== null) {
+                Storage::disk('public')->delete($model?->getOriginal('image'));
+            }
+        });
+    }
+
+    public function specialOffers()
+    {
+        return $this->belongsToMany(SpecialOffer::class, 'offer_category', 'category_id', 'special_offer_id')
+            ->withTimestamps();
     }
 }

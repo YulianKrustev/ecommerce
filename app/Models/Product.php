@@ -27,12 +27,14 @@ class Product extends Model
         'meta_keywords',
         'meta_title',
         'meta_description',
-        'on_sale'
+        'on_sale',
+        'offer_id'
     ];
 
     protected $casts = [
         'images' => 'array',
-        'meta_keywords' => 'array'
+        'meta_keywords' => 'array',
+        'on_sale' => 'boolean',
     ];
 
     public function getFirstImageAttribute()
@@ -81,5 +83,42 @@ class Product extends Model
                 }
             }
         });
+    }
+
+    public function specialOffers()
+    {
+        return $this->belongsToMany(SpecialOffer::class, 'offer_product', 'product_id', 'special_offer_id')
+            ->withTimestamps();
+    }
+
+    public function applySpecialOffer(SpecialOffer $offer)
+    {
+        if (!$this->on_sale || $this->offer_id == $offer->id) {
+            $this->offer_id = $offer->id;
+            $this->on_sale = true;
+            $this->on_sale_price = $this->calculateDiscountedPrice($offer);
+            $this->save();
+        }
+    }
+
+    public function removeSpecialOffer(SpecialOffer $offer)
+    {
+        if ($this->offer_id == $offer->id) {
+            $this->on_sale = false;
+            $this->on_sale_price = null;
+            $this->save();
+        }
+
+    }
+
+    protected function calculateDiscountedPrice(SpecialOffer $offer)
+    {
+        if ($offer->discount_percentage) {
+            return $this->price - ($this->price * $offer->discount_percentage / 100);
+        } elseif ($offer->discount_amount) {
+            return $this->price - $offer->discount_amount;
+        }
+
+        return $this->price;
     }
 }

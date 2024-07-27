@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
-use App\Models\Category;
+use App\Filament\Resources\SpecialOfferResource\Pages;
+use App\Filament\Resources\SpecialOfferResource\RelationManagers;
 use App\Models\SpecialOffer;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
@@ -26,7 +27,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -34,12 +34,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use voku\helper\ASCII;
 
-class CategoryResource extends Resource
+class SpecialOfferResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = SpecialOffer::class;
 
-    protected static ?int $navigationSort = 1;
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationIcon = 'heroicon-o-gift';
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -55,8 +54,8 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Tabs::make('Create New Category')->tabs([
-                    Tab::make('Create Category')->schema([
+                Tabs::make('Create New Offer')->tabs([
+                    Tab::make('Create Offer')->schema([
                         Grid::make([
                             'sm' => 1,
                         ])
@@ -64,7 +63,7 @@ class CategoryResource extends Resource
                                 TextInput::make('name')
                                     ->required()
                                     ->unique(ignoreRecord: true)
-                                    ->maxLength(60)
+                                    ->maxLength(80)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, ?string $state, Forms\Set $set) {
                                         if ($operation == 'edit' || $state == null) {
@@ -89,15 +88,69 @@ class CategoryResource extends Resource
 
                                     }),
 
+                                Select::make('products')
+                                    ->relationship('products', 'name')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->label('Select Products')
+                                    ->preload()
+                                    ->reactive()
+                                    ->placeholder('Choose either categories or products.')
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (!empty($state)) {
+                                            $set('categories', []);
+                                        }
+                                    }),
+
                                 FileUpload::make('image')
                                     ->image()
 //                                    ->optimize('webp')
-                                    ->columnSpanFull()
-                                    ->directory('categories')
+                                    ->required()
+                                    ->columnSpan(1)
+                                    ->directory('special_offers')
                                     ->imageEditor(),
 
+                                Select::make('categories')
+                                    ->relationship('categories', 'name')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->placeholder('Choose either categories or products.')
+                                    ->label('Select Categories')
+                                    ->preload()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (!empty($state)) {
+                                            $set('products', []);
+                                        }
+                                    }),
+
                                 TextInput::make('image_alt')
-                                    ->label('Image Alt'),
+                                    ->label('Image Alt')
+                                    ->required(),
+
+                                TextInput::make('discount_amount')
+                                    ->label('Discount Amount')
+                                    ->placeholder('Choose either amount or percentage')
+                                    ->numeric()
+                                    ->prefix('EUR')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (!empty($state)) {
+                                            $set('discount_percentage', null);
+                                        }
+                                    }),
+
+                                TextInput::make('discount_percentage')
+                                    ->label('Discount Percentage')
+                                    ->placeholder('Choose either amount or percentage')
+                                    ->numeric()
+                                    ->suffix('%')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (!empty($state)) {
+                                            $set('discount_amount', null);
+                                        }
+                                    }),
 
                                 RichEditor::make('description')
                                     ->required()
@@ -172,9 +225,16 @@ class CategoryResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
 
-                TextColumn::make('products_count')
-                    ->counts('products')
-                    ->label('Products')
+                TextColumn::make('discount_amount')
+                    ->label('Discount Amount')
+                    ->money('EUR')
+                    ->sortable()
+                    ->default(0.00),
+
+                TextColumn::make('discount_percentage')
+                    ->label('Discount Percentage')
+                    ->suffix('%')
+                    ->default(0)
                     ->sortable(),
 
                 SelectColumn::make('is_active')
@@ -186,24 +246,16 @@ class CategoryResource extends Resource
                     ])
                     ->sortable(),
             ])
-            ->filters([
-                SelectFilter::make('is_active')
-                    ->label('Active')
-                    ->options([
-                        '1' => 'Yes',
-                        '0' => 'No',
-                    ])
-            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
-                        ->before(function (Tables\Actions\DeleteAction $action, Category $record) {
-                            if ($record->products()->exists()) {
+                        ->before(function (Tables\Actions\DeleteAction $action, SpecialOffer $record) {
+                            if ($record->is_active) {
                                 Notification::make()
                                     ->danger()
                                     ->title('Failed to delete!')
-                                    ->body('Category has products.')
+                                    ->body('First deactivate offer.')
                                     ->send();
 
                                 $action->cancel();
@@ -217,11 +269,11 @@ class CategoryResource extends Resource
                         $shouldCancel = false;
 
                         foreach ($records as $record) {
-                            if ($record->products()->exists()) {
+                            if ($record->is_active) {
                                 Notification::make()
                                     ->danger()
                                     ->title("Failed to delete $record->name!")
-                                    ->body('Category has products.')
+                                    ->body('First deactivate offer.')
                                     ->send();
 
                                 $shouldCancel = true;
@@ -236,6 +288,7 @@ class CategoryResource extends Resource
             ]);
     }
 
+
     public static function getRelations(): array
     {
         return [
@@ -246,9 +299,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListSpecialOffers::route('/'),
+            'create' => Pages\CreateSpecialOffer::route('/create'),
+            'edit' => Pages\EditSpecialOffer::route('/{record}/edit'),
         ];
     }
 }

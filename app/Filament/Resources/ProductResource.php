@@ -114,7 +114,12 @@ class ProductResource extends Resource
                                                     ])
                                                     ->required()
                                                     ->columnSpanFull()
-                                                    ->live(onBlur: true)
+                                                    ->live(debounce: 500)
+                                                    ->hint(function ($state) {
+                                                        $charactersCount = mb_strlen($state);
+
+                                                        return 'Characters: ' . $charactersCount;
+                                                    })
                                                     ->afterStateUpdated(function (
                                                         string $operation,
                                                         ?string $state,
@@ -153,9 +158,11 @@ class ProductResource extends Resource
                                             ->prefix('EUR'),
 
                                         TextInput::make('on_sale_price')
+                                            ->label('On Sale Price')
                                             ->numeric()
                                             ->prefix('EUR')
-                                            ->disabled(fn(callable $get) => !$get('on_sale')),
+                                            ->dehydrated()
+                                            ->disabled(),
 
                                         TextInput::make('quantity')
                                             ->required()
@@ -192,7 +199,8 @@ class ProductResource extends Resource
                                     Section::make('Status')->schema([
                                         Toggle::make('on_sale')
                                             ->label('Sale')
-                                            ->live()
+                                            ->dehydrated()
+                                            ->disabled()
                                             ->required(),
 
                                         Toggle::make('is_active')
@@ -275,7 +283,7 @@ class ProductResource extends Resource
 
 
                 TextColumn::make('price')
-                    ->money('BGN')
+                    ->money('EUR')
                     ->sortable(),
 
                 SelectColumn::make('is_active')
