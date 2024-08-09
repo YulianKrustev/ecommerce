@@ -15,6 +15,10 @@
                         </tr>
                         </thead>
                         <tbody>
+
+                        @forelse($)
+
+                        @endforelse
                         <tr>
                             <td class="py-4">
                                 <div class="flex items-center">

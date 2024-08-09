@@ -6,6 +6,7 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use App\Models\Tag;
+use Faker\Core\Number;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -24,6 +25,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SelectColumn;
@@ -33,6 +35,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use voku\helper\ASCII;
 
@@ -74,7 +77,6 @@ class ProductResource extends Resource
                                                 TextInput::make('name')
                                                     ->columnSpan(3)
                                                     ->required()
-                                                    ->unique(ignoreRecord: true)
                                                     ->maxLength(60)
                                                     ->live(onBlur: true)
                                                     ->afterStateUpdated(function (
@@ -144,7 +146,11 @@ class ProductResource extends Resource
                                                 ->maxFiles(6)
                                                 ->reorderable()
                                                 ->columnSpanFull()
-                                                ->directory('products')
+                                                ->directory(function () {
+                                                    $latestProduct = DB::table('products')->latest('id')->first();
+                                                    $latestProductId = $latestProduct ? $latestProduct->id + 1 : '1';
+                                                    return 'products/' . $latestProductId;
+                                                })
                                                 ->imageEditor()
                                                 ->imagePreviewHeight('150'),
                                         ])
@@ -258,8 +264,8 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                ->label('ID')
-                ->numeric(),
+                    ->label('ID')
+                    ->numeric(),
 
                 ImageColumn::make('first_image')
                     ->label('Image'),
@@ -324,6 +330,14 @@ class ProductResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     EditAction::make(),
                     DeleteAction::make(),
+                    ReplicateAction::make()
+                        ->beforeReplicaSaved(function (Model $replica, Model $record): void {
+                            $replica->slug = $record->slug . "-" .rand(1,100);
+                            $replica->images = null;
+                            $replica->on_sale = 0;
+                            $replica->on_sale_price = null;
+                            $replica->offer_id = null;
+                        }),
                 ])
             ])
             ->bulkActions([

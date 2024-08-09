@@ -95,12 +95,12 @@ class SpecialOfferResource extends Resource
                                     ->label('Select Products')
                                     ->preload()
                                     ->reactive()
-                                    ->placeholder('Choose either categories or products.')
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (!empty($state)) {
-                                            $set('categories', []);
-                                        }
-                                    }),
+                                    ->placeholder('Choose either categories or products.'),
+//                                    ->afterStateUpdated(function ($state, callable $set) {
+//                                        if (!empty($state)) {
+//                                            $set('categories', []);
+//                                        }
+//                                    }),
 
                                 FileUpload::make('image')
                                     ->image()
@@ -117,40 +117,40 @@ class SpecialOfferResource extends Resource
                                     ->placeholder('Choose either categories or products.')
                                     ->label('Select Categories')
                                     ->preload()
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (!empty($state)) {
-                                            $set('products', []);
-                                        }
-                                    }),
+                                    ->reactive(),
+//                                    ->afterStateUpdated(function ($state, callable $set) {
+//                                        if (!empty($state)) {
+//                                            $set('products', []);
+//                                        }
+//                                    }),
 
                                 TextInput::make('image_alt')
                                     ->label('Image Alt')
                                     ->required(),
 
-                                TextInput::make('discount_amount')
-                                    ->label('Discount Amount')
-                                    ->placeholder('Choose either amount or percentage')
-                                    ->numeric()
-                                    ->prefix('EUR')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (!empty($state)) {
-                                            $set('discount_percentage', null);
-                                        }
-                                    }),
+//                                TextInput::make('discount_amount')
+//                                    ->label('Discount Amount')
+//                                    ->placeholder('Choose either amount or percentage')
+//                                    ->numeric()
+//                                    ->prefix('EUR')
+//                                    ->live(onBlur: true)
+//                                    ->afterStateUpdated(function ($state, callable $set) {
+//                                        if (!empty($state)) {
+//                                            $set('discount_percentage', null);
+//                                        }
+//                                    }),
 
                                 TextInput::make('discount_percentage')
                                     ->label('Discount Percentage')
                                     ->placeholder('Choose either amount or percentage')
                                     ->numeric()
                                     ->suffix('%')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (!empty($state)) {
-                                            $set('discount_amount', null);
-                                        }
-                                    }),
+                                    ->live(onBlur: true),
+//                                    ->afterStateUpdated(function ($state, callable $set) {
+//                                        if (!empty($state)) {
+//                                            $set('discount_amount', null);
+//                                        }
+//                                    })
 
                                 RichEditor::make('description')
                                     ->required()
@@ -225,17 +225,22 @@ class SpecialOfferResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
 
-                TextColumn::make('discount_amount')
-                    ->label('Discount Amount')
-                    ->money('EUR')
-                    ->sortable()
-                    ->default(0.00),
+//                TextColumn::make('discount_amount')
+//                    ->label('Discount Amount')
+//                    ->money('EUR')
+//                    ->sortable()
+//                    ->default(0.00),
 
                 TextColumn::make('discount_percentage')
-                    ->label('Discount Percentage')
+                    ->label('Discount')
                     ->suffix('%')
                     ->default(0)
                     ->sortable(),
+
+                TextColumn::make('categories')
+                    ->getStateUsing(function ($record) {
+                        return $record->categories->pluck('name')->join(', ');
+                    }),
 
                 SelectColumn::make('is_active')
                     ->label('Active')

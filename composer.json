@@ -8,6 +8,7 @@
         "php": "^8.2",
         "bezhansalleh/filament-shield": "^3.2",
         "filament/filament": "3.2.92",
+        "jantinnerezo/livewire-alert": "^3.0",
         "joaopaulolndev/filament-general-settings": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",

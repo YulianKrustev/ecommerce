@@ -39,8 +39,11 @@ class Product extends Model
 
     public function getFirstImageAttribute()
     {
-        $reversedImages = array_reverse($this->images);
-        return $reversedImages[0] ?? null;
+        if (isset($this->attributes['images'])) {
+            $reversedImages = array_reverse($this->images);
+            return $reversedImages[0];
+        }
+
     }
 
     public function categories(): BelongsToMany
@@ -115,9 +118,10 @@ class Product extends Model
     {
         if ($offer->discount_percentage) {
             return $this->price - ($this->price * $offer->discount_percentage / 100);
-        } elseif ($offer->discount_amount) {
-            return $this->price - $offer->discount_amount;
         }
+//        elseif ($offer->discount_amount) {
+//            return $this->price - $offer->discount_amount;
+//        }
 
         return $this->price;
     }
