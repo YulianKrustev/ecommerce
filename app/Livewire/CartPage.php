@@ -27,19 +27,21 @@ class CartPage extends Component
     {
         $productsId = CartManagement::getCartItemsFromCookie();
 
-        if (!empty($productIds)){
-            $productIds = array_column($productsId, 'product_id');
-
-            $this->cart_items = Product::select('id', 'name', 'price', 'images')
-                ->whereIn('id', $productIds)
-                ->get();
-
-            $this->cart_items->each(function ($item) use ($productIds) {
-                $item->quantity = collect($productIds)->firstWhere('product_id', $item->id)['quantity'];
+        $productQuantities = collect($productsId)
+            ->groupBy('product_id')
+            ->map(function ($group) {
+                return $group->sum('quantity');
             });
-        }
+
+        $this->cart_items = Product::select('id', 'name', 'price', 'images')
+            ->whereIn('id', $productQuantities->keys()->toArray()) // Use the keys (product IDs)
+            ->get();
 
 
+        $this->cart_items->each(function ($item) use ($productQuantities) {
+            // Attach the corresponding summed quantity to each product item
+            $item->quantity = $productQuantities->get($item->id, 0); // Default to 0 if not found
+        });
 
     }
 }

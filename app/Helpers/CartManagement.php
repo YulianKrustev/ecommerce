@@ -11,28 +11,26 @@ class CartManagement
     static public function addItemToCart($product_id, $quantity = 1)
     {
         $cart_items = self::getCartItemsFromCookie();
-        $existing_item = null;
+        $existing_item_key = null;
 
-//        foreach ($cart_items as $key => $item) {
-//            if ($item['product_id'] == $product_id) {
-//                $existing_item = $key;
-//                break;
-//            }
-//        }
+        // Check if the item is already in the cart
+        foreach ($cart_items as $key => $item) {
+            if ($item['product_id'] == $product_id) {
+                $existing_item_key = $key;
+                break;
+            }
+        }
 
-        if ($existing_item !== null) {
-            $cart_items[$existing_item]['quantity'] += $quantity;
-//            $cart_items[$existing_item]['total_units_price'] = $cart_items[$existing_item]['quantity'] * $cart_items[$existing_item]['unit_price'];
+        if ($existing_item_key !== null) {
+            // Update the quantity for the existing item
+            $cart_items[$existing_item_key]['quantity'] += $quantity;
         } else {
+            // Add a new item to the cart
             $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
             if ($product) {
                 $cart_items[] = [
                     'product_id' => $product_id,
-//                    'name' => $product->name,
-//                    'image' => $product->first_image,
-//                    'quantity' => $quantity,
-//                    'unit_price' => $product->price,
-//                    'total_units_price' => $product->price,
+                    'quantity' => $quantity,
                 ];
             }
         }
@@ -114,6 +112,8 @@ class CartManagement
     // calculate total
     static public function calculateTotalPrice($items)
     {
-        return array_sum(array_column($items, 'total_units_price'));
+        return $items->sum(function ($item) {
+            return $item['price'] * $item['quantity'];
+        });
     }
 }

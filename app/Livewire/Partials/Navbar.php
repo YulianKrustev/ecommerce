@@ -12,13 +12,13 @@ class Navbar extends Component
 
     public function mount()
     {
-        $this->total_count = count(CartManagement::getCartItemsFromCookie());
-//        dd($this->total_count);
+        self::updateCartCount();
     }
     #[On('update-cart-count')]
-    public function updateCartCount($total_count)
+    public function updateCartCount()
     {
-        $this->total_count = $total_count;
+        $this->total_count = collect(CartManagement::getCartItemsFromCookie())
+            ->sum('quantity');
     }
     public function render()
     {
