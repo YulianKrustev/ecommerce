@@ -40,17 +40,17 @@ class CartManagement
     }
 
     // remove item from cart
-    static public function removeCartItem($product_id)
+    static public function removeCartItem($product_id, $cart_items)
     {
-        $cart_items = self::getCartItemsFromCookie();
 
         foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
+            if ($item['id'] == $product_id) {
                 unset($cart_items[$key]);
             }
         }
 
-        self::addCartItemsToCookie($cart_items);
+
+        self::addCartItemsToCookie($cart_items->toArray());
 
         return $cart_items;
     }
@@ -112,8 +112,9 @@ class CartManagement
     // calculate total
     static public function calculateTotalPrice($items)
     {
+        $items = collect($items);
         return $items->sum(function ($item) {
-            return $item['price'] * $item['quantity'];
+            return $item->price * $item->quantity;
         });
     }
 }
