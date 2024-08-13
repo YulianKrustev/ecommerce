@@ -18,29 +18,31 @@
 
                         @forelse($cart_items as $item)
 
-                            <tr wire:key="{{ $item->product_id }}">
+                            <tr wire:key="{{ $item['id'] }}">
                                 <td class="py-4">
                                     <div class="flex items-center">
                                         <img class="h-16 w-16 mr-4"
-                                             src="{{ url('storage', array_slice($item->images, -1)[0]) }}"
-                                             alt="{{ $item->name }}">
-                                        <span class="font-semibold">{{ $item->name }}</span>
+                                             src="{{ url('storage', array_slice($item['images'], -1)[0]) }}"
+                                             alt="{{ $item['name'] }}">
+                                        <span class="font-semibold">{{ $item['name'] }}</span>
                                     </div>
                                 </td>
-                                <td class="py-4">{{ Number::currency($item->price, 'EUR') }}</td>
+                                <td class="py-4">{{ Number::currency($item['price'], 'EUR') }}</td>
                                 <td class="py-4">
                                     <div class="flex items-center">
-                                        <button class="border rounded-md py-2 px-4 mr-2">-</button>
-                                        <span class="text-center w-8">{{$item->quantity}}</span>
-                                        <button class="border rounded-md py-2 px-4 ml-2">+</button>
+                                        <button wire:click="decreaseQty({{$item['id']}})" class="border rounded-md py-2 px-4 mr-2">-</button>
+                                        <span class="text-center w-8">{{$item['quantity']}}</span>
+                                        <button wire:click="increaseQty({{$item['id']}})" class="border rounded-md py-2 px-4 ml-2">+</button>
                                     </div>
                                 </td>
-                                <td class="py-4">{{ Number::currency($item->price * $item->quantity, 'EUR') }}</td>
+                                <td class="py-4">{{ Number::currency($item['price'] * $item['quantity'], 'EUR') }}</td>
                                 <td>
-                                    <button wire:click="removeItem({{ $item->id }})"
-                                        class="bg-slate-300 border-2 border-slate-400 rounded-lg px-3 py-1 hover:bg-red-500 hover:text-white hover:border-red-700">
-                                        Remove
+                                    <button wire:click="removeItem({{ $item['id'] }})"
+                                            class="bg-slate-300 border-2 border-slate-400 rounded-lg px-3 py-1 hover:bg-red-500 hover:text-white hover:border-red-700">
+                                        <span wire:loading.remove wire:target="removeItem({{ $item['id'] }})">Remove</span>
+                                        <span wire:loading wire:target="removeItem({{ $item['id'] }})">Removing...</span>
                                     </button>
+
                                 </td>
                             </tr>
                         @empty

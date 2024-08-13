@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Livewire\CartPage;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cookie;
 
@@ -49,8 +50,7 @@ class CartManagement
             }
         }
 
-
-        self::addCartItemsToCookie($cart_items->toArray());
+        self::addCartItemsToCookie($cart_items);
 
         return $cart_items;
     }
@@ -79,33 +79,47 @@ class CartManagement
     }
 
     // increment item quantity
-    static public function incrementQuantityToCartItem($product_id)
+    static public function incrementQuantityToCartItem($product_id, $cart_items)
     {
-        $cart_items = self::getCartItemsFromCookie();
 
         foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
+            if ($item['id'] == $product_id) {
+                // Increment the quantity
                 $cart_items[$key]['quantity']++;
-                $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_price'];
+
+                // Update the total price for this item
+                $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['price'];
             }
         }
+
+        // Save the updated cart items back to the cookie or session
         self::addCartItemsToCookie($cart_items);
+
+        // Return the updated array of cart items
         return $cart_items;
     }
 
     // decrement item quantity
-    static public function decrementQuantityToCartItem($product_id)
+    static public function decrementQuantityToCartItem($product_id, $cart_items)
     {
-        $cart_items = self::getCartItemsFromCookie();
+
         foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
+            if ($item['id'] == $product_id) {
                 if ($cart_items[$key]['quantity'] > 1) {
                     $cart_items[$key]['quantity']--;
-                    $cart_items['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_price'];
+
+                    // Correctly update the total_units_price for the specific item
+                    $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['price'];
+                }   else {
+                    unset($cart_items[$key]);
                 }
             }
         }
+
+        // Save the updated cart items back to the cookie or session
         self::addCartItemsToCookie($cart_items);
+
+        // Return the updated array of cart items
         return $cart_items;
     }
 
@@ -113,8 +127,15 @@ class CartManagement
     static public function calculateTotalPrice($items)
     {
         $items = collect($items);
+
+        // Check the type of the first item
+//        if ($items->isNotEmpty()) {
+//            $firstItem = $items->first();
+//
+//        }
+
         return $items->sum(function ($item) {
-            return $item->price * $item->quantity;
+            return $item['price'] * $item['quantity'];
         });
     }
 }
