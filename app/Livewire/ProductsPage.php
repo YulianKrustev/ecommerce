@@ -17,6 +17,7 @@ class ProductsPage extends Component
 {
     use LivewireAlert;
     use WithPagination;
+
     #[Url]
     public $selected_categories = [];
     #[Url]
@@ -28,7 +29,6 @@ class ProductsPage extends Component
     #[Url]
     public $sort = 'latest';
 
-    // add product to cart method
     public function addToCart($product_id)
     {
         $total_count = CartManagement::addItemToCart($product_id);
@@ -65,8 +65,8 @@ class ProductsPage extends Component
         }
 
         if ($this->sort == 'latest') {
-           $productQuery->latest();
-        }   else {
+            $productQuery->latest();
+        } else {
             $productQuery->orderBy('price');
         }
 

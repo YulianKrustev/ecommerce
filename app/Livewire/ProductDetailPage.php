@@ -13,6 +13,7 @@ use Livewire\Component;
 class ProductDetailPage extends Component
 {
     use LivewireAlert;
+
     public $slug;
     public $quantity = 1;
 
@@ -21,23 +22,22 @@ class ProductDetailPage extends Component
         $this->slug = $slug;
     }
 
-//    public function increaseQty()
-//    {
-//        $this->quantity++;
-//    }
-//
-//    public function decreaseQty()
-//    {
-//        if ($this->quantity > 1) {
-//            $this->quantity--;
-//        }
-//    }
+    public function increaseQty()
+    {
+        $this->quantity++;
+    }
+
+    public function decreaseQty()
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+        }
+    }
 
     public function addToCart($product_id)
     {
         CartManagement::addItemToCart($product_id, $this->quantity);
 
-        // Dispatch an event to update the cart count in the navbar
         $this->dispatch('update-cart-count')->to(Navbar::class);
 
         $this->alert('success', 'Product added to the cart successfully!', [
@@ -46,6 +46,7 @@ class ProductDetailPage extends Component
             'toast' => true,
         ]);
     }
+
     public function render()
     {
         return view('livewire.product-detail-page', [

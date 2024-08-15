@@ -1,7 +1,6 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <section class="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
         <div class="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
-
             <div class="flex flex-wrap -mx-4">
                 <div class="w-full mb-8 md:w-1/2 md:mb-0"
                      x-data="{ mainImage: '{{ asset('storage/' . $product->first_image) }}' }">
@@ -20,7 +19,6 @@
                                 </div>
 
                             @endforeach
-
 
                         </div>
                         <div class="px-6 pb-6 mt-6 border-t border-gray-300 dark:border-gray-400 ">
@@ -54,14 +52,18 @@
                         <div class="w-32 mb-8 ">
                             <label for=""
                                    class="w-full pb-1 text-xl font-semibold text-gray-700 border-b border-blue-300 dark:border-gray-600 dark:text-gray-400">Quantity</label>
-                            <div id="quantity-control" class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg quantity">
-                                <button class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400 minus">
+                            <div id="quantity-control"
+                                 class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg quantity">
+                                <button
+                                    wire:click="decreaseQty()" class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400 minus">
                                     <span class="m-auto text-2xl font-thin">-</span>
                                 </button>
                                 <input type="number" readonly wire:model.defer="quantity"
                                        class="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black input-box"
                                        value="{{ $quantity }}" placeholder="1" max="100">
-                                <button class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400 plus">
+                                <button
+                                    wire:click="increaseQty()"
+                                    class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400 plus">
                                     <span class="m-auto text-2xl font-thin">+</span>
                                 </button>
                             </div>
@@ -78,45 +80,3 @@
         </div>
     </section>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const quantityContainer = document.getElementById("quantity-control");
-        const minusBtn = quantityContainer.querySelector(".minus");
-        const plusBtn = quantityContainer.querySelector(".plus");
-        const inputBox = quantityContainer.querySelector(".input-box");
-
-        function updateButtonStates() {
-            const value = parseInt(inputBox.value);
-            minusBtn.disabled = value <= 1;
-            plusBtn.disabled = value >= parseInt(inputBox.max);
-        }
-
-        function decreaseValue() {
-            let value = parseInt(inputBox.value);
-            value = isNaN(value) ? 1 : Math.max(value - 1, 1);
-            inputBox.value = value;
-        @this.set('quantity', value);
-            updateButtonStates();
-        }
-
-        function increaseValue() {
-            let value = parseInt(inputBox.value);
-            value = isNaN(value) ? 1 : Math.min(value + 1, parseInt(inputBox.max));
-            inputBox.value = value;
-        @this.set('quantity', value);
-            updateButtonStates();
-        }
-
-        minusBtn.addEventListener("click", () => {
-            decreaseValue();
-        });
-
-        plusBtn.addEventListener("click", () => {
-            increaseValue();
-        });
-
-        updateButtonStates();
-    });
-</script>

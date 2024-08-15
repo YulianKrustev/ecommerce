@@ -6,6 +6,7 @@
 
     <title>{{ $title ?? 'eCommerce' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('vendor/cookie-consent/css/cookie-consent.css') }}">
     @livewireStyles
 </head>
 <body class="bg-slate-200 dark:bg-slate-700">
@@ -17,5 +18,6 @@
 @livewireScripts
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <x-livewire-alert::scripts />
+<x-laravel-cookies-consent></x-laravel-cookies-consent>
 </body>
 </html>

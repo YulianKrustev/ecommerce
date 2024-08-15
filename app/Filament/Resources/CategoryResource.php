@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
@@ -91,10 +92,19 @@ class CategoryResource extends Resource
 
                                 FileUpload::make('image')
                                     ->image()
-//                                    ->optimize('webp')
+                                    ->optimize('webp')
                                     ->columnSpanFull()
                                     ->directory('categories')
-                                    ->imageEditor(),
+                                    ->imageEditor()
+                                    ->imagePreviewHeight('350px'),
+
+                                Select::make('parent_id')
+                                    ->label('Parent Category')
+                                    ->options(Category::whereNull('parent_id')->pluck('name', 'id'))
+                                    ->nullable()
+                                    ->searchable()
+                                    ->preload()
+                                    ->placeholder('Please choose a parent category if this is a sub-category'),
 
                                 TextInput::make('image_alt')
                                     ->label('Image Alt'),
@@ -113,9 +123,14 @@ class CategoryResource extends Resource
                                             return;
                                         }
                                         $plainTextState = strip_tags($state);
-                                        $truncatedState = mb_substr($plainTextState, 0, 155);
+                                        $truncatedState = mb_substr($plainTextState, 0, 133);
+                                        $lastSpacePosition = mb_strrpos($truncatedState, ' ');
+
+                                        if ($lastSpacePosition !== false) {
+                                            $truncatedState = mb_substr($truncatedState, 0, $lastSpacePosition);
+                                        }
                                         $truncatedState = rtrim($truncatedState);
-                                        $truncatedState .= '...';
+                                        $truncatedState .= '...FREE NEXT DAY DELIVERY';
                                         $set('meta_description', $truncatedState);
                                     }),
 
@@ -167,18 +182,27 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->alignCenter(),
 
                 TextColumn::make('name')
+                    ->alignCenter()
                     ->searchable(),
+
+                TextColumn::make('parent.name')
+                    ->alignCenter()
+                    ->label('Parent')
+                    ->getStateUsing(fn ($record) => $record->parent?->name ?? 'Parent'),
 
                 TextColumn::make('products_count')
                     ->counts('products')
                     ->label('Products')
+                    ->alignCenter()
                     ->sortable(),
 
                 SelectColumn::make('is_active')
                     ->label('Active')
+                    ->alignCenter()
                     ->selectablePlaceholder(false)
                     ->options([
                         '0' => 'Inactive',

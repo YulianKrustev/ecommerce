@@ -17,6 +17,7 @@ class Category extends Model
         'image',
         'image_alt',
         'is_active',
+        'parent_id',
         'description',
         'meta_keywords',
         'meta_title',
@@ -53,5 +54,15 @@ class Category extends Model
     {
         return $this->belongsToMany(SpecialOffer::class, 'offer_category', 'category_id', 'special_offer_id')
             ->withTimestamps();
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 }
