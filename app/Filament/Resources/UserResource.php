@@ -22,6 +22,8 @@ use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationLabel = 'Registered Users';
     protected static ?string $model = User::class;
 
     protected static ?int $navigationSort = 3;
