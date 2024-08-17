@@ -13,7 +13,7 @@ class CartManagement
         $existing_item_key = null;
 
         foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
+            if ($item['id'] == $product_id) {
                 $existing_item_key = $key;
                 break;
             }
@@ -22,10 +22,10 @@ class CartManagement
         if ($existing_item_key !== null) {
             $cart_items[$existing_item_key]['quantity'] += $quantity;
         } else {
-            $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
+            $product = Product::where('id', $product_id)->first(['id']);
             if ($product) {
                 $cart_items[] = [
-                    'product_id' => $product_id,
+                    'id' => $product_id,
                     'quantity' => $quantity,
                 ];
             }
@@ -111,5 +111,34 @@ class CartManagement
         return $items->sum(function ($item) {
             return $item['price'] * $item['quantity'];
         });
+    }
+
+    static public function fetchCartItems()
+    {
+        $productsId = CartManagement::getCartItemsFromCookie();
+
+        $productQuantities = collect($productsId)
+            ->groupBy('id')
+            ->map(function ($group) {
+                return $group->sum('quantity');
+            });
+
+        $cart_items = Product::select('id', 'name', 'price', 'images', 'slug')
+            ->whereIn('id', $productQuantities->keys()->toArray())
+            ->get() // Execute the query
+            ->map(function ($item) use ($productQuantities) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'price' => $item->price,
+                    'images' => $item->images,
+                    'slug' => $item->slug,
+                    'quantity' => $productQuantities->get($item->id, 0),
+                    'total_units_price' => $item->price * $productQuantities->get($item->id, 0),
+                ];
+            })
+            ->toArray();
+
+        return $cart_items;
     }
 }

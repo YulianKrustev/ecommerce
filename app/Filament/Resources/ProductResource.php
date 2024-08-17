@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
@@ -25,6 +26,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -131,9 +133,14 @@ class ProductResource extends Resource
                                                             return;
                                                         }
                                                         $plainTextState = strip_tags($state);
-                                                        $truncatedState = mb_substr($plainTextState, 0, 155);
+                                                        $truncatedState = mb_substr($plainTextState, 0, 133);
+                                                        $lastSpacePosition = mb_strrpos($truncatedState, ' ');
+
+                                                        if ($lastSpacePosition !== false) {
+                                                            $truncatedState = mb_substr($truncatedState, 0, $lastSpacePosition);
+                                                        }
                                                         $truncatedState = rtrim($truncatedState);
-                                                        $truncatedState .= '...';
+                                                        $truncatedState .= '...FREE NEXT DAY DELIVERY';
                                                         $set('meta_description', $truncatedState);
                                                     }),
                                             ]),
@@ -146,11 +153,8 @@ class ProductResource extends Resource
                                                 ->maxFiles(6)
                                                 ->reorderable()
                                                 ->columnSpanFull()
-                                                ->directory(function () {
-                                                    $latestProduct = DB::table('products')->latest('id')->first();
-                                                    $latestProductId = $latestProduct ? $latestProduct->id + 1 : '1';
-                                                    return 'products/' . $latestProductId;
-                                                })
+                                                ->optimize('webp')
+                                                ->directory('products')
                                                 ->imageEditor()
                                                 ->imagePreviewHeight('150'),
                                         ])
@@ -262,37 +266,48 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
+                    ->alignCenter()
                     ->numeric(),
 
                 ImageColumn::make('first_image')
+                    ->alignCenter()
+                    ->height(100)
+                    ->width(100)
                     ->label('Image'),
 
                 TextColumn::make('name')
+                    ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('categories')
+                    ->alignCenter()
                     ->label('Category')
                     ->getStateUsing(function ($record) {
                         return $record->categories->pluck('name')->join(', ');
                     }),
 
                 IconColumn::make('on_sale')
+                    ->alignCenter()
                     ->label('Sale')
                     ->boolean(),
 
                 IconColumn::make('in_stock')
+                    ->alignCenter()
                     ->label('Stock')
                     ->boolean(),
 
 
                 TextColumn::make('price')
+                    ->alignCenter()
                     ->money('EUR')
                     ->sortable(),
 
                 SelectColumn::make('is_active')
+                    ->alignCenter()
                     ->label('Active')
                     ->selectablePlaceholder(false)
                     ->options([

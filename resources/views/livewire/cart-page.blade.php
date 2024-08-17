@@ -21,26 +21,35 @@
                             <tr wire:key="{{ $item['id'] }}">
                                 <td class="py-4">
                                     <div class="flex items-center">
-                                        <img class="h-16 w-16 mr-4"
-                                             src="{{ url('storage', array_slice($item['images'], -1)[0]) }}"
-                                             alt="{{ $item['name'] }}">
-                                        <span class="font-semibold">{{ $item['name'] }}</span>
+                                        <a wire:navigate href="/products/{{ $item['slug'] }}" class="">
+                                            <img class="h-16 w-16 mr-4"
+                                                 src="{{ url('storage', array_slice($item['images'], -1)[0]) }}"
+                                                 alt="{{ $item['name'] }}">
+
+                                        </a>
+                                        <span class="font-semibold ml-3">{{ $item['name'] }}</span>
                                     </div>
                                 </td>
                                 <td class="py-4">{{ Number::currency($item['price'], 'EUR') }}</td>
                                 <td class="py-4">
                                     <div class="flex items-center">
-                                        <button wire:click="decreaseQty({{$item['id']}})" class="border rounded-md py-2 px-4 mr-2">-</button>
+                                        <button wire:click="decreaseQty({{$item['id']}})"
+                                                class="border rounded-md py-2 px-4 mr-2">-
+                                        </button>
                                         <span class="text-center w-8">{{$item['quantity']}}</span>
-                                        <button wire:click="increaseQty({{$item['id']}})" class="border rounded-md py-2 px-4 ml-2">+</button>
+                                        <button wire:click="increaseQty({{$item['id']}})"
+                                                class="border rounded-md py-2 px-4 ml-2">+
+                                        </button>
                                     </div>
                                 </td>
                                 <td class="py-4">{{ Number::currency($item['price'] * $item['quantity'], 'EUR') }}</td>
                                 <td>
                                     <button wire:click="removeItem({{ $item['id'] }})"
                                             class="bg-slate-300 border-2 border-slate-400 rounded-lg px-3 py-1 hover:bg-red-500 hover:text-white hover:border-red-700">
-                                        <span wire:loading.remove wire:target="removeItem({{ $item['id'] }})">Remove</span>
-                                        <span wire:loading wire:target="removeItem({{ $item['id'] }})">Removing...</span>
+                                        <span wire:loading.remove
+                                              wire:target="removeItem({{ $item['id'] }})">Remove</span>
+                                        <span wire:loading
+                                              wire:target="removeItem({{ $item['id'] }})">Removing...</span>
                                     </button>
 
                                 </td>
@@ -79,7 +88,8 @@
                         <span class="font-semibold">{{ Number::currency($total_units_price, 'EUR') }}</span>
                     </div>
                     @if($cart_items)
-                        <a href="/checkout" class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full">Checkout</a>
+                        <a href="/checkout"
+                           class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full">Checkout</a>
                     @endif
                 </div>
             </div>

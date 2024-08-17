@@ -183,6 +183,8 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('image')
+                    ->height(100)
+                    ->width(100)
                     ->alignCenter(),
 
                 TextColumn::make('name')

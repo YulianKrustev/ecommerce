@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class CarouselItem extends Model
 {
@@ -14,4 +15,21 @@ class CarouselItem extends Model
         'alt_text',
         'image_path',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            if ($model->isDirty('image_path') && ($model->getOriginal('image_path') !== null)) {
+                Storage::disk('public')->delete($model->getOriginal('image_path'));
+            }
+        });
+
+        static::deleting(function ($model) {
+            if ($model->getOriginal('image_path') !== null) {
+                Storage::disk('public')->delete($model?->getOriginal('image_path'));
+            }
+        });
+    }
 }

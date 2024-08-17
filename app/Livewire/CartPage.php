@@ -15,39 +15,13 @@ class CartPage extends Component
 
     public function mount()
     {
-        $this->fetchCartItems();
+        $this->cart_items = CartManagement::fetchCartItems();
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
     }
 
     public function render()
     {
         return view('livewire.cart-page');
-    }
-
-    private function fetchCartItems()
-    {
-        $productsId = CartManagement::getCartItemsFromCookie();
-
-        $productQuantities = collect($productsId)
-            ->groupBy('product_id')
-            ->map(function ($group) {
-                return $group->sum('quantity');
-            });
-
-        $this->cart_items = Product::select('id', 'name', 'price', 'images')
-        ->whereIn('id', $productQuantities->keys()->toArray())
-        ->get() // Execute the query
-        ->map(function ($item) use ($productQuantities) {
-            return [
-                'id' => $item->id,
-                'name' => $item->name,
-                'price' => $item->price,
-                'images' => $item->images,
-                'quantity' => $productQuantities->get($item->id, 0),
-                'total_units_price' => $item->price * $productQuantities->get($item->id, 0),
-            ];
-        })
-            ->toArray();
     }
 
     public function increaseQty($product_id)
