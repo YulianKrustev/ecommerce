@@ -2,3 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+
+footer {
+    background-color: rgb(255 231 154);
+}
+
+footer a:hover {
+    color: rgb(255 127 80);
+}
+
+.logo {
+    width: 200px;
+}
+
+
+#footer-bottom {
+    border-top: 1px solid black;
+    padding-top: 2rem;
+}
+
+
+#subscribe-button {
+    background-color: rgb(255 127 80);
+
+}
+
+#subscribe-button:hover {
+    background-color: black;
+
+}
+
+#hero-input {
+border: rgb(255 127 80) solid 2px;
+}
+
+#footer-top {
+    border-top: 1px solid black;
+}
+

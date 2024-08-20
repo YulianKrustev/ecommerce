@@ -10,10 +10,11 @@ class CartManagement
     static public function addItemToCart($product_id, $quantity = 1)
     {
         $cart_items = self::getCartItemsFromCookie();
+
         $existing_item_key = null;
 
         foreach ($cart_items as $key => $item) {
-            if ($item['id'] == $product_id) {
+            if ($item['product_id'] == $product_id) {
                 $existing_item_key = $key;
                 break;
             }
@@ -25,7 +26,7 @@ class CartManagement
             $product = Product::where('id', $product_id)->first(['id']);
             if ($product) {
                 $cart_items[] = [
-                    'id' => $product_id,
+                    'product_id' => $product_id,
                     'quantity' => $quantity,
                 ];
             }
@@ -39,7 +40,7 @@ class CartManagement
     {
 
         foreach ($cart_items as $key => $item) {
-            if ($item['id'] == $product_id) {
+            if ($item['product_id'] == $product_id) {
                 unset($cart_items[$key]);
             }
         }
@@ -73,12 +74,12 @@ class CartManagement
     {
 
         foreach ($cart_items as $key => $item) {
-            if ($item['id'] == $product_id) {
+            if ($item['product_id'] == $product_id) {
                 // Increment the quantity
                 $cart_items[$key]['quantity']++;
 
                 // Update the total price for this item
-                $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['price'];
+                $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_price'];
             }
         }
         self::addCartItemsToCookie($cart_items);
@@ -89,11 +90,11 @@ class CartManagement
     static public function decrementQuantityToCartItem($product_id, $cart_items)
     {
         foreach ($cart_items as $key => $item) {
-            if ($item['id'] == $product_id) {
+            if ($item['product_id'] == $product_id) {
                 if ($cart_items[$key]['quantity'] > 1) {
                     $cart_items[$key]['quantity']--;
 
-                    $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['price'];
+                    $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_price'];
                 } else {
                     unset($cart_items[$key]);
                 }
@@ -109,7 +110,7 @@ class CartManagement
         $items = collect($items);
 
         return $items->sum(function ($item) {
-            return $item['price'] * $item['quantity'];
+            return $item['unit_price'] * $item['quantity'];
         });
     }
 
@@ -118,7 +119,7 @@ class CartManagement
         $productsId = CartManagement::getCartItemsFromCookie();
 
         $productQuantities = collect($productsId)
-            ->groupBy('id')
+            ->groupBy('product_id')
             ->map(function ($group) {
                 return $group->sum('quantity');
             });
@@ -128,9 +129,9 @@ class CartManagement
             ->get() // Execute the query
             ->map(function ($item) use ($productQuantities) {
                 return [
-                    'id' => $item->id,
+                    'product_id' => $item->id,
                     'name' => $item->name,
-                    'price' => $item->price,
+                    'unit_price' => $item->price,
                     'images' => $item->images,
                     'slug' => $item->slug,
                     'quantity' => $productQuantities->get($item->id, 0),

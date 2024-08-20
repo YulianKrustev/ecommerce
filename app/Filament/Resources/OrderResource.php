@@ -182,9 +182,19 @@ class OrderResource extends Resource
                                     ->disabled()
                                     ->dehydrated()
                                     ->columnSpan(3)
+
                             ])
                             ->columns(12)
                             ->addActionLabel('Add new product'),
+
+                        Placeholder::make('shipping_cost')
+                            ->label('Shipping Cost:')
+                            ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500;'])
+                            ->content(function (Get $get) {
+                                $shipping_cost = $get('shipping_cost');
+
+                                return Number::currency($shipping_cost, 'EUR');
+                            }),
 
                         Placeholder::make('total_price')
                             ->label('Total Price:')
@@ -192,6 +202,7 @@ class OrderResource extends Resource
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
                                 $repeaters = $get('items');
+                                $shipping_cost = $get('shipping_cost');
 
                                 if (!$repeaters) {
                                     return $total;
@@ -203,11 +214,14 @@ class OrderResource extends Resource
 
                                 $set("total_price", $total);
 
-                                return Number::currency($total, 'EUR');
+                                return Number::currency($total + $shipping_cost, 'EUR');
                             })
                     ]),
 
                     Hidden::make('total_price')
+                        ->default(0),
+
+                    Hidden::make('shipping_cost')
                         ->default(0)
 
                 ])->columnSpanFull()

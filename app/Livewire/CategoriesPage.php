@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class CategoriesPage extends Component
 {
-    #[Title('Categories')]
+    #[Title('Categories - Little Sailors Malta')]
     public function render()
     {
         $categories = Category::where('is_active', 1)->orderBy("name", "ASC")->get();

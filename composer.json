@@ -15,7 +15,8 @@
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
-        "scify/laravel-cookies-consent": "^1.1"
+        "scify/laravel-cookies-consent": "^1.1",
+        "stripe/stripe-php": "^15.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

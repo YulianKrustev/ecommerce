@@ -18,7 +18,7 @@
 
                         @forelse($cart_items as $item)
 
-                            <tr wire:key="{{ $item['id'] }}">
+                            <tr wire:key="{{ $item['product_id'] }}">
                                 <td class="py-4">
                                     <div class="flex items-center">
                                         <a wire:navigate href="/products/{{ $item['slug'] }}" class="">
@@ -30,26 +30,26 @@
                                         <span class="font-semibold ml-3">{{ $item['name'] }}</span>
                                     </div>
                                 </td>
-                                <td class="py-4">{{ Number::currency($item['price'], 'EUR') }}</td>
+                                <td class="py-4">{{ Number::currency($item['unit_price'], 'EUR') }}</td>
                                 <td class="py-4">
                                     <div class="flex items-center">
-                                        <button wire:click="decreaseQty({{$item['id']}})"
+                                        <button wire:click="decreaseQty({{$item['product_id']}})"
                                                 class="border rounded-md py-2 px-4 mr-2">-
                                         </button>
                                         <span class="text-center w-8">{{$item['quantity']}}</span>
-                                        <button wire:click="increaseQty({{$item['id']}})"
+                                        <button wire:click="increaseQty({{$item['product_id']}})"
                                                 class="border rounded-md py-2 px-4 ml-2">+
                                         </button>
                                     </div>
                                 </td>
-                                <td class="py-4">{{ Number::currency($item['price'] * $item['quantity'], 'EUR') }}</td>
+                                <td class="py-4">{{ Number::currency($item['unit_price'] * $item['quantity'], 'EUR') }}</td>
                                 <td>
-                                    <button wire:click="removeItem({{ $item['id'] }})"
+                                    <button wire:click="removeItem({{ $item['product_id'] }})"
                                             class="bg-slate-300 border-2 border-slate-400 rounded-lg px-3 py-1 hover:bg-red-500 hover:text-white hover:border-red-700">
                                         <span wire:loading.remove
-                                              wire:target="removeItem({{ $item['id'] }})">Remove</span>
+                                              wire:target="removeItem({{ $item['product_id'] }})">Remove</span>
                                         <span wire:loading
-                                              wire:target="removeItem({{ $item['id'] }})">Removing...</span>
+                                              wire:target="removeItem({{ $item['product_id'] }})">Removing...</span>
                                     </button>
 
                                 </td>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="flex justify-between mb-2">
                         <span>Shipping</span>
-                        <span>{{ Number::currency(0, 'EUR') }}</span>
+                        <span>{{ Number::currency($shipping_cost, 'EUR') }}</span>
                     </div>
                     <div class="flex justify-between mb-2">
                         <span>Taxes</span>
@@ -85,11 +85,11 @@
                     <hr class="my-2">
                     <div class="flex justify-between mb-2">
                         <span class="font-semibold">Total</span>
-                        <span class="font-semibold">{{ Number::currency($total_units_price, 'EUR') }}</span>
+                        <span class="font-semibold">{{ Number::currency($price_with_shipping, 'EUR') }}</span>
                     </div>
                     @if($cart_items)
-                        <a href="/checkout"
-                           class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full">Checkout</a>
+                        <a wire:click="performAction" href="/checkout"
+                           class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full"><span wire:loading.remove >Checkout</span><span wire:loading >Processing...</span></a>
                     @endif
                 </div>
             </div>
