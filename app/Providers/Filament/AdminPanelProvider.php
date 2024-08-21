@@ -29,9 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->favicon(asset('storage/assets/site_favicon.ico'))
             ->login()
             ->colors([
-                'primary' => '#DC2626',
+                'primary' => Color::Red,
                 'gray' => Color::Gray,
                 'info' => Color::Blue,
                 'success' => Color::Emerald,

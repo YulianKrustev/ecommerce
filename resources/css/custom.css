@@ -1,0 +1,103 @@
+.footer-middle {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+}
+.text-right{
+    text-align: right;
+}
+.pt-90 {
+    padding-top: 90px !important;
+}
+.my-account__address-list {
+    display: flex;
+    gap: 1.625rem;
+}
+
+.form-floating>.form-control,
+.form-floating>.form-select {
+    height: 48px;
+}
+
+footer a {
+    transition: all 0.3s ease 0s;
+}
+
+footer a:hover {
+    color: rgb(255 127 80);
+    font-size: 17px !important;
+}
+
+.logo {
+    width: 200px;
+}
+
+footer {
+    background-color: rgb(255 231 154);
+}
+
+#footer-bottom, #footer {
+    border-top: black solid 1px;
+    padding-top: 3rem;
+    margin-top: 1rem;
+}
+
+
+
+.custom-confirm-button {
+    background-color: rgb(255 127 80);
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.custom-confirm-button:hover,
+.custom-cancel-button:hover{
+    background-color: #dd3333;
+    color: white;
+}
+
+.custom-cancel-button {
+    background-color: rgb(255 231 154);
+    font-weight: bold;
+    color: rgb(255 127 80);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+
+
+footer h6 {
+    padding-left: 2rem;
+}
+
+#logo-social-footer {
+    margin-top: -1rem;
+}
+
+.custom-swal-modal {
+    background-color: #2D2D2D !important; /* Example: light gray background */
+    color: #333; /* Example: change text color if needed */
+    border-radius: 10px; /* Example: rounded corners */
+    padding: 20px; /* Example: padding inside the modal */
+}
+
+/* Optional: change the title color */
+.custom-swal-modal .swal2-title {
+    color: white; /* Example: change the title color to a different one */
+}
+
+
+
+
+
+
+
+

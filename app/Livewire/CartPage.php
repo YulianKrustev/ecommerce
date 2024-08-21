@@ -7,6 +7,7 @@ use App\Models\Product;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+
 #[Title('Cart - Little Sailors Malta')]
 class CartPage extends Component
 {
@@ -16,6 +17,10 @@ class CartPage extends Component
     public $total_units_price;
 
     public $price_with_shipping;
+
+    public $removeId;
+
+    protected $listeners = ['removeConfirmed' => 'removeItem'];
 
     public function mount()
     {
@@ -45,9 +50,9 @@ class CartPage extends Component
         $this->dispatch('update-cart-count', total_count: count($this->cart_items));
     }
 
-    public function removeItem($product_id)
+    public function removeItem()
     {
-        $this->cart_items = CartManagement::removeCartItem($product_id, $this->cart_items);
+        $this->cart_items = CartManagement::removeCartItem($this->removeId, $this->cart_items);
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
         $this->addShippingCost();
         $this->dispatch('update-cart-count', total_count: count($this->cart_items));
@@ -68,5 +73,11 @@ class CartPage extends Component
     {
         sleep(2);
         return redirect('/checkout');
+    }
+
+    public function removeConfirmation($productId)
+    {
+        $this->removeId = $productId;
+        $this->dispatch('show-remove-confirmation');
     }
 }

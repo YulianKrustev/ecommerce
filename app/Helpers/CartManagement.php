@@ -95,8 +95,6 @@ class CartManagement
                     $cart_items[$key]['quantity']--;
 
                     $cart_items[$key]['total_units_price'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_price'];
-                } else {
-                    unset($cart_items[$key]);
                 }
             }
         }

@@ -33,8 +33,11 @@
                                 <td class="py-4">{{ Number::currency($item['unit_price'], 'EUR') }}</td>
                                 <td class="py-4">
                                     <div class="flex items-center">
-                                        <button wire:click="decreaseQty({{$item['product_id']}})"
-                                                class="border rounded-md py-2 px-4 mr-2">-
+                                        <button
+                                            wire:click="decreaseQty({{ $item['product_id'] }})"
+                                            class="border rounded-md py-2 px-4 mr-2 {{ $item['quantity'] == 1 ? 'cursor-not-allowed' : '' }}"
+                                            {{ $item['quantity'] == 1 ? 'disabled' : '' }}
+                                        >-
                                         </button>
                                         <span class="text-center w-8">{{$item['quantity']}}</span>
                                         <button wire:click="increaseQty({{$item['product_id']}})"
@@ -44,12 +47,12 @@
                                 </td>
                                 <td class="py-4">{{ Number::currency($item['unit_price'] * $item['quantity'], 'EUR') }}</td>
                                 <td>
-                                    <button wire:click="removeItem({{ $item['product_id'] }})"
+                                    <button wire:click.prevent="removeConfirmation({{ $item['product_id'] }})" ;
                                             class="bg-slate-300 border-2 border-slate-400 rounded-lg px-3 py-1 hover:bg-red-500 hover:text-white hover:border-red-700">
                                         <span wire:loading.remove
-                                              wire:target="removeItem({{ $item['product_id'] }})">Remove</span>
+                                              wire:target="removeConfirmation({{ $item['product_id'] }})">Remove</span>
                                         <span wire:loading
-                                              wire:target="removeItem({{ $item['product_id'] }})">Removing...</span>
+                                              wire:target="removeConfirmation({{ $item['product_id'] }})">Removing...</span>
                                     </button>
 
                                 </td>
@@ -89,10 +92,44 @@
                     </div>
                     @if($cart_items)
                         <a wire:click="performAction" href="/checkout"
-                           class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full"><span wire:loading.remove >Checkout</span><span wire:loading >Processing...</span></a>
+                           class="bg-blue-500 text-white py-2 block text-center px-4 rounded-lg mt-4 w-full"><span
+                                wire:loading.remove wire:target="performAction">Checkout</span><span wire:loading
+                                                                                                     wire:target="performAction">Processing...</span></a>
                     @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script>
+    window.addEventListener('show-remove-confirmation', event => {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                popup: "custom-swal-modal",
+                confirmButton: "custom-confirm-button",
+                cancelButton: "custom-cancel-button"
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+            @this.call('removeItem')
+                ;
+            }
+        });
+    });
+</script>
+
+
+
+
