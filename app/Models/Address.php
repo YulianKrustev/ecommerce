@@ -17,7 +17,8 @@ class Address extends Model
         'phone',
         'address',
         'city',
-        'zip_code'
+        'zip_code',
+        'district'
     ];
 
     public function order():BelongsTo {

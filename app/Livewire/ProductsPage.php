@@ -6,11 +6,13 @@ use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\Wishlist;
 
 #[Title('Products - Little Sailors Malta')]
 class ProductsPage extends Component
@@ -29,6 +31,7 @@ class ProductsPage extends Component
     #[Url]
     public $sort = 'latest';
 
+
     public function addToCart($product_id)
     {
         $total_count = CartManagement::addItemToCart($product_id);
@@ -37,6 +40,36 @@ class ProductsPage extends Component
 
         $this->alert('success', 'Product added to the cart successfully!', [
             'position' => 'top',
+            'timer' => 3000,
+            'toast' => true,
+        ]);
+    }
+
+    public function addToWishlist($productId)
+    {
+        if (Auth::check()) {
+
+            $wishlist = Wishlist::firstOrCreate([
+                'user_id' => Auth::id(),
+                'product_id' => $productId,
+            ]);
+
+            $this->alert('success', 'Product added to the wishlist!', [
+                'position' => 'top-end',
+                'timer' => 3000,
+                'toast' => true,
+            ]);
+        } else {
+            return redirect()->route('login');
+        }
+    }
+
+    public function removeFromWishlist($wishlistId)
+    {
+        Wishlist::where('id', $wishlistId)->delete();
+
+        $this->alert('success', 'Product removed successfully!', [
+            'position' => 'top-end',
             'timer' => 3000,
             'toast' => true,
         ]);

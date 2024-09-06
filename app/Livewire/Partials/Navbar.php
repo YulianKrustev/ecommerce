@@ -10,6 +10,7 @@ use Livewire\Component;
 class Navbar extends Component
 {
     public $total_count = 0;
+    protected $listeners = ['cartUpdated' => 'updateCartCount'];
 
     public function mount()
     {

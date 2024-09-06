@@ -13,7 +13,7 @@ class HomePage extends Component
     public function mount() {
         $this->carouselImages = CarouselItem::all()->toArray();
     }
-    #[Title('Home Page - Little Sailors Malta')]
+    #[Title('Home Page | Little Sailors Malta')]
     public function render()
     {
         $settings = GeneralSetting::first();

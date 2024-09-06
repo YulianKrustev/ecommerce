@@ -18,6 +18,15 @@
     height: 48px;
 }
 
+.navigation__link {
+    transition: all 0.3s ease 0s;
+}
+
+.navigation__link:hover {
+    color: rgb(255 127 80);
+    font-size: 17px !important;
+}
+
 footer a {
     transition: all 0.3s ease 0s;
 }
@@ -41,8 +50,6 @@ footer {
     margin-top: 1rem;
 }
 
-
-
 .custom-confirm-button {
     background-color: rgb(255 127 80);
     font-weight: bold;
@@ -51,7 +58,7 @@ footer {
     padding: 8px 16px;
     border-radius: 4px;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease 0s;
     margin-right: 10px;
 }
 
@@ -69,10 +76,8 @@ footer {
     padding: 8px 16px;
     border-radius: 4px;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease 0s;
 }
-
-
 
 footer h6 {
     padding-left: 2rem;
@@ -92,6 +97,30 @@ footer h6 {
 /* Optional: change the title color */
 .custom-swal-modal .swal2-title {
     color: white; /* Example: change the title color to a different one */
+}
+
+.anim_appear-bottom {
+    opacity: 1;
+    visibility: visible;
+}
+
+#add_to_cart_wishlist {
+    transition: all 0.3s ease 0s;
+
+}
+
+#add_to_cart_wishlist:hover {
+    font-size: 15px!important;
+    color: rgb(255 127 80);
+}
+
+#wishlist-icon {
+    transition: all 0.3s ease 0s;
+}
+
+#wishlist-icon:hover {
+    height: 22px;
+    width: 22px;
 }
 
 

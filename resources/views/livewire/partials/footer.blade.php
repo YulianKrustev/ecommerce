@@ -69,6 +69,6 @@
         </div>
     </div>
 
-    <div id="scrollTop" class=""></div>
+    <a id="scrollTop" href="#top"></a>
     <div class="fixed inset-0 bg-black opacity-50 hidden"></div>
 </footer>

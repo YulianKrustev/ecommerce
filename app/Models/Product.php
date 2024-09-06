@@ -130,4 +130,9 @@ class Product extends Model
 
         return $this->price;
     }
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_product');
+    }
 }

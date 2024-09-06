@@ -43,6 +43,9 @@ class AddressRelationManager extends RelationManager
                     ->numeric()
                     ->maxLength(10),
 
+                TextInput::make('district')
+                    ->required(),
+
                 Textarea::make('address')
                     ->required()
                     ->columnSpanFull(),
@@ -59,9 +62,11 @@ class AddressRelationManager extends RelationManager
 
                 TextColumn::make('phone'),
 
+                TextColumn::make('city'),
+
                 TextColumn::make('address'),
 
-                TextColumn::make('city'),
+                TextColumn::make('district'),
             ])
             ->filters([
                 //

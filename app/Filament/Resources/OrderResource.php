@@ -36,7 +36,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 2;
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -184,8 +184,25 @@ class OrderResource extends Resource
                                     ->columnSpan(3)
 
                             ])
+                            ->disabled(fn ($livewire) => $livewire->record->exists)
                             ->columns(12)
                             ->addActionLabel('Add new product'),
+
+                        Placeholder::make('discount')
+                            ->label('Discount:')
+                            ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500;'])
+                            ->content(function (Get $get) {
+                                $notes = $get('notes');
+                                // Use a regular expression to extract the numeric value
+                                if (preg_match("/\d*\.?\d+/", $notes, $matches)) {
+                                    $discount = $matches[0];  // This will capture -10.00 from the notes
+                                } else {
+                                    $discount = 0;  // Default value if no numeric value is found
+                                }
+
+                                // Return the formatted currency
+                                return Number::currency($discount, 'EUR');
+                            }),
 
                         Placeholder::make('shipping_cost')
                             ->label('Shipping Cost:')
@@ -200,6 +217,11 @@ class OrderResource extends Resource
                             ->label('Total Price:')
                             ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500; text-decoration: underline;'])
                             ->content(function (Get $get, Set $set) {
+
+                                if ( $get('total_price') > 0) {
+                                    return Number::currency($get('total_price'), 'EUR');
+                                }
+
                                 $total = 0;
                                 $repeaters = $get('items');
                                 $shipping_cost = $get('shipping_cost');

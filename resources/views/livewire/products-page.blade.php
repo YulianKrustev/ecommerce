@@ -112,6 +112,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <button wire:click.prevent="addToWishlist({{ $product->id }})" class="bg-blue-500 text-white px-3 py-1 rounded">
+                                Add to Wishlist
+                            </button>
                         @endforeach
 
                     </div>

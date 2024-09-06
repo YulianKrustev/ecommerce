@@ -144,4 +144,14 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Users';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 20;  // Sort order for this resource
+    }
 }

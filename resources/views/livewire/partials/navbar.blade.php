@@ -1,120 +1,208 @@
-<header
-    class="flex z-50 sticky top-0 flex-wrap md:justify-start md:flex-nowrap w-full bg-white text-sm py-3 md:py-0 dark:bg-gray-800 shadow-md">
-    <nav class="max-w-[85rem] w-full mx-auto px-4 md:px-6 lg:px-8" aria-label="Global">
-        <div class="relative md:flex md:items-center md:justify-between">
-            <div class="flex items-center justify-between">
-                <a wire:navigate
-                   class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                   href="/" aria-label="Brand"><img src="{{ url('/storage/' . $settings->site_logo) }}" alt="Site Logo" class="logo"></a>
-                <div class="md:hidden">
-                    <button type="button"
-                            class="hs-collapse-toggle flex justify-center items-center w-9 h-9 text-sm font-semibold rounded-lg border border-gray-200 text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                            data-hs-collapse="#navbar-collapse-with-animation"
-                            aria-controls="navbar-collapse-with-animation" aria-label="Toggle navigation">
-                        <svg class="hs-collapse-open:hidden flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" x2="21" y1="6" y2="6"/>
-                            <line x1="3" x2="21" y1="12" y2="12"/>
-                            <line x1="3" x2="21" y1="18" y2="18"/>
-                        </svg>
-                        <svg class="hs-collapse-open:block hidden flex-shrink-0 w-4 h-4"
-                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"/>
-                            <path d="m6 6 12 12"/>
-                        </svg>
-                    </button>
+<div>
+    <div>
+        <div class="header-mobile sticky top-0 z-50 bg-white">
+            <div class="container flex items-center h-full justify-between">
+                <!-- Mobile Menu Toggle Button -->
+                <button class="hs-collapse-toggle block relative z-50" aria-controls="hs-navbar-example" aria-expanded="false" aria-label="Toggle navigation" data-hs-collapse="#hs-navbar-example">
+                    <svg class="nav-icon" width="25" height="18" viewBox="0 0 25 18" xmlns="http://www.w3.org/2000/svg">
+                        <use href="#icon_nav" />
+                    </svg>
+                </button>
+
+                <!-- Logo -->
+                <div class="logo">
+                    <a wire:navigate href="/">
+                        <img src="{{ url('/storage/' . $settings->site_logo) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
+                    </a>
                 </div>
+
+                <!-- Cart Icon -->
+                <a wire:navigate href="/cart" class="header-tools__item header-tools__cart">
+                    <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <use href="#icon_cart" />
+                    </svg>
+                    <span class="cart-amount block position: absolute js-cart-items-count">{{ $total_count }}</span>
+                </a>
             </div>
 
-            <div id="navbar-collapse-with-animation"
-                 class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow md:block">
-                <div
-                    class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500">
-                    <div
-                        class="flex flex-col gap-x-0 mt-5 divide-y divide-dashed divide-gray-200 md:flex-row md:items-center md:justify-end md:gap-x-7 md:mt-0 md:ps-7 md:divide-y-0 md:divide-solid dark:divide-gray-700">
+            <!-- Mobile Navigation -->
+            <nav id="hs-navbar-example" class="hs-collapse hidden overflow-hidden flex flex-col w-full absolute top-16 left-0 bg-white z-40 transition-all duration-300">
+                <div class="container p-6">
+                    <form action="#" method="GET" class="mb-3">
+                        <div class="relative">
+                            <input class="search-field__input w-full border rounded-sm p-2 pr-10" type="text" name="search-keyword" placeholder="Search products" />
+                            <button class="absolute right-2 top-1/2 transform -translate-y-1/2" type="submit">
+                                <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_search" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
 
-                        <a wire:navigate
-                           class="font-medium {{request()->is('/') ? 'text-blue-600' : 'text-grey-500'}}  py-3 md:py-6 dark:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                           href="/" aria-current="page">Home</a>
+                    <ul class="space-y-4">
+                        <li><a href="index.html" class="text-l font-semibold block">Home</a></li>
+                        <li><a href="shop.html" class="text-l font-semibold block">Shop</a></li>
+                        <li><a href="cart.html" class="text-l font-semibold block">Cart</a></li>
+                        <li><a href="about.html" class="text-l font-semibold block">About</a></li>
+                        <li><a href="contact.html" class="text-l font-semibold block">Contact</a></li>
+                    </ul>
+                </div>
 
-                        <a wire:navigate
-                           class="font-medium {{request()->is('categories') ? 'text-blue-600' : 'text-grey-500'}}  hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                           href="/categories">
-                            Categories
-                        </a>
-
-                        <a wire:navigate
-                           class="font-medium {{request()->is('products') ? 'text-blue-600' : 'text-grey-500'}} hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                           href="/products">
-                            Products
-                        </a>
-
-                        <a wire:navigate
-                           class="font-medium flex items-center {{request()->is('cart') ? 'text-blue-600' : 'text-grey-500'}} hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                           href="/cart">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                 stroke="currentColor" class="flex-shrink-0 w-5 h-5 mr-1">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
-                            </svg>
-                            <span class="mr-1">Cart</span> <span
-                                class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">{{ $total_count }}</span>
-                        </a>
-
-                        @guest()
-                            <div class="pt-3 md:pt-0">
-                                <a wire:navigate
-                                   class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                   href="/login">
-                                    <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24"
-                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    Log in
-                                </a>
-                            </div>
-                        @endguest
-
-                        @auth()
-                            <div
-                                class="hs-dropdown [--strategy:static] md:[--strategy:fixed] [--adaptive:none] md:[--trigger:hover] md:py-4">
-                                <button type="button"
-                                        class="flex items-center w-full text-gray-500 hover:text-gray-400 font-medium dark:text-gray-400 dark:hover:text-gray-500">
-                                    {{ auth()->user()->name }}
-                                    <svg class="ms-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m6 9 6 6 6-6"/>
-                                    </svg>
-                                </button>
-
-                                <div
-                                    class="hs-dropdown-menu transition-[opacity,margin] duration-[0.1ms] md:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 md:w-48 hidden z-10 bg-white md:shadow-md rounded-lg p-2 dark:bg-gray-800 md:dark:border dark:border-gray-700 dark:divide-gray-700 before:absolute top-full md:border before:-top-5 before:start-0 before:w-full before:h-5">
-                                    <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                       wire:navigate href="/my-orders">
-                                        My Orders
-                                    </a>
-
-                                    <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                       href="#">
-                                        My Account
-                                    </a>
-                                    <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                       href="/logout">
-                                        Logout
-                                    </a>
-                                </div>
-                                @endauth
-
-                            </div>
+                <div class="border-t mt-auto pb-2">
+                    <div class="container mt-4 mb-2 pb-1 flex items-center">
+                        <svg class="inline-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_user" />
+                        </svg>
+                        <span class="inline-block ml-2 text-uppercase text-sm font-medium">My Account</span>
                     </div>
+
+                    <ul class="container flex flex-wrap mb-0">
+                        <li class="mr-4">
+                            <a href="#" class="block">
+                                <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_facebook" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="mr-4">
+                            <a href="#" class="block">
+                                <svg class="svg-icon svg-icon_twitter" width="14" height="13" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_twitter" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="mr-4">
+                            <a href="#" class="block">
+                                <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_instagram" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="mr-4">
+                            <a href="#" class="block">
+                                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block">
+                                <svg class="svg-icon svg-icon_pinterest" width="14" height="15" viewBox="0 0 14 15" xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_pinterest" />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+
+    <header id="header" class="header header-fullwidth header-transparent-bg">
+        <div class="container">
+            <div class="header-desk header-desk_type_1">
+                <div class="logo">
+                    <a href="/">
+                        <img src="{{ url('/storage/' . $settings->site_logo) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
+                    </a>
+                </div>
+
+                <nav class="navigation">
+                    <ul class="navigation__list list-unstyled flex">
+                        <li class="navigation__item">
+                            <a wire:navigate href="/" class="navigation__link">Home</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a wire:navigate href="/products" class="navigation__link">Shop</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a wire:navigate  href="/products?on_sale=true" class="navigation__link">Sale</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a wire:navigate href="/about" class="navigation__link">About</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a wire:navigate  href="/blog" class="navigation__link">Blog</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a wire:navigate href="/contact" class="navigation__link">Contact</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="header-tools flex items-center">
+                    <div class="header-tools__item hover-container">
+                        <div class="js-hover__open position: relative">
+                            <a class="js-search-popup search-field__actor" href="#">
+                                <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_search" />
+                                </svg>
+                                <i class="btn-icon btn-close-lg"></i>
+                            </a>
+                        </div>
+
+                        <div class="search-popup js-hidden-content">
+                            <form action="#" method="GET" class="search-field container">
+                                <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
+                                <div class="position: relative">
+                                    <input class="search-field__input search-popup__input w-full fw-medium" type="text"
+                                           name="search-keyword" placeholder="Search products" />
+                                    <button class="btn-icon search-popup__submit" type="submit">
+                                        <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_search" />
+                                        </svg>
+                                    </button>
+                                    <button class="btn-icon btn-close-lg search-popup__reset" type="reset"></button>
+                                </div>
+
+                                <div class="search-popup__results">
+                                    <div class="sub-menu search-suggestion">
+                                        <h6 class="sub-menu__title fs-base">Quicklinks</h6>
+                                        <ul class="sub-menu__list list-unstyled">
+                                            <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a>
+                                            </li>
+                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
+                                            <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
+                                            </li>
+                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Footwear</a></li>
+                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Sweatshirt</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="search-result grid-rows-5"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="header-tools__item hover-container">
+                        <a href="login.html" class="header-tools__item">
+                            <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <use href="#icon_user" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <a wire:navigate href="/wishlist" class="header-tools__item">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_heart" />
+                        </svg>
+                    </a>
+
+                    <a wire:navigate href="/cart" class="header-tools__item header-tools__cart">
+                        <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_cart" />
+                        </svg>
+                        <span class="cart-amount block position: absolute js-cart-items-count">{{ $total_count }}</span>
+                    </a>
                 </div>
             </div>
         </div>
-    </nav>
-</header>
+    </header>
+</div>

@@ -1,100 +1,97 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-    <section class="flex items-center font-poppins dark:bg-gray-800 ">
-        <div class="justify-center flex-1 max-w-6xl px-4 py-4 mx-auto bg-white border rounded-md dark:border-gray-900 dark:bg-gray-900 md:py-10 md:px-10">
-            <div>
-                <h1 class="px-4 mb-8 text-2xl font-semibold tracking-wide text-gray-700 dark:text-gray-300 ">
-                    Thank you. Your order has been received. </h1>
-                <div class="flex border-b border-gray-200 dark:border-gray-700  items-stretch justify-start w-full h-full px-4 mb-8 md:flex-row xl:flex-col md:space-x-6 lg:space-x-8 xl:space-x-0">
-                    <div class="flex items-start justify-start flex-shrink-0">
-                        <div class="flex items-center justify-center w-full pb-6 space-x-4 md:justify-start">
-                            <div class="flex flex-col items-start justify-start space-y-2">
-                                <p class="text-lg font-semibold leading-4 text-left text-gray-800 dark:text-gray-400">
-                                    {{ $order->address->full_name }}</p>
-                                <p class="text-sm leading-4 text-gray-600 dark:text-gray-400"> {{ $order->address->address }}</p>
-                                <p class="text-sm leading-4 text-gray-600 dark:text-gray-400"> {{ $order->address->city }}, {{ $order->address->zip_code }}</p>
-                                <p class="text-sm leading-4 cursor-pointer dark:text-gray-400"> {{ $order->address->phone }}</p>
-                            </div>
-                        </div>
-                    </div>
+<div class="pb-3 mb-3">
+    <div class="mb-4 pb-4"></div>
+    <section class="shop-checkout container">
+        <div class="flex justify-between items-center">
+            <h1 class="page-title">Order Received</h1>
+            <button wire:navigate href="/" type="button" class="btn btn-primary btn-addtocart mb-5"
+                    data-aside="cartDrawer">BACK TO SHOP
+            </button>
+        </div>
+        <div class="checkout-steps">
+
+        </div>
+        <div class="order-complete">
+            <div class="order-complete__message">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="40" fill="rgb(255 127 80)"/>
+                    <path
+                        d="M52.9743 35.7612C52.9743 35.3426 52.8069 34.9241 52.5056 34.6228L50.2288 32.346C49.9275 32.0446 49.5089 31.8772 49.0904 31.8772C48.6719 31.8772 48.2533 32.0446 47.952 32.346L36.9699 43.3449L32.048 38.4062C31.7467 38.1049 31.3281 37.9375 30.9096 37.9375C30.4911 37.9375 30.0725 38.1049 29.7712 38.4062L27.4944 40.683C27.1931 40.9844 27.0257 41.4029 27.0257 41.8214C27.0257 42.24 27.1931 42.6585 27.4944 42.9598L33.5547 49.0201L35.8315 51.2969C36.1328 51.5982 36.5513 51.7656 36.9699 51.7656C37.3884 51.7656 37.8069 51.5982 38.1083 51.2969L40.385 49.0201L52.5056 36.8996C52.8069 36.5982 52.9743 36.1797 52.9743 35.7612Z"
+                        fill="white"/>
+                </svg>
+                <h2>Your order is completed!</h2>
+                <p>Thank you. Your order has been received.</p>
+            </div>
+            <div class="order-info">
+                <div class="order-info__item">
+                    <label>Order Number</label>
+                    <span>{{ $order->id }}</span>
                 </div>
-                <div class="flex flex-wrap items-center pb-4 mb-10 border-b border-gray-200 dark:border-gray-700">
-                    <div class="w-full px-4 mb-4 md:w-1/4">
-                        <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
-                            Order Number:  {{ $order->id }}</p>
-                        <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
-                            29</p>
-                    </div>
-                    <div class="w-full px-4 mb-4 md:w-1/4">
-                        <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
-                            Date: </p>
-                        <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">
-                            {{ $order->created_at->format('d-m-Y') }}</p>
-                    </div>
-                    <div class="w-full px-4 mb-4 md:w-1/4">
-                        <p class="mb-2 text-sm font-medium leading-5 text-gray-800 dark:text-gray-400 ">
-                            Total: </p>
-                        <p class="text-base font-semibold leading-4 text-blue-600 dark:text-gray-400">
-                            {{ Number::currency($order->total_price, 'EUR') }}</p>
-                    </div>
-                    <div class="w-full px-4 mb-4 md:w-1/4">
-                        <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
-                            Payment Method: </p>
-                        <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400 ">
-                            {{ $order->payment_method == 'stripe' ? 'Card' : 'Cash On Delivery' }} </p>
-                    </div>
+                <div class="order-info__item">
+                    <label>Date</label>
+                    <span>{{ $order->created_at->format('d-m-Y') }}</span>
                 </div>
-                <div class="px-4 mb-10">
-                    <div class="flex flex-col items-stretch justify-center w-full space-y-4 md:flex-row md:space-y-0 md:space-x-8">
-                        <div class="flex flex-col w-full space-y-6 ">
-                            <h2 class="mb-2 text-xl font-semibold text-gray-700 dark:text-gray-400">Order details</h2>
-                            <div class="flex flex-col items-center justify-center w-full pb-4 space-y-4 border-b border-gray-200 dark:border-gray-700">
-                                <div class="flex justify-between w-full">
-                                    <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Subtotal</p>
-                                    <p class="text-base leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->total_price - $order->shipping_cost, 'EUR') }}</p>
-                                </div>
-                                <div class="flex items-center justify-between w-full">
-                                    <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Discount
-                                    </p>
-                                    <p class="text-base leading-4 text-gray-600 dark:text-gray-400">00</p>
-                                </div>
-                                <div class="flex items-center justify-between w-full">
-                                    <p class="text-base leading-4 text-gray-800 dark:text-gray-400">Shipping</p>
-                                    <p class="text-base leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->shipping_cost, 'EUR') }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between w-full">
-                                <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400">Total</p>
-                                <p class="text-base font-semibold leading-4 text-gray-600 dark:text-gray-400">{{ Number::currency($order->total_price, 'EUR') }}</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-col w-full px-2 space-y-4 md:px-8 ">
-                            <h2 class="mb-2 text-xl font-semibold text-gray-700 dark:text-gray-400">Shipping</h2>
-                            <div class="flex items-start justify-between w-full">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <div class="w-8 h-8">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-6 h-6 text-blue-600 dark:text-blue-400 bi bi-truck" viewBox="0 0 16 16">
-                                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <div class="flex flex-col items-center justify-start">
-                                        <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">
-                                            Delivery<br><span class="text-sm font-normal">Delivery with 24 Hours</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <p class="text-lg font-semibold leading-6 text-gray-800 dark:text-gray-400">{{ Number::currency($order->shipping_cost, 'EUR') }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="order-info__item">
+                    <label>Total</label>
+                    <span>{{ Number::currency($order->total_price, 'EUR') }}</span>
                 </div>
-                <div class="flex items-center justify-start gap-4 px-4 mt-6 ">
-                    <a href="/products" class="w-full text-center px-4 py-2 text-blue-500 border border-blue-500 rounded-md md:w-auto hover:text-white hover:bg-blue-600 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300">
-                        Go back shopping
-                    </a>
-                    <a wire:navigate href="/my-orders" class="w-full text-center px-4 py-2 bg-blue-500 rounded-md text-gray-50 md:w-auto dark:text-gray-300 hover:bg-blue-600 dark:hover:bg-gray-700 dark:bg-gray-800">
-                        View My Orders
-                    </a>
+                <div class="order-info__item">
+                    <label>Payment Method</label>
+                    <span>CARD</span>
+                </div>
+            </div>
+            <div class="checkout__totals-wrapper">
+                <div class="checkout__totals">
+                    <h3>Order Details</h3>
+                    <table class="checkout-cart-items">
+                        <thead>
+                        <tr>
+                            <th>PRODUCT</th>
+                            <th>SUBTOTAL</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($order->items as $item)
+                            <tr>
+                                <td>
+                                    {{ $item->product->name }} x {{ $item->quantity }}
+                                </td>
+                                <td class="text-end">
+                                    {{ Number::currency($item->product->price * $item->quantity, "EUR") }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    <table class="checkout-totals">
+                        <tbody>
+                        <tr>
+                            <th>SUBTOTAL</th>
+                            <td class="text-right">{{ Number::currency($subtotal, 'EUR') }}</td>
+                        </tr>
+
+                        @if($order->notes)
+                            <tr>
+                                <th>DISCOUNT</th>
+                                <td class="text-right">- {{ Number::currency($discount, 'EUR') }}</td>
+                            </tr>
+                        @endif
+
+                        <tr>
+                            <th>SHIPPING</th>
+                            <td class="text-right">{{ $order->shipping_cost == 0 ? "Free Shipping" : Number::currency($order->shipping_cost, 'EUR') }}</td>
+                        </tr>
+                        <tr>
+                            <th>SHIPPING DETAILS</th>
+                            <td class="text-right">{{ $order->address->full_name }}, {{ $order->address->address }}
+                                , {{ $order->address->city }}, {{ $order->address->zip_code }}
+                                , {{ $order->address->phone }} </td>
+                        </tr>
+                        <tr>
+                            <th>TOTAL</th>
+                            <td class="text-right">{{ Number::currency($order->total_price, 'EUR') }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

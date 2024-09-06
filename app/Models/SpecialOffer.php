@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class SpecialOffer extends Model
 {
@@ -49,6 +50,24 @@ class SpecialOffer extends Model
 
         static::updated(function ($offer) {
             $offer->applySpecialOffer();
+        });
+
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            if ($model->isDirty('image') && ($model->getOriginal('image') !== null)) {
+                Storage::disk('public')->delete($model->getOriginal('image'));
+            }
+        });
+
+        static::deleting(function ($model) {
+            if ($model->getOriginal('image') !== null) {
+                Storage::disk('public')->delete($model?->getOriginal('image'));
+            }
         });
     }
 

@@ -14,7 +14,7 @@ class ListSpecialOffers extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('New Special Offer')
+                ->label('New Offer')
             ,
         ];
     }

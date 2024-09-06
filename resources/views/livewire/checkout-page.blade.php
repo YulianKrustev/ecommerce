@@ -1,193 +1,177 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-        Checkout
-    </h1>
-    <form wire:submit.prevent="placeOrder()">
-        <div class="grid grid-cols-12 gap-4">
-            <div class="md:col-span-12 lg:col-span-8 col-span-12">
-                <!-- Card -->
-                <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-                    <!-- Shipping Address -->
-                    <div class="mb-6">
-                        <h2 class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">
-                            Shipping Address
-                        </h2>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-gray-700 dark:text-white mb-1" for="first_name">
-                                    First Name
-                                </label>
-                                <input wire:model="first_name" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('first_name') border-red-500 @enderror" id="first_name" type="text">
-                                @error('first_name')
-                                <div class="text-red-500 text-sm">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 dark:text-white mb-1" for="last_name">
-                                    Last Name
-                                </label>
-                                <input wire:model="last_name" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('last_name') border-red-500 @enderror" id="last_name" type="text">
-                                @error('last_name')
-                                <div class="text-red-500 text-sm">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 dark:text-white mb-1" for="phone">
-                                Phone
-                            </label>
-                            <input wire:model="phone" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('phone') border-red-500 @enderror" id="phone" type="text">
-                            @error('phone')
-                            <div class="text-red-500 text-sm">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 dark:text-white mb-1" for="address">
-                                Address
-                            </label>
-                            <input wire:model="street_address" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('street_address') border-red-500 @enderror" id="address" type="text">
-                            @error('street_address')
-                            <div class="text-red-500 text-sm">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mt-4">
-                            <label class="block text-gray-700 dark:text-white mb-1" for="city">
-                                City
-                            </label>
-                            <input wire:model="city" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('city') border-red-500 @enderror" id="city" type="text">
-                            @error('city')
-                            <div class="text-red-500 text-sm">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label class="block text-gray-700 dark:text-white mb-1" for="zip">
-                                    ZIP Code
-                                </label>
-                                <input wire:model="zip_code" class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('zip_code') border-red-500 @enderror" id="zip" type="text">
-                                @error('zip_code')
-                                <div class="text-red-500 text-sm">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-lg font-semibold mb-4">
-                        Select Payment Method
-                    </div>
-                    <ul class="grid w-full gap-6 md:grid-cols-2">
-{{--                        <li>--}}
-{{--                            <input wire:model="payment_method" class="hidden peer" required="" type="radio" value="cod" />--}}
-{{--                            <label class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700" for="hosting-small">--}}
-{{--                                <div class="block">--}}
-{{--                                    <div class="w-full text-lg font-semibold">--}}
-{{--                                        Cash on Delivery--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <svg aria-hidden="true" class="w-5 h-5 ms-3 rtl:rotate-180" fill="none" viewbox="0 0 14 10" xmlns="http://www.w3.org/2000/svg">--}}
-{{--                                    <path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">--}}
-{{--                                    </path>--}}
-{{--                                </svg>--}}
-{{--                            </label>--}}
-{{--                        </li>--}}
-                        <li>
-                            <input wire:model="payment_method" class="hidden peer" id="select payment" type="radio" value="stripe">
-                            <label class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700" for="select payment">
-                                <div class="block">
-                                    <div class="w-full text-lg font-semibold">
-                                        Stripe
-                                    </div>
-                                </div>
-                                <svg aria-hidden="true" class="w-5 h-5 ms-3 rtl:rotate-180" fill="none" viewbox="0 0 14 10" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                    </path>
-                                </svg>
-                            </label>
-                            </input>
-                        </li>
-                    </ul>
-                    @error('payment_method')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
-                <!-- End Card -->
-            </div>
-            <div class="md:col-span-12 lg:col-span-4 col-span-12">
-                <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-                    <div class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">
-                        ORDER SUMMARY
-                    </div>
-                    <div class="flex justify-between mb-2 font-bold">
-					<span>
-						Subtotal
-					</span>
-                        <span>
-						{{ Number::currency($subtotal, 'EUR') }}
-					</span>
-                    </div>
-                    <div class="flex justify-between mb-2 font-bold">
-					<span>
-						Taxes
-					</span>
-                        <span>
-						{{ Number::currency(0.00, 'EUR') }}
-					</span>
-                    </div>
-                    <div class="flex justify-between mb-2 font-bold">
-					<span>
-						Shipping Cost
-					</span>
-                        <span>
-						{{ Number::currency($shipping_cost, 'EUR') }}
-					</span>
-                    </div>
-                    <hr class="bg-slate-400 my-4 h-1 rounded">
-                    <div class="flex justify-between mb-2 font-bold">
-					<span>
-						Total
-					</span>
-                        <span>
-						{{ Number::currency($total, 'EUR') }}
-					</span>
-                    </div>
-                    </hr>
-                </div>
-                <button type="submit" class="bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-600">
-                    <span wire:loading.remove>Place Order</span><span wire:loading>Processing...</span>
-                </button>
-                <div class="bg-white mt-4 rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-                    <div class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">
-                        BASKET SUMMARY
-                    </div>
-                    <ul class="divide-y divide-gray-200 dark:divide-gray-700" role="list">
-
-                        @foreach($cart_items as $item)
-                            <li class="py-3 sm:py-4" wire:key="{{ $item['product_id'] }}">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0">
-                                        <a wire:navigate href="/products/{{ $item['slug'] }}" class="">
-                                            <img src="{{ url('storage', array_slice($item['images'], -1)[0])}}" alt="{{ $item['name'] }}"
-                                                 class="w-12 h-12 rounded-full">
-                                        </a>
-                                    </div>
-                                    <div class="flex-1 min-w-0 ms-4">
-                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                            {{ $item['name'] }}
-                                        </p>
-                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            Quantity: {{ $item['quantity'] }} x {{ Number::currency($item['unit_price'], 'EUR') }}
-                                        </p>
-                                    </div>
-                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                        {{ Number::currency($item['quantity'] * $item['unit_price'] , 'EUR') }}
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
-
-                    </ul>
-                </div>
-            </div>
+@php
+    $isApplied = session('voucher_discount') > 0;
+@endphp
+<div class="pb-14 mb-14">
+    <div class="mb-4 pb-4"></div>
+    <section class="shop-checkout container">
+        <h1 class="page-title">Shipping and Checkout</h1>
+        <div class="checkout-steps">
+            <a wire:navigate href="/cart" class="checkout-steps__item active">
+                <span class="checkout-steps__item-number">01</span>
+                <span class="checkout-steps__item-title">
+            <span>Shopping Bag</span>
+            <em>Manage Your Items List</em>
+          </span>
+            </a>
+            <a wire:navigate href="/checkout" class="checkout-steps__item active">
+                <span class="checkout-steps__item-number">02</span>
+                <span class="checkout-steps__item-title">
+            <span>Shipping and Checkout</span>
+            <em>Checkout Your Items List</em>
+          </span>
+            </a>
+            <a class="checkout-steps__item">
+                <span class="checkout-steps__item-number">03</span>
+                <span class="checkout-steps__item-title">
+            <span>Confirmation</span>
+            <em>Review And Submit Your Order</em>
+          </span>
+            </a>
         </div>
-    </form>
 
+        <form name="checkout-form" wire:submit.prevent="placeOrder()">
+            <div class="checkout-form">
+                <div class="billing-info__wrapper">
+                    <div class="row">
+                        <div class="col-6">
+                            <h2>SHIPPING DETAILS</h2>
+                        </div>
+                        <div class="col-6">
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="form-floating my-3">
+                                <input wire:model="first_name" type="text" class="form-control" name="first_name" id="first_name" required="">
+                                <label for="first_name">First Name *</label>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating my-3">
+                                <input wire:model="last_name" type="text" class="form-control" name="last_name" id="last_name" required="">
+                                <label for="last_name">Last Name *</label>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating my-3">
+                                <input wire:model="phone" type="text" class="form-control" name="phone" required="">
+                                <label for="phone">Phone *</label>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating my-3">
+                                <input wire:model="zip_code" type="text" class="form-control" name="zip_code" required="">
+                                <label for="zip">Zip Code *</label>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mt-3 mb-3">
+                                <input wire:model="district" type="text" class="form-control" name="district" required="">
+                                <label for="state">District *</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating my-3">
+                                <input wire:model="city" type="text" class="form-control" name="city" required="">
+                                <label for="city">Town / City *</label>
+
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="form-floating my-3">
+                                <input wire:model="street_address"  type="text" class="form-control" name="address" required="">
+                                <label for="address">Address *</label>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="checkout__totals-wrapper">
+                    <div class="sticky-content">
+                        <div class="checkout__totals">
+                            <h3>Your Order</h3>
+                            <table class="checkout-cart-items">
+                                <thead>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th align="right">SUBTOTAL</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                @foreach($cart_items as $item)
+                                    <tr wire:key="{{ $item['product_id'] }}">
+                                        <td>
+                                            {{ $item['name'] }} X {{ $item['quantity'] }}
+                                        </td>
+                                        <td class="text-right">
+                                            {{ Number::currency($item['quantity'] * $item['unit_price'] , 'EUR') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                            <table class="checkout-totals">
+                                <tbody>
+                                <tr>
+                                    <th>SUBTOTAL</th>
+                                    <td class="text-right">{{ Number::currency($subtotal, 'EUR') }}</td>
+                                </tr>
+                                @if($isApplied)
+                                    <tr>
+                                        <th>DISCOUNT</th>
+                                        <td class="text-right">- {{ Number::currency(session('voucher_discount'), 'EUR') }}</td>
+                                    </tr>
+                                @endif
+                                <tr>
+                                    <th>SHIPPING</th>
+                                    <td class="text-right">{{ $shipping_cost == 5 ? Number::currency($shipping_cost, 'EUR') : "Free Shipping" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>TOTAL</th>
+                                    <td class="text-right">{{ session('voucher_discount') > 0 ? Number::currency($total - session('voucher_discount'), 'EUR') : Number::currency($total, 'EUR')  }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="checkout__payment-methods">
+                            <div>
+                                <input wire:model="payment_method" name="payment_method" required id="select_payment_stripe" type="radio" value="stripe">
+                                <label class="form-check-label" for="select_payment_stripe">
+                                    PAY WITH CARD
+                                </label>
+                            </div>
+                                <div class="policy-text">
+                                Your personal data will be used to process your order, support your experience throughout this
+                                website, and for other purposes described in our <a wire:navigate href="/privacy-policy" target="_blank">privacy
+                                    policy</a>.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-checkout"> PLACE ORDER</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </section>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+

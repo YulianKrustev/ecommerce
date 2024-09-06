@@ -142,7 +142,7 @@ class SpecialOfferResource extends Resource
 
                                 TextInput::make('discount_percentage')
                                     ->label('Discount Percentage')
-                                    ->placeholder('Choose either amount or percentage')
+//                                    ->placeholder('Choose either amount or percentage')
                                     ->numeric()
                                     ->suffix('%')
                                     ->live(onBlur: true),
@@ -308,5 +308,20 @@ class SpecialOfferResource extends Resource
             'create' => Pages\CreateSpecialOffer::route('/create'),
             'edit' => Pages\EditSpecialOffer::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Offers';
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Discounts & Deals';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 5;  // Sort order for this resource
     }
 }
