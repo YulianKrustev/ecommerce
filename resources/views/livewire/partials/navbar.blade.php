@@ -12,7 +12,7 @@
                 <!-- Logo -->
                 <div class="logo">
                     <a wire:navigate href="/">
-                        <img src="{{ url('/storage/' . $settings->site_logo) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
+                        <img src="{{ url('/storage/' . $settings?->site_logo ) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
                     </a>
                 </div>
 
@@ -105,7 +105,7 @@
             <div class="header-desk header-desk_type_1">
                 <div class="logo">
                     <a href="/">
-                        <img src="{{ url('/storage/' . $settings->site_logo) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
+                        <img src="{{ url('/storage/' . $settings?->site_logo) }}" alt="Little Sailors Malta Logo" class="logo__image block" />
                     </a>
                 </div>
 
@@ -133,56 +133,19 @@
                 </nav>
 
                 <div class="header-tools flex items-center">
-                    <div class="header-tools__item hover-container">
-                        <div class="js-hover__open position: relative">
-                            <a class="js-search-popup search-field__actor" href="#">
-                                <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                    <div class="header-tools__item relative">
+                        <div id="search-icon" class="cursor-pointer">
+                            <a wire:navigate href="/search">
+                                <svg class="block w-5 h-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <use href="#icon_search" />
                                 </svg>
-                                <i class="btn-icon btn-close-lg"></i>
                             </a>
-                        </div>
-
-                        <div class="search-popup js-hidden-content">
-                            <form action="#" method="GET" class="search-field container">
-                                <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
-                                <div class="position: relative">
-                                    <input class="search-field__input search-popup__input w-full fw-medium" type="text"
-                                           name="search-keyword" placeholder="Search products" />
-                                    <button class="btn-icon search-popup__submit" type="submit">
-                                        <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <use href="#icon_search" />
-                                        </svg>
-                                    </button>
-                                    <button class="btn-icon btn-close-lg search-popup__reset" type="reset"></button>
-                                </div>
-
-                                <div class="search-popup__results">
-                                    <div class="sub-menu search-suggestion">
-                                        <h6 class="sub-menu__title fs-base">Quicklinks</h6>
-                                        <ul class="sub-menu__list list-unstyled">
-                                            <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a>
-                                            </li>
-                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
-                                            <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
-                                            </li>
-                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Footwear</a></li>
-                                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Sweatshirt</a></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="search-result grid-rows-5"></div>
-                                </div>
-                            </form>
                         </div>
                     </div>
 
                     <div class="header-tools__item hover-container">
-                        <a href="login.html" class="header-tools__item">
-                            <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
+                        <a wire:navigate href="{{ Auth::check() ? '/my-account' : '/login' }}" class="header-tools__item">
+                            <svg class="block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <use href="#icon_user" />
                             </svg>
                         </a>
@@ -206,3 +169,5 @@
         </div>
     </header>
 </div>
+
+

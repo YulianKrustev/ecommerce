@@ -55,13 +55,18 @@
                             <div id="quantity-control"
                                  class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg quantity">
                                 <button
-                                    wire:click="decreaseQty()" class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400 minus">
+                                    onclick="updateQuantity(-1)"
+                                    wire:click="decreaseQty()"
+                                    class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400 minus">
                                     <span class="m-auto text-2xl font-thin">-</span>
                                 </button>
-                                <input type="number" readonly wire:model.defer="quantity"
-                                       class="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black input-box"
-                                       value="{{ $quantity }}" placeholder="1" max="100">
+                                <input type="number" id="quantity-input"
+                                       readonly
+                                       value="1"
+                                class="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black input-box"
+                                placeholder="1" max="100">
                                 <button
+                                    onclick="updateQuantity(1)"
                                     wire:click="increaseQty()"
                                     class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400 plus">
                                     <span class="m-auto text-2xl font-thin">+</span>
@@ -80,3 +85,15 @@
         </div>
     </section>
 </div>
+<script>
+    function updateQuantity(change) {
+        const input = document.getElementById('quantity-input');
+        const currentValue = parseInt(input.value);
+        const newValue = currentValue + change;
+
+        // Ensure the value stays within the min/max bounds
+        if (newValue >= 1 && newValue <= 100) {
+            input.value = newValue;
+        }
+    }
+</script>

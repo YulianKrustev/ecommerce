@@ -10,7 +10,7 @@
 {{--    <meta name="description" content="{{ $settings->site_description ?? 'Default site description goes here.' }}">--}}
     @stack('meta')
     <title>{{ $title ?? 'eCommerce' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/custom.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/custom.css', 'resources/js/swiper.min.js'])
     <link rel="stylesheet" href="{{ asset('vendor/cookie-consent/css/cookie-consent.css') }}">
     <link rel="icon" href="{{ url('/storage/' . ($settings->site_favicon ?? 'default_favicon.ico')) }}">
     @livewireStyles

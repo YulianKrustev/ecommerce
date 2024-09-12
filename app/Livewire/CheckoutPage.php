@@ -89,8 +89,7 @@ class CheckoutPage extends Component
         $order->currency = 'eur';
         $order->shipping_cost = $this->shipping_cost;
         $order->shipping_method = 'Little Sailors Malta';
-        $order->notes = session('voucher_name') ? 'Used voucher: ' . session('voucher_name') .' -' . session('voucher_discount') . '€' : '';
-
+        $order->discount = session('voucher_discount') ?? 0;
 
         $address = New Address();
         $address->first_name = $this->first_name;
@@ -100,6 +99,14 @@ class CheckoutPage extends Component
         $address->city = $this->city;
         $address->zip_code = $this->zip_code;
         $address->district = $this->district;
+
+        $order->notes = $address->first_name . ' ' . $address->last_name  . "\n"
+                        . $address->phone . "\n"
+                        . $address->address . "\n"
+                        . $address->city . "\n"
+                        . $address->zip_code . "\n"
+                        . $address->district . "\n"
+                        .(session('voucher_name') ? 'Used voucher: ' . session('voucher_name') .' -' . session('voucher_discount') . '€' : '');
 
 
             $shipping_rates = [

@@ -119,6 +119,7 @@ class OrderResource extends Resource
                             ->dehydrated(),
 
                         Textarea::make('notes')
+                            ->rows(7)
                             ->columnSpanFull(),
                     ])->columns(2),
 
@@ -134,7 +135,7 @@ class OrderResource extends Resource
                                     ->preload()
                                     ->distinct()
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ->columnSpan(4)
+                                    ->columnSpan(5)
                                     ->live()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $product = Product::find($state);
@@ -147,7 +148,7 @@ class OrderResource extends Resource
                                     ->required()
                                     ->default(1)
                                     ->minValue(1)
-                                    ->columnSpan(2)
+                                    ->columnSpan(1)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $unitPrice = $get('unit_price');
@@ -172,7 +173,7 @@ class OrderResource extends Resource
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
-                                    ->columnSpan(3),
+                                    ->columnSpan(2),
 
                                 TextInput::make('total_units_price')
                                     ->prefix('EUR')
@@ -181,28 +182,44 @@ class OrderResource extends Resource
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
-                                    ->columnSpan(3)
+                                    ->columnSpan(2),
+
+                                ViewField::make('first_image_display')
+                                    ->view('components.product-image-view')
+                                    ->columnSpan(2)
+                                    ->formatStateUsing(function ($get) {
+                                        $productId = $get('product_id');
+                                        $product = Product::find($productId);
+                                        return $product ? $product->first_image : null;
+                                    }),
+
 
                             ])
-                            ->disabled(fn ($livewire) => $livewire->record->exists)
+                            ->disabled()
                             ->columns(12)
                             ->addActionLabel('Add new product'),
+
+                        Placeholder::make('Subtotal')
+                            ->label('Subtotal:')
+                            ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500;'])
+                            ->content(function (Get $get) {
+                                $discount = $get('discount');
+                                $shipping = $get('shipping_cost');
+                                $total = $get('total_price');
+
+                                $subtotal = $total - $shipping + $discount;
+                                return Number::currency($subtotal ?? 0, 'EUR');
+                            }),
+
 
                         Placeholder::make('discount')
                             ->label('Discount:')
                             ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500;'])
                             ->content(function (Get $get) {
-                                $notes = $get('notes');
-                                // Use a regular expression to extract the numeric value
-                                if (preg_match("/\d*\.?\d+/", $notes, $matches)) {
-                                    $discount = $matches[0];  // This will capture -10.00 from the notes
-                                } else {
-                                    $discount = 0;  // Default value if no numeric value is found
-                                }
 
-                                // Return the formatted currency
-                                return Number::currency($discount, 'EUR');
+                                return Number::currency($get('discount') ?? 0, 'EUR');
                             }),
+
 
                         Placeholder::make('shipping_cost')
                             ->label('Shipping Cost:')
@@ -318,9 +335,8 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AddressRelationManager::class
+//            AddressRelationManager::class,
         ];
-
     }
 
     public static function getNavigationBadge(): ?string

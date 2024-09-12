@@ -69,7 +69,7 @@
                             <td class="text-right">{{ Number::currency($subtotal, 'EUR') }}</td>
                         </tr>
 
-                        @if($order->notes)
+                        @if($discount > 0)
                             <tr>
                                 <th>DISCOUNT</th>
                                 <td class="text-right">- {{ Number::currency($discount, 'EUR') }}</td>

@@ -72,15 +72,15 @@
                             </td>
                             <td>
                                 <div class="qty-control position-relative">
-                                    <input type="number" name="quantity" value="{{$item['quantity']}}" min="1"
-                                           class="qty-control__number text-center">
-                                    <div wire:click="decreaseQty({{ $item['product_id'] }})"
-                                         class="qty-control__reduce {{ $item['quantity'] == 1 ? 'cursor-not-allowed' : '' }}">
+                                    <input type="number" id="quantity-{{$item['product_id']}}" name="quantity" value="{{$item['quantity']}}" readonly min="1" class="qty-control__number text-center">
+
+                                    <button onclick="updateQuantity('{{$item['product_id']}}', -1)" wire:click="decreaseQty({{ $item['product_id'] }})" class="qty-control__reduce">
                                         -
-                                    </div>
-                                    <div wire:click="increaseQty({{$item['product_id']}})"
-                                         class="qty-control__increase">+
-                                    </div>
+                                    </button>
+
+                                    <button onclick="updateQuantity('{{$item['product_id']}}', 1)" wire:click="increaseQty({{$item['product_id']}})" class="qty-control__increase">
+                                        +
+                                    </button>
                                 </div>
                             </td>
                             <td>
@@ -189,9 +189,19 @@
             cancelButtonText: "Cancel",
         }).then((result) => {
             if (result.isConfirmed) {
-            @this.call('removeItem')
-                ;
+            @this.call('removeItem');
             }
         });
     });
+
+    function updateQuantity(productId, change) {
+        const input = document.getElementById('quantity-' + productId);
+        const currentValue = parseInt(input.value);
+        const newValue = currentValue + change;
+
+        // Ensure the value stays within the min bound
+        if (newValue >= 1) {
+            input.value = newValue;
+        }
+    }
 </script>

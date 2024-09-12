@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -20,6 +21,8 @@ class ResetPasswordPage extends Component
     public $email;
     public $password;
     public $password_confirmation;
+
+    use LivewireAlert;
 
     public function mount($token)
     {
@@ -50,6 +53,12 @@ class ResetPasswordPage extends Component
                 event(new PasswordReset($user));
             }
         );
+
+        $this->alert('success', 'Your password was successfully reset!', [
+            'position' => 'top-end',
+            'timer' => 3000,
+            'toast' => true,
+        ]);
 
         return $status === Password::PASSWORD_RESET?redirect('/login'):session()->flash('error', "Something went wrong!");
     }

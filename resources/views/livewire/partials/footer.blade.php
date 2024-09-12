@@ -61,7 +61,7 @@
 
         <div class="py-4" id="footer-bottom">
             <div class="container mx-auto flex flex-col md:flex-row items-center justify-between text-base font-medium">
-                <span>© {{ date('Y') }} {{ $settings->site_name }}. All rights reserved.</span>
+                <span>© {{ date('Y') }} {{ $settings?->site_name }}. All rights reserved.</span>
                 <div class="flex space-x-2">
                     <img src="{{ url('storage/stripe.png') }}" alt="Stripe Logo" class="h-24 mx-auto md:mx-0"/>
                 </div>

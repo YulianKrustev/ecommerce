@@ -1,104 +1,92 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-    <div class="flex h-full items-center">
-        <main class="w-full max-w-md mx-auto p-6">
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <div class="p-4 sm:p-7">
-                    <div class="text-center">
-                        <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Sign up</h1>
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Already have an account?
-                            <a wire:navigate
-                               class="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                               href="/login">
-                                Sign in here
-                            </a>
-                        </p>
-                    </div>
-                    <hr class="my-5 border-slate-300">
-                    <!-- Form -->
+<div class="mb-14 pb-14">
+    <div class="mb-4 pb-4"></div>
+    <section class="login-register container">
+        <ul class="nav nav-tabs mb-5" id="login_register" role="tablist">
+            <li class="nav-item" role="presentation">
+                <h1 class="nav-link nav-link_underscore active">
+                    Register
+                </h1>
+            </li>
+        </ul>
+        <div class="tab-content pt-2" id="login_register_tab_content">
+            <div class="tab-pane fade show active" id="tab-item-register" role="tabpanel" aria-labelledby="register-tab">
+                <div class="register-form">
                     <form wire:submit.prevent="save">
-                        <div class="grid gap-y-4">
-                            <!-- Form Group -->
-
-                            <div>
-                                <label for="name" class="block text-sm mb-2 dark:text-white">Name</label>
-                                <div class="relative">
-                                    <input type="text" id="name" wire:model="name"
-                                           class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                                            aria-describedby="email-error">
-                                    @error('name')
-                                    <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                                        <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
-                                             viewBox="0 0 16 16" aria-hidden="true">
-                                            <path
-                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                                        </svg>
-                                    </div>
-                                    @enderror
-                                </div>
-                                @error('name')
-                                <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                                @enderror
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control_gray" type="text" id="name" wire:model="name" required="" autocomplete="name"
+                                   autofocus="">
+                            @error('name')
+                            <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
+                                <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
+                                     viewBox="0 0 16 16" aria-hidden="true">
+                                    <path
+                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
                             </div>
-
-                            <div>
-                                <label for="email" class="block text-sm mb-2 dark:text-white">Email address</label>
-                                <div class="relative">
-                                    <input type="email" id="email" wire:model="email"
-                                           class="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                                           aria-describedby="email-error">
-                                    @error('email')
-                                    <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                                        <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
-                                             viewBox="0 0 16 16" aria-hidden="true">
-                                            <path
-                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                                        </svg>
-                                    </div>
-                                    @enderror
-                                </div>
-                                @error('email')
-                                <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                                @enderror
+                            @enderror
+                            <label for="name">Name</label>
+                        </div>
+                        @error('name')
+                        <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
+                        @enderror
+                        <div class="pb-3"></div>
+                        <div class="form-floating mb-3">
+                            <input id="email" type="email" class="form-control form-control_gray " name="email" wire:model="email" required=""
+                                   autocomplete="email">
+                            @error('email')
+                            <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
+                                <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
+                                     viewBox="0 0 16 16" aria-hidden="true">
+                                    <path
+                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
                             </div>
-                            <!-- End Form Group -->
+                            @enderror
+                            <label for="email">Email address *</label>
+                        </div>
+                        @error('email')
+                        <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
+                        @enderror
 
-                            <!-- Form Group -->
-                            <div>
-                                <div class="flex justify-between items-center">
-                                    <label for="password" class="block text-sm mb-2 dark:text-white">Password</label>
+                        <div class="pb-3"></div>
 
-                                </div>
-                                <div class="relative">
-                                    <input type="password" id="password" wire:model="password"
-                                           class="py-3 border px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                                           aria-describedby="password-error">
-                                    @error('password')
-                                    <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                                        <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
-                                             viewBox="0 0 16 16" aria-hidden="true">
-                                            <path
-                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                                        </svg>
-                                    </div>
-                                    @enderror
-                                </div>
-                                @error('password')
-                                <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
-                                @enderror
+                        <div class="form-floating mb-3">
+                            <input wire:model="password" id="password" type="password" class="form-control form-control_gray " name="password" required=""
+                                   autocomplete="new-password">
+                            @error('password')
+                            <div class=" absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
+                                <svg class="h-5 w-5 text-red-500" width="16" height="16" fill="currentColor"
+                                     viewBox="0 0 16 16" aria-hidden="true">
+                                    <path
+                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
                             </div>
-                            <!-- End Form Group -->
+                            @enderror
+                            <label for="password">Password *</label>
+                        </div>
+                        @error('password')
+                        <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
+                        @enderror
+                        <div class="form-floating mb-3">
+                            <input wire:model="password_confirmation" id="password-confirm" type="password" class="form-control form-control_gray"
+                                   name="password_confirmation" required="" autocomplete="new-password">
+                            <label for="password">Confirm Password *</label>
+                        </div>
 
+                        <div class="flex items-center mb-3 pb-2">
+                            <p class="m-0">Your personal data will be used to support your experience throughout this website, to
+                                manage access to your account, and for other purposes described in our privacy policy.</p>
+                        </div>
 
-                            <button type="submit"
-                                    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-                                Sign up
-                            </button>
+                        <button class="btn btn-primary w-100 uppercase" type="submit">Register</button>
+
+                        <div class="customer-option mt-4 text-center">
+                            <span class="text-secondary">Have an account?</span>
+                            <a wire:navigate href="/login" class="btn-text js-show-register">Login to your Account</a>
                         </div>
                     </form>
-                    <!-- End Form -->
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </section>
 </div>

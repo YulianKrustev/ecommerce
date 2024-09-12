@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\AboutPage;
+use App\Livewire\AccountDetailPage;
 use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
@@ -13,10 +14,12 @@ use App\Livewire\CategoriesPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\ContactForm;
 use App\Livewire\HomePage;
+use App\Livewire\MyAccountPage;
 use App\Livewire\MyOrdersPage;
 use App\Livewire\OrderDetailPage;
 use App\Livewire\ProductDetailPage;
 use App\Livewire\ProductsPage;
+use App\Livewire\SearchPage;
 use App\Livewire\SuccessPage;
 use App\Livewire\WishlistPage;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +37,7 @@ Route::get('/wishlist', WishlistPage::class);
 Route::get('/products/{slug}', ProductDetailPage::class);
 Route::get('/about', AboutPage::class);
 Route::get('/blog', Blog::class);
+Route::get('/search', SearchPage::class);
 Route::get('/contact', ContactForm::class);
 Route::get('/blog/{slug}', BlogDetailPage::class);
 
@@ -56,4 +60,6 @@ Route::middleware('auth')->group(function (){
     Route::get('/my-orders/{order_id}', OrderDetailPage::class)->name('my-orders.show');
     Route::get('/success', SuccessPage::class)->name('success');
     Route::get('/cancel', CancelPage::class)->name('cancel');
+    Route::get('/my-account', MyAccountPage::class);
+    Route::get('/account-details', AccountDetailPage::class);
 });

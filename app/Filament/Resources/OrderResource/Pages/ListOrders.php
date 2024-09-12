@@ -16,8 +16,8 @@ class ListOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-            ->label('New Order'),
+//            Actions\CreateAction::make()
+//            ->label('New Order'),
         ];
     }
 
