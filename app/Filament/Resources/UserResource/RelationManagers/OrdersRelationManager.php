@@ -85,13 +85,11 @@ class OrdersRelationManager extends RelationManager
                     Tables\Actions\Action::make('Edit')
                         ->url(fn(Order $record) => OrderResource::getUrl('edit', ['record' => $record]))
                         ->icon('heroicon-s-pencil-square'),
-                    Tables\Actions\DeleteAction::make()
                 ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+               //
+
             ]);
     }
 }

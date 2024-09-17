@@ -13,6 +13,7 @@
         "joaopaulolndev/filament-general-settings": "^1.0",
         "joshembling/image-optimizer": "^1.4",
         "laravel/framework": "^11.9",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "scify/laravel-cookies-consent": "^1.1",

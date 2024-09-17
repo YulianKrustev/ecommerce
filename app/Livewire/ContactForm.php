@@ -41,6 +41,7 @@ class ContactForm extends Component
             'toast' => true,
         ]);
 
+        return $this->redirect('/');
     }
 
     public function render()

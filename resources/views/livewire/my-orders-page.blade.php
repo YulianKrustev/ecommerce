@@ -22,7 +22,6 @@
                                 <th class="text-center">Name</th>
                                 <th class="text-center">Total</th>
                                 <th class="text-center">Order Status</th>
-                                <th class="text-center">Payment Status</th>
                                 <th class="text-center">Order Date</th>
 
                                 <th></th>
@@ -30,23 +29,23 @@
                             </thead>
                             <tbody>
 
-                            @foreach($orders as $order)
+                            @forelse($orders as $order)
                                 @php
                                     $status = match ($order->status) {
-                                        'new' => '<span class="bg-blue-500 py-1 px-3 rounded text-white shadow">New</span>',
+                                        'new' => '<span class=" py-1 px-3 rounded text-black shadow-xl">New</span>',
                                         'processing' => '<span class="bg-yellow-500 py-1 px-3 rounded text-white shadow">Processing</span>',
                                         'shipped' => '<span class="bg-green-500 py-1 px-3 rounded text-white shadow">Shipped</span>',
-                                        'delivered' => '<span class="bg-green-700 py-1 px-3 rounded text-white shadow">Delivered</span>',
-                                        'cancelled' => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Cancelled</span>',
+                                        'delivered' => '<span class="bg-green-600 py-1 px-3 rounded text-white shadow">Delivered</span>',
+                                        'cancelled' => '<span style="background-color: rgb(255 127 80)" class="py-1 px-3 rounded text-white shadow">Cancelled</span>',
                                         default => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Unknown Payment Status</span>',
                                     };
 
-                                     $payment_status = match ($order->payment_status) {
-                                        'paid' => '<span class="bg-green-600 py-1 px-3 rounded text-white shadow">Paid</span>',
-                                        'failed' => '<span class="bg-red-600 py-1 px-3 rounded text-white shadow">Failed</span>',
-                                        'pending' => '<span class="bg-blue-500 py-1 px-3 rounded text-white shadow">Pending</span>',
-                                        default => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Unknown Payment Status</span>',
-                                    };
+//                                     $payment_status = match ($order->payment_status) {
+//                                        'paid' => '<span class="bg-green-500 py-1 px-3 rounded text-white shadow">Paid</span>',
+//                                        'failed' => '<span class="bg-red-600 py-1 px-3 rounded text-white shadow">Failed</span>',
+//                                        'pending' => '<span class="py-1 px-3 rounded text-black shadow-xl">Pending</span>',
+//                                        default => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Unknown Payment Status</span>',
+//                                    };
                                 @endphp
 
                                 <tr wire:key='{{ $order->id }}'>
@@ -57,9 +56,9 @@
                                     <td class="text-center">
                                         <span class="">{!! $status !!}</span>
                                     </td>
-                                    <td class="text-center">
-                                        <span class="">{!! $payment_status !!}</span>
-                                    </td>
+                                    {{--                                    <td class="text-center">--}}
+                                    {{--                                        <span class="">{!! $payment_status !!}</span>--}}
+                                    {{--                                    </td>--}}
                                     <td class="text-center">{{ $order->created_at->format('d-m-Y') }}</td>
                                     <td class="text-center">
                                         <a wire:navigate href="/my-orders/{{ $order->id }}">
@@ -70,8 +69,13 @@
                                         </a>
                                     </td>
                                 </tr>
-
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-2xl font-semibold text-slate-600">
+                                        You have no orders in your account.
+                                    </td>
+                                </tr>
+                            @endforelse
 
                             </tbody>
                         </table>

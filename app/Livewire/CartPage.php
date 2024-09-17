@@ -98,11 +98,7 @@ class CartPage extends Component
         $this->price_with_shipping = $this->total_units_price + $this->shipping_cost;
     }
 
-    public function performAction()
-    {
-        sleep(2);
-        return redirect('/checkout');
-    }
+
 
     public function removeConfirmation($productId)
     {
@@ -164,6 +160,7 @@ class CartPage extends Component
 
         $this->addShippingCost();
         $this->message = 'Voucher applied successfully!';
+        $this->resetErrorBag();
     }
 
 
@@ -181,6 +178,7 @@ class CartPage extends Component
         session()->forget(['voucher_discount', 'voucher_name', 'subtotal_with_discount', 'voucher_code']);
 
         $this->message = 'Voucher removed successfully!';
+        $this->resetErrorBag();
     }
 
     private function recalculateVoucher()

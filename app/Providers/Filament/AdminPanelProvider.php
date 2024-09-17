@@ -49,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('lsm-admin')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-//                OrderStats::class,
+                OrderStats::class,
                 Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
             ])
@@ -70,7 +70,8 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentShieldPlugin::make(),
                 FilamentGeneralSettingsPlugin::make()
-                    ->canAccess(fn() => auth()->user()->id === 1)
+                    ->canAccess()
+//                    ->canAccess(fn() => auth()->user()->id === 1)
                     ->setSort(3)
                     ->setIcon('heroicon-o-cog')
                     ->setNavigationGroup('Settings')

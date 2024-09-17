@@ -1,46 +1,34 @@
-<div>
-    <section class="swiper-container js-swiper-slider swiper-number-pagination slideshow" data-settings='{
-        "autoplay": {
-          "delay": 5000
-        },
-        "slidesPerView": 1,
-        "effect": "fade",
-        "loop": true
-      }'>
-        @foreach($carouselImages as $item)
-        <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <div class="overflow-hidden position-relative h-100">
-                    <div class="slideshow-character position-absolute bottom-0 pos_right-center">
-                        <img loading="lazy" src=""{{ asset('storage/' . $item['image_path']) }}" width="542" height="733"
-                             alt="{{ $item['alt_text'] }}"
-                             class="slideshow-character__img animate animate_fade animate_btt animate_delay-9 w-auto h-auto" />
-                        <div class="character_markup type2">
-                            <p
-                                class="text-uppercase font-sofia mark-grey-color animate animate_fade animate_btt animate_delay-10 mb-0">
-                                {{ $item['title'] }}</p>
+<div class="container">
+    <!-- Slider -->
+    <div data-hs-carousel='{
+    "loadingClasses": "opacity-0",
+    "isAutoPlay": true
+  }' class="relative">
+        <div class="hs-carousel relative overflow-hidden w-full h-[100dvh] bg-white rounded-lg">
+            <div class="hs-carousel-body absolute top-0 bottom-0 start-0 flex  transition-transform duration-700 opacity-0 h-full">
+                @foreach($carouselImages as $item)
+                    <div class="hs-carousel-slide ">
+                        <div class="flex justify-around p-1">
+                            <div class=" max-w-md z-10">
+                                <h2 class="text-5xl font-bold text-black mb-4">{{ $item['title'] }}</h2>
+                                <p class="text-lg text-gray-700 mb-6">test</p>
+                                <a href="" class="btn-link btn-link_lg default-underline fw-medium animated-button">
+                                    Shop Now
+                                </a>
+                            </div>
+                        <span class="self-center text-4xl text-gray-800 transition duration-700">
+                            <img src="{{ "/storage/" . $item['image_path'] }}" alt="{{ $item['alt_text'] }}" >
+                        </span>
                         </div>
                     </div>
-                    <div class="slideshow-text container position-absolute start-50 top-50 translate-middle">
-                        <h6 class="text_dash text-uppercase fs-base fw-medium animate animate_fade animate_btt animate_delay-3">
-                            New Arrivals</h6>
-                        <h2 class="h1 fw-normal mb-0 animate animate_fade animate_btt animate_delay-5">Night Spring</h2>
-                        <h2 class="h1 fw-bold animate animate_fade animate_btt animate_delay-5">Dresses</h2>
-                        <a href="#"
-                           class="btn-link btn-link_lg default-underline fw-medium animate animate_fade animate_btt animate_delay-7">Shop
-                            Now</a>
-                    </div>
-                </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
 
-        <div class="container">
-            <div
-                class="slideshow-pagination slideshow-number-pagination d-flex align-items-center position-absolute bottom-0 mb-5">
-            </div>
-        </div>
-    </section>
+
+    </div>
+    <!-- End Slider -->
+
     <div class="container mw-1620 bg-white border-radius-10">
         <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
         <section class="category-carousel container">
@@ -877,3 +865,14 @@
     <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const button = document.querySelector(".animated-button");
+        setTimeout(() => {
+            button.classList.add("show");
+        }, 500); // Delay the animation by 500ms
+    });
+
+
+</script>

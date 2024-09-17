@@ -1,6 +1,6 @@
 @php
     $isApplied = session('voucher_discount') > 0;
- @endphp
+@endphp
 <div class="pb-14 mb-14">
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
@@ -71,17 +71,46 @@
                                     class="shopping-cart__product-price">{{ Number::currency($item['unit_price'], 'EUR') }}</span>
                             </td>
                             <td>
-                                <div class="qty-control position-relative">
-                                    <input type="number" id="quantity-{{$item['product_id']}}" name="quantity" value="{{$item['quantity']}}" readonly min="1" class="qty-control__number text-center">
-
-                                    <button onclick="updateQuantity('{{$item['product_id']}}', -1)" wire:click="decreaseQty({{ $item['product_id'] }})" class="qty-control__reduce">
-                                        -
+                                <div class="flex items-center">
+                                    <button
+                                        wire:click="decreaseQty({{ $item['product_id'] }})"
+                                        class="border rounded-md h-12 w-12 flex justify-center items-center mr-2 {{ $item['quantity'] == 1 ? 'cursor-not-allowed' : '' }}"
+                                        {{ $item['quantity'] == 1 ? 'disabled' : '' }}
+                                        wire:loading.attr="disabled">
+                                        <span wire:loading.remove
+                                              wire:target="decreaseQty({{ $item['product_id'] }})">-</span>
+                                        <span wire:loading wire:target="decreaseQty({{ $item['product_id'] }})">
+                                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-75" cx="12" cy="12" r="10" stroke="rgb(255 127 80)"
+                                                    stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                  d="M4 12a8 8 0 018-8V0l5 5-5 5V6a6 6 0 00-6 6H4z"></path>
+                                        </svg>
+                                    </span>
                                     </button>
 
-                                    <button onclick="updateQuantity('{{$item['product_id']}}', 1)" wire:click="increaseQty({{$item['product_id']}})" class="qty-control__increase">
-                                        +
+                                    <span class="text-center w-8">{{$item['quantity']}}</span>
+
+                                    <button
+                                        wire:click="increaseQty({{ $item['product_id'] }})"
+                                        class="border rounded-md h-12 w-12 flex justify-center items-center ml-2"
+                                        wire:loading.attr="disabled">
+                                        <span wire:loading.remove
+                                              wire:target="increaseQty({{ $item['product_id'] }})">+</span>
+                                        <span wire:loading wire:target="increaseQty({{ $item['product_id'] }})">
+                                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-75" cx="12" cy="12" r="10" stroke="rgb(255 127 80)"
+                                                    stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                  d="M4 12a8 8 0 018-8V0l5 5-5 5V6a6 6 0 00-6 6H4z"></path>
+                                        </svg>
+                                    </span>
                                     </button>
                                 </div>
+
+
                             </td>
                             <td>
                                 <span
@@ -112,16 +141,20 @@
                 </table>
                 @if($cart_items)
                     <div class="cart-table-footer">
-                        <form wire:submit.prevent="{{ $isApplied ? 'removeVoucher' : 'applyVoucher' }}" class="position-relative bg-body">
+                        <form wire:submit.prevent="{{ $isApplied ? 'removeVoucher' : 'applyVoucher' }}"
+                              class="position-relative bg-body">
                             <input class="form-control" type="text" wire:model="voucherCode" placeholder="Coupon Code">
                             <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
                                    value=" {{ $isApplied ? 'REMOVE' : 'APPLY' }} COUPON">
-                            @error('voucherCode') <span class="error">{{ $message }}</span> @enderror
                         </form>
-                        @if ($message)
-                            <p>{{ $message }}</p>
+
+                        @if ($errors->has('voucherCode'))
+                            <div class="mt-2 text-red-500">{{ $errors->first('voucherCode') }}</div>
+                        @elseif ($message)
+                            <div class="mt-2 text-green-600">{{ $message }}</div>
                         @endif
                     </div>
+
                 @endif
             </div>
             <div class="shopping-cart__totals-wrapper">
@@ -134,12 +167,15 @@
                                 <th>Subtotal</th>
                                 <td class="text-right {{ $isApplied ? 'line-through' : '' }}">{{ Number::currency($total_units_price, 'EUR') }}</td>
                             </tr>
+
                             @if($isApplied)
                                 <tr>
                                     <th>Discount</th>
-                                    <td class="text-right">- {{ Number::currency(session('voucher_discount'), 'EUR') }}</td>
+                                    <td class="text-right">
+                                        - {{ Number::currency(session('voucher_discount'), 'EUR') }}</td>
                                 </tr>
                             @endif
+
                             <tr>
                                 <th>Shipping</th>
                                 <td class="text-right">{{ $shipping_cost == 5 ? Number::currency($shipping_cost, 'EUR') : "Free Shipping" }}</td>
@@ -149,19 +185,28 @@
                                 <td class="text-right">{{ $isApplied ? Number::currency(max($price_with_shipping - session('voucher_discount'), 5), 'EUR') : Number::currency($price_with_shipping, 'EUR') }}</td>
                             </tr>
                             </tbody>
-
                         </table>
                     </div>
                     <div class="mobile_fixed-btn_wrapper">
                         @if($cart_items)
-                            <div class="button-wrapper container">
-                                <button wire:navigate href="/checkout"
-                                        class="btn btn-primary btn-checkout">PROCEED TO
-                                    CHECKOUT
-                                </button>
-                            </div>
-                        @endif
 
+                            <button
+                                type="button"
+                                wire:navigate href="/checkout"
+                                class="btn btn-primary btn-checkout custom-button"
+
+                                x-data="{ buttonClicked: false }"
+                                x-on:click="buttonClicked = true"
+                                :class="{ 'opacity-50 text-orange-600': buttonClicked }"
+                            >
+                                <span wire:loading.remove
+                                      wire:target="decreaseQty, increaseQty">PROCEED TO CHECKOUT</span>
+                                <span wire:loading wire:target="decreaseQty, increaseQty">
+                                <span class="mr-2 opacity-70">RECALCULATING...</span>
+                            </span>
+                            </button>
+
+                        @endif
                     </div>
                 </div>
             </div>
@@ -182,26 +227,16 @@
         });
 
         swalWithBootstrapButtons.fire({
-            title: "Are you sure?",
+            title: "ARE YOU SURE?",
             text: "",
             showCancelButton: true,
             confirmButtonText: "Yes",
             cancelButtonText: "Cancel",
         }).then((result) => {
             if (result.isConfirmed) {
-            @this.call('removeItem');
+            @this.call('removeItem')
+                ;
             }
         });
     });
-
-    function updateQuantity(productId, change) {
-        const input = document.getElementById('quantity-' + productId);
-        const currentValue = parseInt(input.value);
-        const newValue = currentValue + change;
-
-        // Ensure the value stays within the min bound
-        if (newValue >= 1) {
-            input.value = newValue;
-        }
-    }
 </script>

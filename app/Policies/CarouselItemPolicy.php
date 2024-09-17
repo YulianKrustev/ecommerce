@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Product;
+use App\Models\CarouselItem;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProductPolicy
+class CarouselItemPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class ProductPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_product');
+        return $user->can('view_any_carousel::images');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Product $product): bool
+    public function view(User $user, CarouselItem $carouselItem): bool
     {
-        return $user->can('view_product');
+        return $user->can('view_carousel::images');
     }
 
     /**
@@ -31,23 +31,23 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_product');
+        return $user->can('create_carousel::images');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Product $product): bool
+    public function update(User $user, CarouselItem $carouselItem): bool
     {
-        return $user->can('update_product');
+        return $user->can('update_carousel::images');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Product $product): bool
+    public function delete(User $user, CarouselItem $carouselItem): bool
     {
-        return $user->can('delete_product');
+        return $user->can('delete_carousel::images');
     }
 
     /**
@@ -55,13 +55,13 @@ class ProductPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_product');
+        return $user->can('delete_any_carousel::images');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Product $product): bool
+    public function forceDelete(User $user, CarouselItem $carouselItem): bool
     {
         return $user->can('{{ ForceDelete }}');
     }
@@ -77,7 +77,7 @@ class ProductPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Product $product): bool
+    public function restore(User $user, CarouselItem $carouselItem): bool
     {
         return $user->can('{{ Restore }}');
     }
@@ -93,9 +93,9 @@ class ProductPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Product $product): bool
+    public function replicate(User $user, CarouselItem $carouselItem): bool
     {
-        return $user->can('replicate_product');
+        return $user->can('replicate_carousel::images');
     }
 
     /**
@@ -103,6 +103,6 @@ class ProductPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_product');
+        return $user->can('reorder_carousel::images');
     }
 }

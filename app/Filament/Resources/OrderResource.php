@@ -95,14 +95,14 @@ class OrderResource extends Resource
                                 'processing' => 'Processing',
                                 'shipped' => 'Shipped',
                                 'delivered' => 'Delivered',
-                                'canceled' => 'Canceled',
+                                'cancelled' => 'Cancelled',
                             ])
                             ->colors([
                                 'new' => 'primary',
                                 'processing' => 'danger',
                                 'shipped' => 'success',
                                 'delivered' => 'success',
-                                'canceled' => 'danger',
+                                'cancelled' => 'danger',
                             ])
                             ->icons([
                                 'new' => 'heroicon-m-shopping-cart',
@@ -135,7 +135,7 @@ class OrderResource extends Resource
                                     ->preload()
                                     ->distinct()
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ->columnSpan(5)
+                                    ->columnSpan(3)
                                     ->live()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $product = Product::find($state);
@@ -173,7 +173,7 @@ class OrderResource extends Resource
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
-                                    ->columnSpan(2),
+                                    ->columnSpan(3),
 
                                 TextInput::make('total_units_price')
                                     ->prefix('EUR')
@@ -182,7 +182,7 @@ class OrderResource extends Resource
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
-                                    ->columnSpan(2),
+                                    ->columnSpan(3),
 
                                 ViewField::make('first_image_display')
                                     ->view('components.product-image-view')
@@ -287,7 +287,20 @@ class OrderResource extends Resource
 
                 TextColumn::make('payment_status')
                     ->label('Payment')
-                    ->sortable(),
+                    ->badge()
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        // Capitalize the first letter of the payment status
+                        return ucfirst($state);
+                    })
+                    ->color(function ($state) {
+                        // Set badge color based on the payment status
+                        return match ($state) {
+                            'paid' => 'success',  // Green badge for paid
+                            'failed' => 'danger',  // Red badge for failed
+                            default => 'primary',  // Default color for other statuses
+                        };
+                    }),
 
 
                 TextColumn::make('total_price')
@@ -307,13 +320,10 @@ class OrderResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])->defaultSort('id', 'desc')
             ->filters([
                 //
@@ -335,7 +345,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-//            AddressRelationManager::class,
+           AddressRelationManager::class,
         ];
     }
 

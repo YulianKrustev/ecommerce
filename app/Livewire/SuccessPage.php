@@ -35,6 +35,7 @@ class SuccessPage extends Component
 
             if ($session_info->payment_status != 'paid') {
                 $latest_order->payment_status = 'failed';
+                $latest_order->status = 'cancelled';
                 $latest_order->save();
 
                 return redirect()->route('cancel');

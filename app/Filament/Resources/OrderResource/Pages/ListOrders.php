@@ -4,8 +4,6 @@ namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
 use Filament\Actions;
-
-
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,17 +14,17 @@ class ListOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-//            Actions\CreateAction::make()
-//            ->label('New Order'),
+            Actions\CreateAction::make()
+            ->label('New Order'),
         ];
     }
 
-//    protected function getHeaderWidgets(): array
-//    {
-//        return [
+    protected function getHeaderWidgets(): array
+    {
+        return [
 //          OrderResource\Widgets\OrderStats::class
-//        ];
-//    }
+        ];
+    }
 
     public function getTabs(): array
     {

@@ -7,6 +7,7 @@ use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Voucher;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Title;
@@ -19,6 +20,7 @@ use function Termwind\render;
 class CheckoutPage extends Component
 {
     use LivewireAlert;
+
     public $first_name;
     public $last_name;
 
@@ -70,13 +72,12 @@ class CheckoutPage extends Component
                     'unit_amount' => $item['unit_price'] * 100,
                     'product_data' => [
                         'name' => $item['name'],
-                        'images' => ['storage'. array_slice($item['images'], -1)[0]],
+                        'images' => [url('storage/' . array_slice($item['images'], -1)[0])],
                     ],
                 ],
                 'quantity' => $item['quantity']
             ];
         }
-
 
         $subtotal = CartManagement::calculateTotalPrice($cart_items);
 
@@ -91,7 +92,7 @@ class CheckoutPage extends Component
         $order->shipping_method = 'Little Sailors Malta';
         $order->discount = session('voucher_discount') ?? 0;
 
-        $address = New Address();
+        $address = new Address();
         $address->first_name = $this->first_name;
         $address->last_name = $this->last_name;
         $address->phone = $this->phone;
@@ -100,37 +101,37 @@ class CheckoutPage extends Component
         $address->zip_code = $this->zip_code;
         $address->district = $this->district;
 
-        $order->notes = $address->first_name . ' ' . $address->last_name  . "\n"
-                        . $address->phone . "\n"
-                        . $address->address . "\n"
-                        . $address->city . "\n"
-                        . $address->zip_code . "\n"
-                        . $address->district . "\n"
-                        .(session('voucher_name') ? 'Used voucher: ' . session('voucher_name') .' -' . session('voucher_discount') . '€' : '');
+        $order->notes = $address->first_name . ' ' . $address->last_name . "\n"
+            . $address->phone . "\n"
+            . $address->address . "\n"
+            . $address->city . "\n"
+            . $address->zip_code . "\n"
+            . $address->district . "\n"
+            . (session('voucher_name') ? 'Used voucher: ' . session('voucher_name') . ' -' . session('voucher_discount') . '€' : '');
 
 
-            $shipping_rates = [
-                [
-                    'shipping_rate_data' => [
-                        'type' => 'fixed_amount',
-                        'fixed_amount' => [
-                            'amount' => $this->shipping_cost > 0 ? $this->shipping_cost * 100 : 0,
-                            'currency' => 'eur',
+        $shipping_rates = [
+            [
+                'shipping_rate_data' => [
+                    'type' => 'fixed_amount',
+                    'fixed_amount' => [
+                        'amount' => $this->shipping_cost > 0 ? $this->shipping_cost * 100 : 0,
+                        'currency' => 'eur',
+                    ],
+                    'display_name' => 'Standard Shipping',
+                    'delivery_estimate' => [
+                        'minimum' => [
+                            'unit' => 'business_day',
+                            'value' => 1,
                         ],
-                        'display_name' => 'Standard Shipping',
-                        'delivery_estimate' => [
-                            'minimum' => [
-                                'unit' => 'business_day',
-                                'value' => 1,
-                            ],
-                            'maximum' => [
-                                'unit' => 'business_day',
-                                'value' => 2,
-                            ],
+                        'maximum' => [
+                            'unit' => 'business_day',
+                            'value' => 2,
                         ],
                     ],
                 ],
-            ];
+            ],
+        ];
 
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -156,8 +157,6 @@ class CheckoutPage extends Component
             }
         }
 
-
-
         $sessionCheckout = Session::create([
             'payment_method_types' => ['card'],
             'customer_email' => auth()->user()->email,
@@ -171,17 +170,41 @@ class CheckoutPage extends Component
 
         $redirect_url = $sessionCheckout->url;
 
-        $order->save();
-        $address->order_id = $order->id;
-        $address->save();
-        $order->items()->createMany($cart_items);
-//        CartManagement::clearCartItems();
-//        Mail::to(request()->user())->send(new OrderPlaced($order));
+        try {
+            $order->save();
+            $address->order_id = $order->id;
+            $address->save();
+            $order->items()->createMany($cart_items);
+
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+
+            $this->alert('error', 'Something went wrong, please try again.', [
+                'position' => 'top-end',
+                'timer' => 3000,
+                'toast' => true,
+            ]);
+
+            return redirect()->route('login')->with('error', 'Something went wrong, please try again.');
+        }
+
+
         $this->reset();
         return redirect($redirect_url);
     }
+
     public function render()
     {
+        $latest_order = Order::where('user_id', auth()->user()->id)
+            ->latest()
+            ->first();
+
+        if (isset($latest_order) && $latest_order->payment_status == 'pending') {
+            $latest_order->payment_status = 'failed';
+            $latest_order->status = 'cancelled';
+            $latest_order->save();
+        }
+
         $cart_items = CartManagement::fetchCartItems();
         $subtotal = CartManagement::calculateTotalPrice($cart_items);
 

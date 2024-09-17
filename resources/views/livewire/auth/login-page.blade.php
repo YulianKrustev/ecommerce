@@ -11,7 +11,7 @@
                 <div class="login-form">
                     <form wire:submit.prevent="save">
                         @if(session('error'))
-                            <div class="mt-2 bg-red-500 text-sm text-white rounded-lg mb-4 p-4" role="alert"
+                            <div class="mt-2 bg-red-500 text-sm text-white border-1 border-black mb-4 p-3" role="alert"
                                  tabindex="-1" aria-labelledby="hs-solid-color-danger-label">
                                 <span id="hs-solid-color-danger-label" class="font-bold"> {{ session('error') }}
                             </div>
@@ -55,15 +55,18 @@
                             <label for="customerPasswodInput">Password *</label>
                         </div>
                         @error('password')
-                        <p class=" text-xs text-red-600 mt-2" id="email-error">{{ $message }}</p>
+                        <p class=" text-xs text-red-600 mt-2" id="password-error">{{ $message }}</p>
                         @enderror
                         <button class="btn btn-primary w-100 text-uppercase" type="submit">Log In</button>
 
                         <div class="customer-option mt-4 text-center">
-                            <span class="text-secondary">No account yet?</span>
+
                             <a wire:navigate href="/register" class="btn-text js-show-register">Create Account</a> | <a
                                 wire:navigate href="/forgot"
-                                class="btn-text js-show-register">Forgot password</a>
+                                class="btn-text js-show-register">Forgot Password</a> | <a class="btn-text js-show-register" href="{{ url('/auth/google') }}">
+                                Sign in with Google
+                            </a>
+
                         </div>
                     </form>
                 </div>

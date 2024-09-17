@@ -17,7 +17,7 @@
     <section class="contact-us container">
         <div class="mw-930 ">
             <div class="contact-us__form ">
-                <form wire:submit.prevent="create" name="contact-us-form" class="needs-validation" novalidate=""
+                <form wire:submit.prevent="create" name="contact-us-form" class="needs-validation"
                       method="POST">
                     <h2 class="mb-5">Get In Touch</h2>
                     <div class="form-floating my-4">

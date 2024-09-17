@@ -58,7 +58,7 @@ class AddressRelationManager extends RelationManager
             ->recordTitleAttribute('address')
             ->columns([
                 TextColumn::make('fullname')
-                ->label('Name'),
+                    ->label('Name'),
 
                 TextColumn::make('phone'),
 
@@ -72,12 +72,12 @@ class AddressRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+//                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+//                    Tables\Actions\DeleteAction::make()
                 ])
             ])
             ->bulkActions([

@@ -63,7 +63,7 @@ class AddressPolicy
      */
     public function forceDelete(User $user, Address $address): bool
     {
-        return $user->can('force_delete_address');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class AddressPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_address');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class AddressPolicy
      */
     public function restore(User $user, Address $address): bool
     {
-        return $user->can('restore_address');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class AddressPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_address');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**

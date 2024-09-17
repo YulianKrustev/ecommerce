@@ -26,7 +26,6 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Registered Users';
     protected static ?string $model = User::class;
 
-    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
@@ -66,7 +65,6 @@ class UserResource extends Resource
                                     ->mixedCase()
                                     ->numbers()
                                     ->uncompromised(3),
-//                            'regex:/[\W]/'
                             ])
                             ->required()
                             ->revealable()
@@ -152,6 +150,6 @@ class UserResource extends Resource
 
     public static function getNavigationSort(): ?int
     {
-        return 20;  // Sort order for this resource
+        return 3;  // Sort order for this resource
     }
 }

@@ -45,6 +45,8 @@ Route::get('/blog/{slug}', BlogDetailPage::class);
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
+    Route::get('/auth/google',[LoginPage::class, 'googlepage']);
+    Route::get('/auth/google/callback',[LoginPage::class, 'googlecallback']);
     Route::get('/register', RegisterPage::class);
     Route::get('/forgot', ForgotPasswordPage::class)->name('password.request');
     Route::get('/reset/{token}', ResetPasswordPage::class)->name('password.reset');

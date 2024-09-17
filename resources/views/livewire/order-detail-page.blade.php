@@ -1,7 +1,7 @@
 <div class="mb-14 pb-14">
     <div class="mb-4 pb-4"></div>
     <section class="my-account container">
-        <h1 class="page-title">Order's Details</h1>
+        <h1 class="page-title">Order Details</h1>
         <div class="row">
             <div class="col-lg-2">
                 <ul class="account-nav">
@@ -46,10 +46,10 @@
                                 <td colspan="5">
                                     @php
                                         $status = match ($order->status) {
-                                            'new' => '<span class="bg-blue-500 py-1 px-3 rounded text-white shadow">New</span>',
+                                            'new' => '<span class=" py-1 px-3 rounded text-black shadow-xl">New</span>',
                                             'processing' => '<span class="bg-yellow-500 py-1 px-3 rounded text-white shadow">Processing</span>',
                                             'shipped' => '<span class="bg-green-500 py-1 px-3 rounded text-white shadow">Shipped</span>',
-                                            'delivered' => '<span class="bg-green-700 py-1 px-3 rounded text-white shadow">Delivered</span>',
+                                            'delivered' => '<span class="bg-green-600 py-1 px-3 rounded text-white shadow">Delivered</span>',
                                             'cancelled' => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Cancelled</span>',
                                             default => '<span class="bg-red-700 py-1 px-3 rounded text-white shadow">Unknown Payment Status</span>',
                                         };

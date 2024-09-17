@@ -56,7 +56,7 @@ footer {
     color: #fff;
     border: none;
     padding: 8px 16px;
-    border-radius: 4px;
+
     font-size: 14px;
     transition: all 0.3s ease 0s;
     margin-right: 10px;
@@ -68,13 +68,13 @@ footer {
     color: white;
 }
 
+
 .custom-cancel-button {
-    background-color: rgb(255 231 154);
+    background-color: rgb(101 163 13);
     font-weight: bold;
-    color: rgb(255 127 80);
+    color: #fff;
     border: none;
     padding: 8px 16px;
-    border-radius: 4px;
     font-size: 14px;
     transition: all 0.3s ease 0s;
 }
@@ -88,10 +88,11 @@ footer h6 {
 }
 
 .custom-swal-modal {
-    background-color: #2D2D2D !important; /* Example: light gray background */
+    background-color: #1d1d1d !important; /* Example: light gray background */
+    border-color: #1d1d1d;
+    border-radius: 0;
     color: #333; /* Example: change text color if needed */
-    border-radius: 10px; /* Example: rounded corners */
-    padding: 20px; /* Example: padding inside the modal */
+    padding: 0.8rem; /* Example: padding inside the modal */
 }
 
 /* Optional: change the title color */
@@ -122,6 +123,8 @@ footer h6 {
     height: 22px;
     width: 22px;
 }
+
+
 
 
 

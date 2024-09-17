@@ -1,3 +1,4 @@
+
 <div>
     <div>
         <div class="header-mobile sticky top-0 z-50 bg-white">
@@ -100,7 +101,8 @@
     </div>
 
 
-    <header id="header" class="header header-fullwidth header-transparent-bg">
+    <marquee bgcolor="#ffe79a" >Welcome to Little Sailors Malta! Enjoy our special offers and discounts! 🚢 Free shipping on orders over €50! 🌞 Shop Now and Save!</marquee>
+    <header id="header" class="header header-fullwidth header-transparent-bg mb-2">
         <div class="container">
             <div class="header-desk header-desk_type_1">
                 <div class="logo">

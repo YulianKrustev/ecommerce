@@ -113,7 +113,6 @@ class PostResource extends Resource
 
                                                 RichEditor::make('content')
                                                     ->disableToolbarButtons([
-                                                        'attachFiles',
                                                         'codeBlock',
                                                         'strike',
                                                         'underline',

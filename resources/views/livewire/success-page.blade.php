@@ -1,11 +1,24 @@
+
+
+
 <div class="pb-3 mb-3">
+    @php
+        if (empty($order)) {
+            return redirect()->route('home');
+        }
+    @endphp
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
         <div class="flex justify-between items-center">
             <h1 class="page-title">Order Received</h1>
-            <button wire:navigate href="/" type="button" class="btn btn-primary btn-addtocart mb-5"
-                    data-aside="cartDrawer">BACK TO SHOP
+            <button wire:click="redirectToHome"
+                    wire:loading.class="opacity-50 text-white"
+                    type="button"
+                    class="btn btn-primary mb-5">
+                BACK TO SHOP
             </button>
+
+
         </div>
         <div class="checkout-steps">
 
@@ -45,7 +58,7 @@
                     <table class="checkout-cart-items">
                         <thead>
                         <tr>
-                            <th>PRODUCT</th>
+                            <th>{{ count($order->items) > 1 ? "PRODUCTS" : "PRODUCT" }}</th>
                             <th>SUBTOTAL</th>
                         </tr>
                         </thead>
