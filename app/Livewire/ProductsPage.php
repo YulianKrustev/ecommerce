@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Product;
+use App\Models\Size;
 use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Attributes\Title;
@@ -30,16 +32,31 @@ class ProductsPage extends Component
     public $price_range = 500;
     #[Url]
     public $sort = 'latest';
+    #[Url]
+    public $selectedColor = null;
+
+    #[Url]
+    public $selectedSize = null;
+
+    public $temp_selected_categories = [];
+
+    public $temp_in_stock;
+
+    public $temp_on_sale;
+
+    public $temp_selectedColor = null;
+
+    public $temp_selectedSize = null;
 
 
-    public function addToCart($product_id)
+    public function addToCart($product_id, $size)
     {
-        $total_count = CartManagement::addItemToCart($product_id);
+        $total_count = CartManagement::addItemToCart($product_id, $quantity = 1, $size);
 
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
 
         $this->alert('success', 'Product added to the cart successfully!', [
-            'position' => 'top',
+            'position' => 'top-end',
             'timer' => 3000,
             'toast' => true,
         ]);
@@ -64,9 +81,9 @@ class ProductsPage extends Component
         }
     }
 
-    public function removeFromWishlist($wishlistId)
+    public function removeFromWishlist($removeId)
     {
-        Wishlist::where('id', $wishlistId)->delete();
+        Wishlist::where('user_id', Auth::id())->where('product_id', $removeId)->delete();
 
         $this->alert('success', 'Product removed successfully!', [
             'position' => 'top-end',
@@ -75,9 +92,39 @@ class ProductsPage extends Component
         ]);
     }
 
+    public function selectColor($colorId)
+    {
+        $this->selectedColor = $colorId;
+    }
+
+    public function tempSelectColor($colorId)
+    {
+        $this->temp_selectedColor = $colorId;
+    }
+
+    public function selectSize($sizeId)
+    {
+        $this->selectedSize = $sizeId;
+    }
+
+    public function tempSelectSize($sizeId)
+    {
+        $this->temp_selectedSize = $sizeId;
+    }
+
+    public function applyModalFilters()
+    {
+        $this->selected_categories = $this->temp_selected_categories;
+        $this->in_stock = $this->temp_in_stock;
+        $this->on_sale = $this->temp_on_sale;
+        $this->selectedColor = $this->temp_selectedColor;
+        $this->selectedSize = $this->temp_selectedSize;
+
+    }
+
     public function render()
     {
-        $productQuery = Product::query()->where('is_active', 1);
+        $productQuery = Product::query()->where('is_active', 1)->with('sizes');
 
         if ($this->in_stock) {
             $productQuery->where('in_stock', 1);
@@ -87,14 +134,24 @@ class ProductsPage extends Component
             $productQuery->where('on_sale', 1);
         }
 
+        if ($this->selectedColor) {
+            $productQuery->where('color_id', $this->selectedColor);
+        }
+
         if (!empty($this->selected_categories)) {
             $productQuery->whereHas('categories', function ($query) {
                 $query->whereIn('categories.id', $this->selected_categories);
             });
         }
 
-        if ($this->price_range) {
-            $productQuery->whereBetween('price', [0, $this->price_range]);
+//        if ($this->price_range) {
+//            $productQuery->whereBetween('price', [0, $this->price_range]);
+//        }
+
+        if ($this->selectedSize) {
+            $productQuery->whereHas('sizes', function ($query) {
+                $query->where('size_id', $this->selectedSize);
+            });
         }
 
         if ($this->sort == 'latest') {
@@ -105,7 +162,10 @@ class ProductsPage extends Component
 
         return view('livewire.products-page', [
             'products' => $productQuery->paginate(12),
+            'colors' => Color::all(),
+            'sizes' => Size::all(),
             'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
+            'wishlistItems' => Wishlist::where('user_id', Auth::id())->get(),
         ]);
     }
 }

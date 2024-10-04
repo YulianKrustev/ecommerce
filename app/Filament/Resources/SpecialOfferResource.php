@@ -94,8 +94,9 @@ class SpecialOfferResource extends Resource
                                     ->searchable()
                                     ->label('Select Products')
                                     ->preload()
+                                    ->placeholder(fn($record) => $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Products')
                                     ->reactive()
-                                    ->placeholder('Choose either categories or products.'),
+                                    ->disabled(fn($record) => $record->is_active !== 0),
 //                                    ->afterStateUpdated(function ($state, callable $set) {
 //                                        if (!empty($state)) {
 //                                            $set('categories', []);
@@ -104,7 +105,7 @@ class SpecialOfferResource extends Resource
 
                                 FileUpload::make('image')
                                     ->image()
-//                                    ->optimize('webp')
+                                    ->optimize('webp')
                                     ->required()
                                     ->columnSpan(1)
                                     ->directory('special_offers')
@@ -114,10 +115,11 @@ class SpecialOfferResource extends Resource
                                     ->relationship('categories', 'name')
                                     ->multiple()
                                     ->searchable()
-                                    ->placeholder('Choose either categories or products.')
                                     ->label('Select Categories')
                                     ->preload()
-                                    ->reactive(),
+                                    ->reactive()
+                                    ->placeholder(fn($record) => $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Categories')
+                                    ->disabled(fn($record) => $record->is_active !== 0),
 //                                    ->afterStateUpdated(function ($state, callable $set) {
 //                                        if (!empty($state)) {
 //                                            $set('products', []);
@@ -215,6 +217,8 @@ class SpecialOfferResource extends Resource
                 ])
             ])->columns(1);
     }
+
+
 
     public static function table(Table $table): Table
     {

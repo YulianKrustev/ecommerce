@@ -80,8 +80,8 @@
                                 <th class="text-center">Price</th>
                                 <th class="text-center">Quantity</th>
                                 <th class="text-center">SKU</th>
-                                <th class="text-center">Options</th>
-                                <th class="text-center">Return</th>
+                                <th class="text-center">Size</th>
+                                <th class="text-center">Color</th>
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
@@ -90,11 +90,11 @@
                                 <tr wire:key="{{ $item->id }}">
                                     <td class="pname">
                                         <div class="name">
-                                            <a wire:navigate href="/products/{{ $item->product['slug'] }}"
+                                            <a wire:navigate href="/{{ $item->product['slug'] }}"
                                                target="_blank"
                                                class="body-title-2"><span>{{ $item->product->name }}</span></a>
                                         </div>
-                                        <a wire:navigate href="/products/{{ $item->product['slug'] }}" target="_blank">
+                                        <a wire:navigate href="/{{ $item->product['slug'] }}" target="_blank">
                                             <div class="image">
                                                 <img src="{{ url('storage', $item->product->first_image) }}"
                                                      alt="{{ $item->product->name }}"
@@ -104,11 +104,11 @@
                                     </td>
                                     <td class="text-center">{{ Number::currency($item->unit_price, 'EUR') }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-center">SHT01245</td>
-                                    <td class="text-center">Color</td>
-                                    <td class="text-center">No</td>
+                                    <td class="text-center">{{ $item->product->sku ?? $item->product->id }}</td>
+                                    <td class="text-center">{{ $item->size }}</td>
+                                    <td class="text-center">{{ $item->color }}</td>
                                     <td class="text-center">
-                                        <a wire:navigate href="/products/{{ $item->product['slug'] }}" target="_blank">
+                                        <a wire:navigate href="/{{ $item->product['slug'] }}" target="_blank">
                                             <div class="list-icon-function view-icon">
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">

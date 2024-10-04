@@ -6,6 +6,8 @@ use App\Helpers\CartManagement;
 use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\Size;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -38,6 +40,21 @@ class CheckoutPage extends Component
     public $shipping_cost;
 
 
+    public function checkAvailbaleSizeQuantity($cart_items)
+    {
+        foreach ($cart_items as $item) {
+            $product = Product::findOrFail($item['product_id']);
+            $sizeId = Size::where('name', $item['size'])->first()->id;
+            $availableQuantity = $product->sizes->where('size_id', $sizeId)->first()->quantity;
+
+            if ($item['quantity'] > $availableQuantity) {
+                return [$item['name'], $item['size'], $availableQuantity];
+            }
+        }
+
+        return false;
+    }
+
     public function placeOrder()
     {
         $this->validate([
@@ -52,6 +69,17 @@ class CheckoutPage extends Component
         ]);
 
         $cart_items = CartManagement::fetchCartItems();
+
+        $productsAvailable = $this->checkAvailbaleSizeQuantity($cart_items);
+
+        if ($productsAvailable) {
+            $errors = session()->get('errors', new \Illuminate\Support\MessageBag);
+            $errors->add('increaseQty', "There are only $productsAvailable[2] items available in $productsAvailable[0], size: $productsAvailable[1]." );
+
+            session()->flash('errors', $errors);
+
+            return $this->redirect('/cart');
+        }
 
         if (empty($cart_items)) {
             $this->alert('error', 'Your cart is empty!', [
@@ -73,6 +101,7 @@ class CheckoutPage extends Component
                     'product_data' => [
                         'name' => $item['name'],
                         'images' => [url('storage/' . array_slice($item['images'], -1)[0])],
+                        'description' => 'Size: ' . $item['size'] . ', Color: ' . $item['color'],
                     ],
                 ],
                 'quantity' => $item['quantity']

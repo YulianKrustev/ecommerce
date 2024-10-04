@@ -29,7 +29,7 @@
                 <div wire:key="{{ $product->id }}" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pt-10">
                     <div class="product-card product-card_style3 mb-3 mb-md-4 mb-xxl-5">
                         <div class="pc__img-wrapper">
-                            <a wire:navigate href="/products/{{ $product->slug }}">
+                            <a wire:navigate href="/{{ $product->slug }}">
                                 <img loading="lazy" src="{{ asset('storage/' . $product->first_image) }}"
                                      width="330" height="400"
                                      alt="{{ $product->name }}" class="pc__img">
@@ -39,7 +39,7 @@
                         <div class="pc__info relative">
                             <h2 class="pc__title">
                                 <a wire:navigate
-                                   href="/products/{{ $product->slug }}">{{ $product->name }}</a>
+                                   href="/{{ $product->slug }}">{{ $product->name }}</a>
                             </h2>
                             <div class="product-card__price flex items-center">
                             <span

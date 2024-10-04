@@ -124,7 +124,9 @@ footer h6 {
     width: 22px;
 }
 
-
+.mySlides {
+    display:none;
+}
 
 
 

@@ -48,7 +48,7 @@
                         <tr wire:key="{{ $item['product_id'] }}">
                             <td>
                                 <div class="shopping-cart__product-item">
-                                    <a wire:navigate href="/products/{{ $item['slug'] }}">
+                                    <a href="/{{ $item['slug'] }}" >
                                         <img loading="lazy"
                                              src="{{ url('storage', array_slice($item['images'], -1)[0]) }}" width="120"
                                              height="120" alt="{{ $item['name'] }}"/>
@@ -57,12 +57,12 @@
                             </td>
                             <td>
                                 <div class="shopping-cart__product-item__detail">
-                                    <a wire:navigate href="/products/{{ $item['slug'] }}">
+                                    <a href="/{{ $item['slug'] }}">
                                         <h2 class="text-lg">{{ $item['name'] }}</h2>
                                     </a>
                                     <ul class="shopping-cart__product-item__options">
-                                        <li>Color: Yellow</li>
-                                        <li>Size: L</li>
+                                        <li>Color: {{ $item['color'] }}</li>
+                                        <li>Size: {{ $item['size'] }}</li>
                                     </ul>
                                 </div>
                             </td>
@@ -73,13 +73,13 @@
                             <td>
                                 <div class="flex items-center">
                                     <button
-                                        wire:click="decreaseQty({{ $item['product_id'] }})"
+                                        wire:click="decreaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}')"
                                         class="border rounded-md h-12 w-12 flex justify-center items-center mr-2 {{ $item['quantity'] == 1 ? 'cursor-not-allowed' : '' }}"
                                         {{ $item['quantity'] == 1 ? 'disabled' : '' }}
                                         wire:loading.attr="disabled">
                                         <span wire:loading.remove
-                                              wire:target="decreaseQty({{ $item['product_id'] }})">-</span>
-                                        <span wire:loading wire:target="decreaseQty({{ $item['product_id'] }})">
+                                              wire:target="decreaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}')">-</span>
+                                        <span wire:loading wire:target="decreaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}')">
                                         <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg"
                                              fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-75" cx="12" cy="12" r="10" stroke="rgb(255 127 80)"
@@ -93,12 +93,12 @@
                                     <span class="text-center w-8">{{$item['quantity']}}</span>
 
                                     <button
-                                        wire:click="increaseQty({{ $item['product_id'] }})"
+                                        wire:click="increaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}' )"
                                         class="border rounded-md h-12 w-12 flex justify-center items-center ml-2"
                                         wire:loading.attr="disabled">
                                         <span wire:loading.remove
-                                              wire:target="increaseQty({{ $item['product_id'] }})">+</span>
-                                        <span wire:loading wire:target="increaseQty({{ $item['product_id'] }})">
+                                              wire:target="increaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}')">+</span>
+                                        <span wire:loading wire:target="increaseQty({{ $item['product_id'] }}, '{{ $item['size'] }}')">
                                         <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg"
                                              fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-75" cx="12" cy="12" r="10" stroke="rgb(255 127 80)"
@@ -109,15 +109,13 @@
                                     </span>
                                     </button>
                                 </div>
-
-
                             </td>
                             <td>
                                 <span
                                     class="shopping-cart__subtotal">{{ Number::currency($item['unit_price'] * $item['quantity'], 'EUR') }}</span>
                             </td>
                             <td>
-                                <a wire:click="removeConfirmation({{ $item['product_id'] }})" href="#"
+                                <a wire:click="removeConfirmation({{ $item['product_id'] }}, '{{ $item['size'] }}')" href="#"
                                    class="remove-cart">
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676"
                                          xmlns="http://www.w3.org/2000/svg">
@@ -137,26 +135,28 @@
                             </td>
                         </tr>
                     @endforelse
+
                     </tbody>
                 </table>
+
                 @if($cart_items)
                     <div class="cart-table-footer">
                         <form wire:submit.prevent="{{ $isApplied ? 'removeVoucher' : 'applyVoucher' }}"
                               class="position-relative bg-body">
                             <input class="form-control" type="text" wire:model="voucherCode" placeholder="Coupon Code">
-                            <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
+                            <input class="btn-link fw-medium position-absolute top-0 end-4 h-100 " type="submit"
                                    value=" {{ $isApplied ? 'REMOVE' : 'APPLY' }} COUPON">
                         </form>
-
-                        @if ($errors->has('voucherCode'))
-                            <div class="mt-2 text-red-500">{{ $errors->first('voucherCode') }}</div>
-                        @elseif ($message)
-                            <div class="mt-2 text-green-600">{{ $message }}</div>
-                        @endif
                     </div>
 
                 @endif
+                @if ($errors->has('voucherCode'))
+                    <div class="mt-2 text-red-500">{{ $errors->first('voucherCode') }}</div>
+                @elseif ($message)
+                    <div class="mt-2 text-green-500">{{ $message }}</div>
+                @endif
             </div>
+
             <div class="shopping-cart__totals-wrapper">
                 <div class="sticky-content">
                     <div class="shopping-cart__totals">
@@ -165,7 +165,7 @@
                             <tbody>
                             <tr>
                                 <th>Subtotal</th>
-                                <td class="text-right {{ $isApplied ? 'line-through' : '' }}">{{ Number::currency($total_units_price, 'EUR') }}</td>
+                                <td class="text-right">{{ Number::currency($total_units_price, 'EUR') }}</td>
                             </tr>
 
                             @if($isApplied)
@@ -208,6 +208,9 @@
 
                         @endif
                     </div>
+                    @if ($errors->has('increaseQty'))
+                        <div class="mt-2 text-red-500 text-center">{{ $errors->first('increaseQty') }}</div>
+                    @endif
                 </div>
             </div>
         </div>

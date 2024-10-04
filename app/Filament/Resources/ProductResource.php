@@ -5,12 +5,17 @@ namespace App\Filament\Resources;
 use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Color;
 use App\Models\Product;
+use App\Models\Size;
 use App\Models\Tag;
 use Faker\Core\Number;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\HasManyRepeater;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -20,10 +25,16 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Infolists\Components\ColorEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\ImportAction;
@@ -80,7 +91,7 @@ class ProductResource extends Resource
                                                     ->columnSpan(3)
                                                     ->required()
                                                     ->maxLength(60)
-                                                    ->live(onBlur: true)
+                                                    ->live()
                                                     ->afterStateUpdated(function (
                                                         string $operation,
                                                         ?string $state,
@@ -94,6 +105,10 @@ class ProductResource extends Resource
                                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                                         $set('image_alt', $state);
                                                     }),
+
+                                                TextInput::make('sku')
+                                                    ->columnSpan(3)
+                                                    ->maxLength(60),
 
                                                 TextInput::make('slug')
                                                     ->columnSpan(3)
@@ -137,7 +152,8 @@ class ProductResource extends Resource
                                                         $lastSpacePosition = mb_strrpos($truncatedState, ' ');
 
                                                         if ($lastSpacePosition !== false) {
-                                                            $truncatedState = mb_substr($truncatedState, 0, $lastSpacePosition);
+                                                            $truncatedState = mb_substr($truncatedState, 0,
+                                                                $lastSpacePosition);
                                                         }
                                                         $truncatedState = rtrim($truncatedState);
                                                         $truncatedState .= '...FREE NEXT DAY DELIVERY';
@@ -145,10 +161,73 @@ class ProductResource extends Resource
                                                     }),
                                             ]),
 
+                                        Section::make('Attribute')->schema([
+                                            Select::make('color_id')
+                                                ->label('Color')
+                                                ->allowHtml()
+                                                ->native(false)
+                                                ->required()
+                                                ->createOptionForm([
+                                                    TextInput::make('name')
+                                                        ->required()
+                                                        ->unique(ignoreRecord: true),
+
+                                                    ColorPicker::make('hex_code')
+                                                        ->required()
+
+                                                ])
+                                                ->createOptionUsing(function (Select $component, array $data) {
+                                                    $color = Color::create($data);
+                                                    return $color->id;
+                                                })
+                                                ->options(
+                                                    collect(Color::all())
+                                                        ->mapWithKeys(static fn($color) => [
+                                                            $color->id => "<span class='flex items-center gap-x-4'>
+                                                            <span class='rounded-full w-4 h-4' style='background: $color->hex_code'></span>
+                                                            <span>" . $color->name . '</span>
+                                                            </span>',
+                                                        ]),
+                                                ),
+
+                                            Repeater::make('productSizes')
+                                                ->relationship('sizes')
+                                                ->required()
+                                                ->schema([
+                                                    Select::make('size_id')
+                                                        ->label('Size')
+                                                        ->options(Size::all()->pluck('name',
+                                                            'id'))
+                                                        ->required()
+                                                        ->searchable()
+                                                        ->preload()
+                                                        ->distinct()
+                                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                                        ->createOptionForm([
+                                                            TextInput::make('name')
+                                                                ->required()
+                                                                ->label('Size ')
+                                                                ->unique(ignoreRecord: true)
+                                                        ])
+                                                        ->createOptionUsing(function (Select $component, array $data) {
+                                                            $size = Size::create($data);
+                                                            return $size->id;
+                                                        }),
+
+                                                    TextInput::make('quantity')
+                                                        ->label('Quantity')
+                                                        ->numeric()
+                                                        ->required()
+                                                        ->minValue(0),
+                                                ])
+                                                ->columns(2)
+                                                ->addActionLabel('Add Size'),
+                                        ]),
+
                                         Section::make('Images')->schema([
                                             FileUpload::make('images')
                                                 ->required()
-                                                ->label('')
+                                                ->label('Upload Images')
                                                 ->multiple()
                                                 ->maxFiles(6)
                                                 ->reorderable()
@@ -156,12 +235,29 @@ class ProductResource extends Resource
                                                 ->optimize('webp')
                                                 ->directory('products')
                                                 ->imageEditor()
-                                                ->imagePreviewHeight('150'),
-                                        ])
+                                                ->panelLayout('grid')
+                                                ->imagePreviewHeight('300')
+//                                                ->afterUpload(function (array $files) {
+//                                                    foreach ($files as $file) {
+//                                                        // Save the original file
+//                                                        $originalPath = $file->store('products/original');
+//
+//                                                        // Create a thumbnail
+//                                                        $thumbnailPath = 'products/thumbnails/' . $file->hashName();
+//
+//                                                        // Use Intervention Image to create a thumbnail
+//                                                        $image = Image::make($file->getRealPath());
+//                                                        $image->resize(300, 300); // Set your desired thumbnail size
+//                                                        $image->save(public_path($thumbnailPath));
+//
+//                                                        // Here you can save the paths to the database if needed
+//                                                        // Example: $this->images()->create(['original' => $originalPath, 'thumbnail' => $thumbnailPath]);
+//                                                    },
+                                        ]),
                                     ])->columnSpan(3),
 
                                 Group::make()->schema([
-                                    Section::make('Prices and Quantity')->schema([
+                                    Section::make('Prices')->schema([
                                         TextInput::make('price')
                                             ->numeric()
                                             ->required()
@@ -173,10 +269,6 @@ class ProductResource extends Resource
                                             ->prefix('EUR')
                                             ->dehydrated()
                                             ->disabled(),
-
-                                        TextInput::make('quantity')
-                                            ->required()
-                                            ->numeric(),
                                     ]),
 
                                     Section::make('Categories and Tags')->schema([
@@ -230,6 +322,26 @@ class ProductResource extends Resource
                                 ])->columnSpan(1),
                             ])->columns(4),
 
+                        Tab::make('Related Products')->schema([
+
+                            Select::make('related_products')
+                                ->label('Related Products')
+                                ->relationship('relatedProducts', 'name')
+                                ->allowHtml()
+                                ->multiple()
+                                ->distinct()
+                                ->native(false)
+                                ->options(
+                                    collect(Product::all())->mapWithKeys(static fn($product) => [
+                                        $product->id => "<span class='flex items-center gap-x-4'>
+                                            <span>{$product->id}</span>
+                                            <img src='/storage/{$product->first_image}' alt='{$product->name}' class='w-20'>
+                                                <span>{$product->name}</span>
+                                            </span>",
+                                    ])
+                                )
+                        ]),
+
                         Tab::make('SEO')->schema([
                             TextInput::make('meta_title')
                                 ->label('Meta Title')
@@ -266,7 +378,6 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
@@ -344,21 +455,52 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->before(function (Tables\Actions\DeleteAction $action, Product $record) {
+                            if ($record->orderItems()->exists()) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Failed to delete!')
+                                    ->body('This product is used in orders and cannot be deleted.')
+                                    ->send();
+
+                                $action->cancel();
+                            }
+                        }),
                     ReplicateAction::make()
                         ->beforeReplicaSaved(function (Model $replica, Model $record): void {
-                            $replica->slug = $record->slug . "-" .rand(1,100);
+                            $replica->slug = $record->slug . "-" . rand(1, 100);
                             $replica->images = null;
                             $replica->on_sale = 0;
                             $replica->on_sale_price = null;
                             $replica->offer_id = null;
+                            $replica->color_id = null;
+                            $replica->is_active = false;
                         }),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ])->label('Delete'),
+                    DeleteBulkAction::make()->before(function (DeleteBulkAction $action, $records) {
+                        $shouldCancel = false;
+
+                        foreach ($records as $record) {
+                            if ($record->orderItems()->exists()) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title("Failed to delete $record->name!")
+                                    ->body('This product is used in orders and cannot be deleted.')
+                                    ->send();
+
+                                $shouldCancel = true;
+                            }
+                        }
+
+                        if ($shouldCancel) {
+                            $action->cancel();
+                        }
+                    }),
+                ])->label('Delete')
             ]);
     }
 

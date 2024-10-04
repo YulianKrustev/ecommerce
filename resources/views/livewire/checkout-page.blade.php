@@ -108,9 +108,11 @@
                                 @foreach($cart_items as $item)
                                     <tr wire:key="{{ $item['product_id'] }}">
                                         <td>
-                                            {{ $item['name'] }} X {{ $item['quantity'] }}
+                                            {{ $item['name'] }}, {{ $item['size'] }}, {{ $item['color'] }}<br>
+                                            Qty: {{ $item['quantity'] }}
                                         </td>
-                                        <td class="text-right">
+
+                                        <td class="text-right align-top">
                                             {{ Number::currency($item['quantity'] * $item['unit_price'] , 'EUR') }}
                                         </td>
                                     </tr>

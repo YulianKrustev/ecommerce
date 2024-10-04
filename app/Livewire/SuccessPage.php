@@ -6,6 +6,8 @@ use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 use App\Mail\OrderPlaced;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\Size;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -43,7 +45,20 @@ class SuccessPage extends Component
                 if ($session_info->payment_status == 'paid') {
                     $latest_order->payment_status = 'paid';
                     $latest_order->save();
+                    $cart = CartManagement::fetchCartItems();
                     CartManagement::clearCartItems();
+
+                    foreach ($cart as $item) {
+                        $product = Product::where('id', $item['product_id'])->first();
+                        $sizeId = Size::where('name', $item['size'])->first()->id;
+
+                        $size = $product->sizes()->where('size_id', $sizeId)->first();
+
+                        if ($size) {
+                            $size->decrement('quantity', $item['quantity']);
+                        }
+
+                    }
                     $this->dispatch('cartUpdated');
                     session()->forget(['voucher_discount', 'voucher_name', 'subtotal_with_discount', 'voucher_code']);
                     Mail::to(request()->user())->send(new OrderPlaced($latest_order));

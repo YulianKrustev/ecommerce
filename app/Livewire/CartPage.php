@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
+use App\Models\Product;
+use App\Models\Size;
 use App\Models\Voucher;
 use Illuminate\Support\Number;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -26,11 +28,14 @@ class CartPage extends Component
 
     public $message = '';
 
+    public $removeIdSize = null;
+
     protected $listeners = ['removeConfirmed' => 'removeItem'];
 
     public function mount()
     {
         $this->cart_items = CartManagement::fetchCartItems();
+
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
         $this->addShippingCost();
     }
@@ -40,9 +45,22 @@ class CartPage extends Component
         return view('livewire.cart-page');
     }
 
-    public function increaseQty($product_id)
+    public function increaseQty($product_id, $size)
     {
-        $this->cart_items = CartManagement::incrementQuantityToCartItem($product_id, $this->cart_items);
+        $sizeId = Size::where('name', $size)->first()->id;
+
+        $availableSizeQuantity = Product::where('id', $product_id)->first()->sizes->where('size_id', $sizeId)->first()->quantity;
+
+        $temp_cart_items = CartManagement::incrementQuantityToCartItem($product_id, $this->cart_items, $size, $availableSizeQuantity);
+
+        if ($temp_cart_items) {
+            $this->cart_items = $temp_cart_items;
+        } else {
+            $this->resetErrorBag('increaseQty');
+            $this->addError('increaseQty', "There are only $availableSizeQuantity units available in this size.");
+            return;
+        }
+
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
 
         if ($this->discount > 0) {
@@ -53,9 +71,9 @@ class CartPage extends Component
         $this->dispatch('update-cart-count', total_count: count($this->cart_items));
     }
 
-    public function decreaseQty($product_id)
+    public function decreaseQty($product_id, $size)
     {
-        $this->cart_items = CartManagement::decrementQuantityToCartItem($product_id, $this->cart_items);
+        $this->cart_items = CartManagement::decrementQuantityToCartItem($product_id, $this->cart_items, $size);
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
 
         if (session('voucher_discount') && empty($this->cart_items)) {
@@ -70,7 +88,7 @@ class CartPage extends Component
 
     public function removeItem()
     {
-        $this->cart_items = CartManagement::removeCartItem($this->removeId, $this->cart_items);
+        $this->cart_items = CartManagement::removeCartItem($this->removeId, $this->cart_items, $this->removeIdSize);
         $this->total_units_price = CartManagement::calculateTotalPrice($this->cart_items);
 
         if (session('voucher_discount') && empty($this->cart_items)) {
@@ -100,8 +118,9 @@ class CartPage extends Component
 
 
 
-    public function removeConfirmation($productId)
+    public function removeConfirmation($productId, $size)
     {
+        $this->removeIdSize = $size;
         $this->removeId = $productId;
         $this->dispatch('show-remove-confirmation');
     }

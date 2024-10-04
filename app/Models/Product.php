@@ -33,7 +33,9 @@ class Product extends Model
         'meta_title',
         'meta_description',
         'on_sale',
-        'offer_id'
+        'offer_id',
+        'color_id',
+        'sku'
     ];
 
     protected $casts = [
@@ -134,5 +136,19 @@ class Product extends Model
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_product');
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id');
+    }
+
+    public function sizes(): HasMany {
+        return $this->hasMany(ProductSizes::class);
+    }
+
+    public function relatedProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'related_products', 'product_id', 'related_product_id');
     }
 }

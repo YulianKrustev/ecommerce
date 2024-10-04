@@ -30,9 +30,9 @@ class WishlistPage extends Component
         $this->resetPage();
     }
 
-    public function addToCart($product_id)
+    public function addToCart($product_id, $size)
     {
-        $total_count = CartManagement::addItemToCart($product_id);
+        $total_count = CartManagement::addItemToCart($product_id, $quantity = 1, $size);
 
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
 

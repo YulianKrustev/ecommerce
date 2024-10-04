@@ -131,6 +131,10 @@ class OrderResource extends Resource
                                 Select::make('product_id')
                                     ->relationship('product', 'name')
                                     ->searchable()
+                                    ->hint(function (Get $get) {
+                                        $size = $get('size') ?? 'N/A';
+                                        return "Size: $size";
+                                    })
                                     ->required()
                                     ->preload()
                                     ->distinct()
@@ -154,16 +158,6 @@ class OrderResource extends Resource
                                         $unitPrice = $get('unit_price');
                                         $totalUnitsPrice = $unitPrice * $state;
                                         $set('total_units_price', $totalUnitsPrice);
-
-//                                        // Update product quantity
-//                                        $productId = $get('product_id');
-//                                        if ($productId) {
-//                                            $product = Product::find($productId);
-//                                            if ($product) {
-//                                                $product->quantity -= $state;
-//                                                $product->save();
-//                                            }
-//                                        }
                                     }),
 
                                 TextInput::make('unit_price')
@@ -190,7 +184,7 @@ class OrderResource extends Resource
                                     ->formatStateUsing(function ($get) {
                                         $productId = $get('product_id');
                                         $product = Product::find($productId);
-                                        return $product ? $product->first_image : null;
+                                        return $product ? ['image' => $product->first_image, 'slug' => $product->slug] : null;
                                     }),
 
 

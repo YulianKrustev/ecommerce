@@ -1,99 +1,385 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-    <section class="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
-        <div class="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
-            <div class="flex flex-wrap -mx-4">
-                <div class="w-full mb-8 md:w-1/2 md:mb-0"
-                     x-data="{ mainImage: '{{ asset('storage/' . $product->first_image) }}' }">
-                    <div class="sticky top-0 z-50 overflow-hidden ">
-                        <div class="relative mb-6 lg:mb-10 lg:h-2/4 ">
-                            <img x-bind:src="mainImage" alt="" class="object-cover w-full lg:h-full ">
-                        </div>
-                        <div class="flex-wrap hidden md:flex ">
+    <section class="product-single container">
+        <div class="row">
+            <div class="w-1/2 mb-8 md:w-1/2 md:mb-0" wire:ignore>
+                <div class="sticky top-0 z-50 overflow-hidden ">
+                    <div class="relative mb-6 lg:mb-10 lg:h-2/4 ">
+                        <button onclick="plusDivs(-1)" type="button" class="absolute left-2 top-1/2 p-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-full text-gray-800 hover:bg-white shadow-lg disabled:opacity-50 disabled:pointer-events-none">
+                            <div class="swiper-button-prev"><svg width="9" height="11" viewBox="0 0 7 11"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_prev_sm" />
+                                </svg></div>
+                        </button>
+                        @foreach(array_reverse ( $product->images) as $key => $image)
+                            <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}" class="object-cover w-full lg:h-full mySlides">
+                        @endforeach
+                        <button onclick="plusDivs(1)" type="button" class="absolute right-2 top-1/2 p-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-full hover:bg-white text-gray-800 shadow-lg disabled:opacity-50 disabled:pointer-events-none">
+                            <div class="swiper-button-next"><svg width="9" height="11" viewBox="0 0 7 11"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                    <use href="#icon_next_sm" />
+                                </svg></div>
 
-                            @foreach( array_reverse($product->images) as $image)
+                        </button>
 
-                                <div class="w-1/2 p-2 sm:w-1/4"
-                                     x-on:click="mainImage='{{ asset('storage/' . $image) }}'">
-                                    <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}"
-                                         class="object-cover w-full lg:h-20 cursor-pointer hover:border hover:border-blue-500">
-                                </div>
-
-                            @endforeach
-
-                        </div>
-                        <div class="px-6 pb-6 mt-6 border-t border-gray-300 dark:border-gray-400 ">
-                            <div class="flex flex-wrap items-center mt-6">
-                <span class="mr-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                       class="w-4 h-4 text-gray-700 dark:text-gray-400 bi bi-truck" viewBox="0 0 16 16">
-                    <path
-                        d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z">
-                    </path>
-                  </svg>
-                </span>
-                                <h2 class="text-lg font-bold text-gray-700 dark:text-gray-400">Free Shipping</h2>
+                    </div>
+                    <div class="flex flex-wrap">
+                        @foreach($product->images as $key => $image)
+                            <div class="w-1/2 p-2 sm:w-1/4" style="order: {{ count($product->images) - $key }}">
+                                <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}" onclick="currentDiv({{ count($product->images) - $key }})"
+                                     class="object-cover w-full lg:h-20 cursor-pointer hover:border hover:border-orange-500">
                             </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="d-flex justify-content-between mb-4 pb-md-2">
+                    <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
+                        <a wire:navigate href="/" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
+                        <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
+                        <a wire:navigate href="/products" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
+                    </div><!-- /.breadcrumb -->
+
+                </div>
+                <h1 class="product-single__name">{{ $product->name }}</h1>
+                <div class="product-single__price">
+                    @if($product->on_sale)
+                        <span class="current-price">{{ Number::currency($product->on_sale_price, "EUR") }}</span>
+                        <span class="current-price line-through text-gray-600">{{ Number::currency($product->price, "EUR") }}</span>
+                    @else
+                        <span class="current-price">{{ Number::currency($product->price, "EUR") }}</span>
+                    @endif
+                </div>
+
+
+                <div name="addtocart-form">
+                    <span class="text-sm">SELECT COLOR:</span>
+                    <div class="flex space-x-2 mb-4">
+                                <a wire:navigate href="{{ url('/' . $product->slug) }}" class="mt-2 size-button flex rounded-full items-center justify-center w-8 h-8 border border-gray-300 transition-colors duration-200 focus:outline-none" style="background-color: {{ $product->color->hex_code }}"></a>
+
+                            @if(!empty($product->relatedProducts))
+
+                                @foreach($product->relatedProducts as $related_product)
+                                    @if($product->id != $related_product->id)
+                                            <a wire:navigate href="{{ url('/' . $related_product->slug) }}" class="mt-2 size-button rounded-full flex items-center justify-center w-8 h-8 border border-gray-300 transition-colors duration-200 focus:outline-none" style="background-color: {{ $related_product->color->hex_code }}"></a>
+                                    @endif
+
+                                @endforeach
+                            @endif
+
+                    </div>
+
+                    <span class="text-sm">SELECT SIZE:</span>
+                    <div class="flex space-x-2 mb-4">
+
+                        @foreach($product->sizes as $productSize)
+                            <button
+                                type="button"
+                                class="swatch-size btn btn-sm btn-outline-light mb-3 me-1 {{ $productSize->quantity == 0 ? 'disabled' : '' }} {{ $productSize->size->id == $selectedSize ? 'btn-primary' : '' }}"
+                                wire:click="selectSize({{ $productSize->size->id }})"
+                            >
+                                {{ $productSize->size->name }}
+                            </button>
+                        @endforeach
+
+                    </div>
+
+                    @error('selectedSize')
+                    <div class="text-red-500 text-sm mb-4 mt-0">{{ $message }}</div>
+                    @enderror
+
+                    <div class="product-single__addtocart">
+                        <div class="py-3 px-3 inline-block bg-white border" data-hs-input-number='{ "min": 1 }'>
+                            <div class="flex items-center gap-x-1.5">
+                                <button wire:click="decreaseQty()" type="button" class="size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium  bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none " tabindex="-1" aria-label="Decrease" data-hs-input-number-decrement="{}">
+                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"></path>
+                                    </svg>
+                                </button>
+                                <input readonly  class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" style="-moz-appearance: textfield;" type="number" aria-roledescription="Number field" value="{{ $quantity }}" data-hs-input-number-input="">
+                                <button wire:click="increaseQty()" type="button" class="size-6 inline-flex justify-center items-center gap-x-2 text-sm font-medium bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" tabindex="-1" aria-label="Increase" data-hs-input-number-increment="">
+                                    <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"></path>
+                                        <path d="M12 5v14"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button wire:click="addToCart({{ $product->id }})" class="btn btn-primary btn-addtocart js-open-aside"
+                                data-aside="cartDrawer"><span wire:loading.remove wire:target="addToCart({{ $product->id }})">Add to cart</span>
+                            <span wire:loading wire:target="addToCart({{ $product->id }})">Adding...</span></button>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="product-single__addtolinks">
+                    @if($wishlistItems->contains('product_id', $product->id) )
+                        <a wire:click.prevent="removeFromWishlist({{ $product->id }})" href="#" class="menu-link menu-link_us-s add-to-wishlist">
+                            <svg width="16" height="16" viewBox="0 0 20 20"
+                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <use href="#icon_heart_fill"/>
+                            </svg>
+                            <span>Remove from Wishlist</span></a>
+                    @else
+                        <a wire:click.prevent="addToWishlist({{ $product->id }})" href="#" class="menu-link menu-link_us-s add-to-wishlist">
+                            <svg width="16" height="16" viewBox="0 0 20 20"
+                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <use href="#icon_heart"/>
+                            </svg>
+                            <span>Add to Wishlist</span></a>
+                    @endif
+
+                </div>
+                <div class="product-single__meta-info">
+                    <div class="meta-item">
+                        <label>SKU:</label>
+                        <span>{{ $product->sku }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Categories:</label>
+                        @foreach($product->categories as $key => $category)
+
+                            <a href="/products?selected_categories[0]={{ $category->id }}"><span>{{ $key == 0 ? '' : "|" }} {{ $category->name }}</span></a>
+                        @endforeach
+
+                    </div>
+                    <div class="meta-item">
+                        <label>Tags:</label>
+                        @foreach($product->tags as  $key => $tag)
+                            <span>{{ $key == 0 ? '' : "|" }}{{ $tag->name }}</span>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-single__details-tab">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link nav-link_underscore active" id="tab-description-tab" data-bs-toggle="tab"
+                       href="#tab-description" role="tab" aria-controls="tab-description" aria-selected="true">Description</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab-description" role="tabpanel"
+                     aria-labelledby="tab-description-tab">
+                    <div class="product-single__description">
+                        <h3 class="block-title mb-4">Sed do eiusmod tempor incididunt ut labore</h3>
+                        <p class="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                            tempor
+                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                            exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                            voluptate
+                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                            proident, sunt
+                            in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis
+                            iste natus
+                            error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+                            ab illo
+                            inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h3 class="block-title">Why choose product?</h3>
+                                <ul class="list text-list">
+                                    <li>Creat by cotton fibric with soft and smooth</li>
+                                    <li>Simple, Configurable (e.g. size, color, etc.), bundled</li>
+                                    <li>Downloadable/Digital Products, Virtual Products</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3 class="block-title">Sample Number List</h3>
+                                <ol class="list text-list">
+                                    <li>Create Store-specific attrittbutes on the fly</li>
+                                    <li>Simple, Configurable (e.g. size, color, etc.), bundled</li>
+                                    <li>Downloadable/Digital Products, Virtual Products</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <h3 class="block-title mb-0">Lining</h3>
+                        <p class="content">100% Polyester, Main: 100% Polyester.</p>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab-additional-info" role="tabpanel"
+                     aria-labelledby="tab-additional-info-tab">
+                    <div class="product-single__addtional-info">
+                        <div class="item">
+                            <label class="h6">Weight</label>
+                            <span>1.25 kg</span>
+                        </div>
+                        <div class="item">
+                            <label class="h6">Dimensions</label>
+                            <span>90 x 60 x 90 cm</span>
+                        </div>
+                        <div class="item">
+                            <label class="h6">Size</label>
+                            <span>XS, S, M, L, XL</span>
+                        </div>
+                        <div class="item">
+                            <label class="h6">Color</label>
+                            <span>Black, Orange, White</span>
+                        </div>
+                        <div class="item">
+                            <label class="h6">Storage</label>
+                            <span>Relaxed fit shirt-style dress with a rugged</span>
                         </div>
                     </div>
                 </div>
-                <div class="w-full px-4 md:w-1/2 ">
-                    <div class="lg:pl-20">
-                        <div class="mb-8 [&>ul]:list-disc [&>ol]:list-decimal [&>ul]:ml-4 [&>ol]:ml-4">
-                            <h2 class="max-w-xl mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl">
-                                {{ $product->name }}</h2>
-                            <p class="inline-block mb-6 text-4xl font-bold text-gray-700 dark:text-gray-400 ">
-                                {{ Number::currency($product->price, 'EUR')  }}
-                                <span class="text-base font-normal text-gray-500 line-through dark:text-gray-400">$1800.99</span>
-                            </p>
-                            <p class="max-w-md text-gray-700 dark:text-gray-400">
-                                {!! $product->description !!}
-                            </p>
-                        </div>
-                        <div class="w-32 mb-8 ">
-                            <label for=""
-                                   class="w-full pb-1 text-xl font-semibold text-gray-700 border-b border-blue-300 dark:border-gray-600 dark:text-gray-400">Quantity</label>
-                            <div id="quantity-control"
-                                 class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg quantity">
-                                <button
-                                    onclick="updateQuantity(-1)"
-                                    wire:click="decreaseQty()"
-                                    class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400 minus">
-                                    <span class="m-auto text-2xl font-thin">-</span>
-                                </button>
-                                <input type="number" id="quantity-input"
-                                       readonly
-                                       value="1"
-                                class="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black input-box"
-                                placeholder="1" max="100">
-                                <button
-                                    onclick="updateQuantity(1)"
-                                    wire:click="increaseQty()"
-                                    class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400 plus">
-                                    <span class="m-auto text-2xl font-thin">+</span>
-                                </button>
+                <div class="tab-pane fade" id="tab-reviews" role="tabpanel" aria-labelledby="tab-reviews-tab">
+                    <h2 class="product-single__reviews-title">Reviews</h2>
+                    <div class="product-single__reviews-list">
+                        <div class="product-single__reviews-item">
+                            <div class="customer-avatar">
+                                <img loading="lazy" src="assets/images/avatar.jpg" alt=""/>
+                            </div>
+                            <div class="customer-review">
+                                <div class="customer-name">
+                                    <h6>Janice Miller</h6>
+                                    <div class="reviews-group d-flex">
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="review-date">April 06, 2023</div>
+                                <div class="review-text">
+                                    <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
+                                        minus id quod
+                                        maxime placeat facere possimus, omnis voluptas assumenda est…</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex flex-wrap items-center gap-4">
-                            <button wire:click="addToCart({{ $product->id }})"
-                                    class="w-full p-4 bg-blue-500 rounded-md lg:w-2/5 dark:text-gray-200 text-gray-50 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-700">
-                                <span wire:loading.remove wire:target="addToCart({{ $product->id }})">Add to cart</span>
-                                <span wire:loading wire:target="addToCart({{ $product->id }})">Adding...</span></button>
+                        <div class="product-single__reviews-item">
+                            <div class="customer-avatar">
+                                <img loading="lazy" src="assets/images/avatar.jpg" alt=""/>
+                            </div>
+                            <div class="customer-review">
+                                <div class="customer-name">
+                                    <h6>Benjam Porter</h6>
+                                    <div class="reviews-group d-flex">
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_star"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="review-date">April 06, 2023</div>
+                                <div class="review-text">
+                                    <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
+                                        minus id quod
+                                        maxime placeat facere possimus, omnis voluptas assumenda est…</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    <div class="product-single__review-form">
+                        <form name="customer-review-form">
+                            <h5>Be the first to review “Message Cotton T-Shirt”</h5>
+                            <p>Your email address will not be published. Required fields are marked *</p>
+                            <div class="select-star-rating">
+                                <label>Your rating *</label>
+                                <span class="star-rating">
+                    <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                          d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z"/>
+                    </svg>
+                    <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                          d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z"/>
+                    </svg>
+                    <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                          d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z"/>
+                    </svg>
+                    <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                          d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z"/>
+                    </svg>
+                    <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path
+                          d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z"/>
+                    </svg>
+                  </span>
+                                <input type="hidden" id="form-input-rating" value=""/>
+                            </div>
+                            <div class="mb-4">
+                  <textarea id="form-input-review" class="form-control form-control_gray" placeholder="Your Review"
+                            cols="30" rows="8"></textarea>
+                            </div>
+                            <div class="form-label-fixed mb-4">
+                                <label for="form-input-name" class="form-label">Name *</label>
+                                <input id="form-input-name" class="form-control form-control-md form-control_gray">
+                            </div>
+                            <div class="form-label-fixed mb-4">
+                                <label for="form-input-email" class="form-label">Email address *</label>
+                                <input id="form-input-email" class="form-control form-control-md form-control_gray">
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input form-check-input_fill" type="checkbox" value=""
+                                       id="remember_checkbox">
+                                <label class="form-check-label" for="remember_checkbox">
+                                    Save my name, email, and website in this browser for the next time I comment.
+                                </label>
+                            </div>
+                            <div class="form-action">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </div>
-<script>
-    function updateQuantity(change) {
-        const input = document.getElementById('quantity-input');
-        const currentValue = parseInt(input.value);
-        const newValue = currentValue + change;
 
-        // Ensure the value stays within the min/max bounds
-        if (newValue >= 1 && newValue <= 100) {
-            input.value = newValue;
+<script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+
+    function plusDivs(n) {
+        showDivs(slideIndex += n);
+    }
+
+    function currentDiv(n) {
+        showDivs(slideIndex = n);
+    }
+
+    function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        if (n > x.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = x.length }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
         }
+        x[slideIndex - 1].style.display = "block";
     }
 </script>

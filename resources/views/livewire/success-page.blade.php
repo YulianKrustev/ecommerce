@@ -14,7 +14,7 @@
             <button wire:click="redirectToHome"
                     wire:loading.class="opacity-50 text-white"
                     type="button"
-                    class="btn btn-primary mb-5">
+                    class="btn btn-primary mb-10">
                 BACK TO SHOP
             </button>
 
@@ -69,7 +69,7 @@
                                     {{ $item->product->name }} x {{ $item->quantity }}
                                 </td>
                                 <td class="text-end">
-                                    {{ Number::currency($item->product->price * $item->quantity, "EUR") }}
+                                    {{ Number::currency(($item->product->on_sale ? $item->product->on_sale_price : $item->product->price) * $item->quantity, "EUR") }}
                                 </td>
                             </tr>
                         @endforeach

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -146,15 +147,6 @@ class PostResource extends Resource
                                                         $truncatedState .= '...FREE NEXT DAY DELIVERY';
                                                         $set('meta_description', $truncatedState);
                                                     }),
-
-                                                Select::make('products')
-                                                    ->relationship('products', 'name')
-                                                    ->multiple()
-                                                    ->columnSpan(3)
-                                                    ->searchable()
-                                                    ->label('Select Products')
-                                                    ->preload()
-                                                    ->reactive(),
                                             ]),
                                     ])->columnSpan(3),
 
@@ -181,6 +173,28 @@ class PostResource extends Resource
                                     ])
                                 ])->columnSpan(1),
                             ])->columns(4),
+
+                        Tab::make('Related Products')->schema([
+
+
+
+                            Select::make('products')
+                                ->label('Related Products')
+                                ->relationship('products', 'name')
+                                ->allowHtml()
+                                ->multiple()
+                                ->distinct()
+                                ->native(false)
+                                ->options(
+                                    collect(Product::all())->mapWithKeys(static fn($product) => [
+                                        $product->id => "<span class='flex items-center gap-x-4'>
+                                            <span>{$product->id}</span>
+                                            <img src='/storage/{$product->first_image}' alt='{$product->name}' class='w-20'>
+                                                <span>{$product->name}</span>
+                                            </span>",
+                                    ])
+                                )
+                        ]),
 
                         Tab::make('SEO')->schema([
                             TextInput::make('meta_title')

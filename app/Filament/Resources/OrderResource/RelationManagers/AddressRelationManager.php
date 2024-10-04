@@ -56,6 +56,7 @@ class AddressRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('address')
+            ->paginated(false)
             ->columns([
                 TextColumn::make('fullname')
                     ->label('Name'),

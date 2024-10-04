@@ -34,7 +34,6 @@ Route::get('/categories', CategoriesPage::class);
 Route::get('/products', ProductsPage::class);
 Route::get('/cart', CartPage::class)->name('cart.route.name');
 Route::get('/wishlist', WishlistPage::class);
-Route::get('/products/{slug}', ProductDetailPage::class);
 Route::get('/about', AboutPage::class);
 Route::get('/blog', Blog::class);
 Route::get('/search', SearchPage::class);
@@ -65,3 +64,5 @@ Route::middleware('auth')->group(function (){
     Route::get('/my-account', MyAccountPage::class);
     Route::get('/account-details', AccountDetailPage::class);
 });
+
+Route::get('/{slug}', ProductDetailPage::class)->name('product.show');
