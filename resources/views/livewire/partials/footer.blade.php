@@ -6,9 +6,9 @@
                 <div class="mb-4 md:mb-0">
                     <h6 class="font-semibold uppercase">Company</h6>
                     <ul class="space-y-2 mt-2">
-                        <li><a href="about-2.html">About Us</a></li>
-                        <li><a href="blog_list1.html">Blog</a></li>
-                        <li><a href="contact-2.html">Contact Us</a></li>
+                        <li><a wire:navigate href="/about">About Us</a></li>
+                        <li><a wire:navigate href="/blog">Blog</a></li>
+                        <li><a wire:navigate href="/contact">Contact Us</a></li>
                         <li><a href="privacy-policy.html">Privacy Policy</a></li>
                         <li><a href="terms-conditions.html">Terms & Conditions</a></li>
                     </ul>
@@ -20,7 +20,7 @@
                     <ul class="space-y-2 mt-2">
                         @foreach($categories as $category)
                             <li><a wire:navigate
-                                   href="/products?selected_categories[0]={{ $category->id }}">{{ $category->name }}</a>
+                                   href="/shop?selected_categories[0]={{ $category->id }}">{{ $category->name }}</a>
                             </li>
                         @endforeach
                     </ul>

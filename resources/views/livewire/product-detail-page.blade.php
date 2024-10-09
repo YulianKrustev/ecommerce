@@ -37,7 +37,7 @@
                     <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
                         <a wire:navigate href="/" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
                         <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
-                        <a wire:navigate href="/products" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
+                        <a wire:navigate href="/shop" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
                     </div><!-- /.breadcrumb -->
 
                 </div>
@@ -139,7 +139,7 @@
                         <label>Categories:</label>
                         @foreach($product->categories as $key => $category)
 
-                            <a href="/products?selected_categories[0]={{ $category->id }}"><span>{{ $key == 0 ? '' : "|" }} {{ $category->name }}</span></a>
+                            <a href="/shop?selected_categories[0]={{ $category->id }}"><span>{{ $key == 0 ? '' : "|" }} {{ $category->name }}</span></a>
                         @endforeach
 
                     </div>

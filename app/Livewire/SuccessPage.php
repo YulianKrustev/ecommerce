@@ -8,6 +8,7 @@ use App\Mail\OrderPlaced;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Size;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -48,17 +49,23 @@ class SuccessPage extends Component
                     $cart = CartManagement::fetchCartItems();
                     CartManagement::clearCartItems();
 
-                    foreach ($cart as $item) {
-                        $product = Product::where('id', $item['product_id'])->first();
-                        $sizeId = Size::where('name', $item['size'])->first()->id;
-
-                        $size = $product->sizes()->where('size_id', $sizeId)->first();
-
-                        if ($size) {
+                    DB::transaction(function () use ($cart) {
+                        foreach ($cart as $item) {
+                            $product = Product::where('id', $item['product_id'])->with('sizes.size')->first();
+                            $size = $product->sizes->firstWhere('size.name', $item['size']);
                             $size->decrement('quantity', $item['quantity']);
-                        }
 
-                    }
+                            if ($size->quantity < 1) {
+                                $inStock = $product->sizes->contains(function ($productSize) {
+                                    return $productSize->quantity > 0;
+                                });
+
+                                if (!$inStock) {
+                                    $product->update(['in_stock' => false]);
+                                }
+                            }
+                        }
+                    });
                     $this->dispatch('cartUpdated');
                     session()->forget(['voucher_discount', 'voucher_name', 'subtotal_with_discount', 'voucher_code']);
                     Mail::to(request()->user())->send(new OrderPlaced($latest_order));

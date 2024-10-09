@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Attributes\Title;
 use Livewire\Component;
-#[Title('About Us | Little Sailors Malta')]
+#[Title('About Us | Baby Clothing & Accessories | Little Sailors Malta')]
 class AboutPage extends Component
 {
     public function render()

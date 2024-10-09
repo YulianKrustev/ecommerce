@@ -12,7 +12,7 @@
         @forelse($wishlistItems as $product)
             <div wire:key="{{ $product->id }}" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                 <div class="product-card product-card_style3 mb-3 mb-md-4 mb-xxl-5">
-                    <div class="pc__img-wrapper">
+                    <div class="pc__img-wrapper {{ $product->product->in_stock ? '' : 'grayscale' }}">
                         <a wire:navigate href="/{{ $product->product->slug }}">
                             <img loading="lazy" src="{{ asset('storage/' . $product->product->first_image) }}"
                                  width="330" height="400"
@@ -42,7 +42,11 @@
                                     aria-haspopup="dialog" aria-expanded="false"
                                     aria-controls="modal-{{ $product->id }}"
                                     data-hs-overlay="#modal-{{ $product->id }}">
-                                Add To Cart
+                                @if($product->product->in_stock)
+                                    Add To Cart
+                                @else
+                                    Notify Me When Available
+                                @endif
                             </button>
 
                             <div id="modal-{{ $product->id }}"
@@ -78,8 +82,12 @@
                                                     type="button"
                                                     class="swatch-size btn btn-sm btn-outline-light mb-3 me-1 {{ $productSize->quantity ? '' : 'cursor-not-allowed opacity-50' }}"
                                                     wire:key="product-{{ $product->id }}-size-{{ $productSize->size->id }}"
-                                                    wire:click='addToCart({{ $product->product->id }}, {{ $productSize->size->id }})'
-                                                    @if(!$productSize->quantity) disabled @endif
+                                                    @if($product->product->in_stock)
+                                                        wire:click="addToCart({{ $product->product->id }}, {{ $productSize->size->id }})"
+                                                    @else
+                                                        wire:click="notifyMeWhenAvailable({{ $product->product->id }}, {{ $productSize->size->id }})"
+                                                    @endif
+                                                    @if(!$productSize->quantity && $product->in_stock) disabled @endif
                                                 >
                                                     {{ $productSize->size->name }}
                                                 </button>

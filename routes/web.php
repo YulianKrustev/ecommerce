@@ -31,7 +31,7 @@ Route::get('/login', function () {
 
 Route::get('/', HomePage::class)->name('home');
 Route::get('/categories', CategoriesPage::class);
-Route::get('/products', ProductsPage::class);
+Route::get('/shop', ProductsPage::class);
 Route::get('/cart', CartPage::class)->name('cart.route.name');
 Route::get('/wishlist', WishlistPage::class);
 Route::get('/about', AboutPage::class);

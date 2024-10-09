@@ -19,7 +19,7 @@
                     <form method="GET">
                         <input wire:model.live="search"
                                type="search" name="search" placeholder="Search"
-                               class="p-6 pl-12 text-black text-lg w-full border border-orange-600 rounded-lg"> <!-- Ensure border and rounded class are here -->
+                               class="p-6 pl-12 text-black text-lg w-full border border-orange-600 rounded-lg">
                     </form>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         @forelse($results as $product)
                 <div wire:key="{{ $product->id }}" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pt-10">
                     <div class="product-card product-card_style3 mb-3 mb-md-4 mb-xxl-5">
-                        <div class="pc__img-wrapper">
+                        <div class="pc__img-wrapper {{ $product->in_stock ? '' : 'grayscale' }}">
                             <a wire:navigate href="/{{ $product->slug }}">
                                 <img loading="lazy" src="{{ asset('storage/' . $product->first_image) }}"
                                      width="330" height="400"

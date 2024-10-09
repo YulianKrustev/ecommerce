@@ -197,7 +197,7 @@
                 <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
                     <a wire:navigate href="/" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
                     <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
-                    <a wire:navigate href="/products" class="menu-link menu-link_us-s text-uppercase fw-medium">The
+                    <a wire:navigate href="/shop" class="menu-link menu-link_us-s text-uppercase fw-medium">The
                         Shop</a>
                 </div>
 
@@ -226,7 +226,7 @@
                 @forelse($products as $product)
                     <div wire:key="{{ $product->id }}" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                         <div class="product-card product-card_style3 mb-3 mb-md-4 mb-xxl-5">
-                            <div class="pc__img-wrapper">
+                            <div class="pc__img-wrapper {{ $product->in_stock ? '' : 'grayscale' }}">
                                 <a wire:navigate href="/{{ $product->slug }}">
                                     <img loading="lazy" src="{{ asset('storage/' . $product->first_image) }}"
                                          width="330" height="400"
@@ -261,7 +261,11 @@
                                             aria-haspopup="dialog" aria-expanded="false"
                                             aria-controls="modal-{{ $product->id }}"
                                             data-hs-overlay="#modal-{{ $product->id }}">
-                                        Add To Cart
+                                        @if($product->in_stock)
+                                            Add To Cart
+                                        @else
+                                            Notify Me When Available
+                                        @endif
                                     </button>
 
                                     <div id="modal-{{ $product->id }}"
@@ -297,8 +301,12 @@
                                                             type="button"
                                                             class="swatch-size btn btn-sm btn-outline-light mb-3 me-1 {{ $productSize->quantity ? '' : 'cursor-not-allowed opacity-50' }}"
                                                             wire:key="product-{{ $product->id }}-size-{{ $productSize->size->id }}"
-                                                            wire:click='addToCart({{ $product->id }}, {{ $productSize->size->id }})'
-                                                            @if(!$productSize->quantity) disabled @endif
+                                                            @if($product->in_stock)
+                                                                wire:click="addToCart({{ $product->id }}, {{ $productSize->size->id }})"
+                                                            @else
+                                                                wire:click="notifyMeWhenAvailable({{ $product->id }}, {{ $productSize->size->id }})"
+                                                            @endif
+                                                            @if(!$productSize->quantity && $product->in_stock) disabled @endif
                                                         >
                                                             {{ $productSize->size->name }}
                                                         </button>
@@ -348,15 +356,12 @@
                     </div>
 
                 @empty
-
+                    <span class="text-center flex justify-center py-10 text-2xl font-semibold text-slate-600 mb-82">
+                No items found!
+            </span>
                 @endforelse
             </div>
 
-            @if(count($products) == 0)
-                <span class="text-center flex justify-center py-10 text-2xl font-semibold text-slate-600 mb-82">
-                No items found!
-            </span>
-            @endif
             <div class="flex justify-end mt-6">
                 {{ $products->links() }}
             </div>

@@ -6,6 +6,7 @@ use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\ContactMessage;
 use App\Models\Product;
 use App\Models\Size;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,28 @@ class ProductsPage extends Component
         } else {
             return redirect()->route('login');
         }
+    }
+
+    public function notifyMeWhenAvailable($product_id, $size)
+    {
+        if (!Auth::id()) {
+            return redirect('/login');
+        }
+
+        $user = Auth::user();
+        $sizeName = Size::where('id', $size)->first()->name;
+
+        ContactMessage::create([
+            'name' => $user->name,
+            'email' => $user->email,
+            'message' => "Product ID: $product_id, Size: $sizeName"
+        ]);
+
+        $this->alert('success', 'You will be notified when this product is back in stock!', [
+            'position' => 'top-end',
+            'timer' => 3000,
+            'toast' => true,
+        ]);
     }
 
     public function removeFromWishlist($removeId)

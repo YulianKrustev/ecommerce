@@ -1,7 +1,9 @@
 @push('meta')
-    <meta name="description" content="About Us Page">
+    <meta name="description" content="Little Sailors Malta offers high-quality baby and children’s clothing, accessories, and toys. Shop sustainable, comfortable, and affordable products today.">
+    <meta name="keywords" content="baby clothing, children's clothing, kids accessories, Malta, baby boy, baby girl, baby gifts">
 @endpush
-<div class="">
+
+<div>
     <div class="mb-4 pb-4"></div>
     <section class="about-us container">
         <div class="mw-930">
@@ -51,3 +53,18 @@
         </div>
     </section>
 </div>
+
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Little Sailors Malta",
+      "url": "https://littlesailorsmalta.com",
+      "logo": "https://littlesailorsmalta.com/storage/assets/site_logo.png",
+      "description": "We offer high-quality baby and children’s clothing, accessories, and toys in Malta.",
+      "sameAs": [
+        "https://www.facebook.com/littlesailorsmalta",
+        "https://www.instagram.com/littlesailorsmalta"
+      ]
+    }
+</script>

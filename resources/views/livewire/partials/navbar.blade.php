@@ -34,7 +34,7 @@
 
                     <ul class="space-y-4">
                         <li><a wire:navigate href="/" class="text-l font-semibold block">Home</a></li>
-                        <li><a wire:navigate href="/products" class="text-l font-semibold block">Shop</a></li>
+                        <li><a wire:navigate href="/shop" class="text-l font-semibold block">Shop</a></li>
                         <li><a wire:navigate href="/search" class="text-l font-semibold block">Search</a></li>
                         <li><a wire:navigate href="/cart" class="text-l font-semibold block">Cart</a></li>
                         <li><a wire:navigate href="/about" class="text-l font-semibold block">About</a></li>
@@ -71,10 +71,10 @@
                             <a wire:navigate href="/" class="navigation__link">Home</a>
                         </li>
                         <li class="navigation__item">
-                            <a wire:navigate href="/products" class="navigation__link">Shop</a>
+                            <a wire:navigate href="/shop" class="navigation__link">Shop</a>
                         </li>
                         <li class="navigation__item">
-                            <a wire:navigate  href="/products?on_sale=true" class="navigation__link">Sale</a>
+                            <a wire:navigate  href="/shop?on_sale=true" class="navigation__link">Sale</a>
                         </li>
                         <li class="navigation__item">
                             <a wire:navigate href="/about" class="navigation__link">About</a>

@@ -16,7 +16,10 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "psr/simple-cache": "2.0",
+        "pxlrbt/filament-excel": "^2.3",
         "scify/laravel-cookies-consent": "^1.1",
+        "spatie/laravel-sitemap": "^7.2",
         "stripe/stripe-php": "^15.7"
     },
     "require-dev": {
