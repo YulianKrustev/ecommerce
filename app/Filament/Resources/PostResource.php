@@ -71,7 +71,7 @@ class PostResource extends Resource
                                                             return;
                                                         }
                                                         $set('meta_title',
-                                                            ASCII::to_ascii($state) . " - " . config("app.name"));
+                                                            ASCII::to_ascii($state) . " | " . config("app.name"));
                                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                                         $set('image_alt', $state);
                                                     }),
@@ -154,7 +154,7 @@ class PostResource extends Resource
 
                                     Section::make('Category')->schema([
                                         Select::make('post_category_id')
-                                            ->label('')
+                                            ->label('Select Category')
                                             ->relationship('category', 'name')
                                             ->preload()
                                             ->required(),
@@ -176,24 +176,14 @@ class PostResource extends Resource
 
                         Tab::make('Related Products')->schema([
 
-
-
                             Select::make('products')
                                 ->label('Related Products')
-                                ->relationship('products', 'name')
+                                ->relationship('products', 'products.id')
+                                ->placeholder('Enter the product ID')
                                 ->allowHtml()
                                 ->multiple()
                                 ->distinct()
-                                ->native(false)
-                                ->options(
-                                    collect(Product::all())->mapWithKeys(static fn($product) => [
-                                        $product->id => "<span class='flex items-center gap-x-4'>
-                                            <span>{$product->id}</span>
-                                            <img src='/storage/{$product->first_image}' alt='{$product->name}' class='w-20'>
-                                                <span>{$product->name}</span>
-                                            </span>",
-                                    ])
-                                )
+
                         ]),
 
                         Tab::make('SEO')->schema([

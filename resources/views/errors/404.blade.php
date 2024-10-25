@@ -1,15 +1,11 @@
-@php
-    $settings = \Joaopaulolndev\FilamentGeneralSettings\Models\GeneralSetting::first();
-@endphp
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:site_name" content="{{ config('app.name') }}" />
+    {{--    <meta name="description" content="{{ $settings->site_description ?? 'Default site description goes here.' }}">--}}
     @stack('meta')
-    <title>@stack('title', config('app.name'))</title>
+    <title>{{ '404' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/custom.css',])
     <link rel="stylesheet" href="{{ asset('vendor/cookie-consent/css/cookie-consent.css') }}">
     <link rel="icon" href="{{ url('/storage/' . ($settings->site_favicon ?? 'default_favicon.ico')) }}">
@@ -24,7 +20,13 @@
 </style>
 @livewire('partials.navbar')
 <main>
-    {{ $slot }}
+    <div class="flex items-center justify-center min-h-96 mb-5">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
+            <p class="text-lg text-gray-600 mb-6">Oops! The page you're looking for doesn't exist.</p>
+            <a href="{{ url('/') }}" class="btn btn-primary btn-checkout custom-button" x-data="{ buttonClicked: false }" x-on:click="buttonClicked = true" :class="{ 'opacity-50 text-orange-600': buttonClicked }">Go Back Home</a>
+        </div>
+    </div>
 </main>
 @livewire('partials.footer')
 @livewireScripts
@@ -33,3 +35,4 @@
 <x-laravel-cookies-consent></x-laravel-cookies-consent>
 </body>
 </html>
+

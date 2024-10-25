@@ -2,19 +2,22 @@
     padding-top: 2.25rem;
     padding-bottom: 2.25rem;
 }
-.text-right{
+
+.text-right {
     text-align: right;
 }
+
 .pt-90 {
     padding-top: 90px !important;
 }
+
 .my-account__address-list {
     display: flex;
     gap: 1.625rem;
 }
 
-.form-floating>.form-control,
-.form-floating>.form-select {
+.form-floating > .form-control,
+.form-floating > .form-select {
     height: 48px;
 }
 
@@ -63,7 +66,7 @@ footer {
 }
 
 .custom-confirm-button:hover,
-.custom-cancel-button:hover{
+.custom-cancel-button:hover {
     background-color: #dd3333;
     color: white;
 }
@@ -111,7 +114,7 @@ footer h6 {
 }
 
 #add_to_cart_wishlist:hover {
-    font-size: 15px!important;
+    font-size: 15px !important;
     color: rgb(255 127 80);
 }
 
@@ -125,8 +128,38 @@ footer h6 {
 }
 
 .mySlides {
-    display:none;
+    display: none;
 }
+
+
+@media screen and (max-width: 991px) {
+    .logo {
+        padding-left: 1.5rem;
+    }
+
+    #forgot-h1 {
+        font-size: 1rem;
+    }
+
+    #forgot-container {
+        margin-top: 3rem;
+        margin-bottom: 1.6rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #scrollTop {
+        bottom: 0;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #scrollTop {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
 
 
 

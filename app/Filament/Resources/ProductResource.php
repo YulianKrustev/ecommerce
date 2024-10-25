@@ -101,7 +101,7 @@ class ProductResource extends Resource
                                                             return;
                                                         }
                                                         $set('meta_title',
-                                                            ASCII::to_ascii($state) . " - " . config("app.name"));
+                                                            ASCII::to_ascii($state) . " | " . config("app.name"));
                                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                                         $set('image_alt', $state);
                                                     }),
@@ -322,24 +322,41 @@ class ProductResource extends Resource
                                 ])->columnSpan(1),
                             ])->columns(4),
 
-                        Tab::make('Related Products')->schema([
+                        Tab::make('Color Variants')->schema([
 
                             Select::make('related_products')
-                                ->label('Related Products')
-                                ->relationship('relatedProducts', 'name')
+                                ->label('Color Variants')
+                                ->placeholder('Enter the product ID or Name')
                                 ->allowHtml()
+                                ->relationship('relatedProducts', 'name')
                                 ->multiple()
                                 ->distinct()
                                 ->native(false)
+                                ->searchable(['products.id', 'name'])
                                 ->options(
-                                    collect(Product::all())->mapWithKeys(static fn($product) => [
-                                        $product->id => "<span class='flex items-center gap-x-4'>
-                                            <span>{$product->id}</span>
-                                            <img src='/storage/{$product->first_image}' alt='{$product->name}' class='w-20'>
-                                                <span>{$product->name}</span>
-                                            </span>",
+                                    Product::all()->mapWithKeys(fn($product) => [
+                                        $product->id => view('components.product-option', ['product' => $product])->render(),
                                     ])
                                 )
+                                ->getSearchResultsUsing(function (string $search) {
+                                    return Product::where('name', 'like', "%{$search}%")
+                                        ->orWhere('id', 'like', "%{$search}%")
+                                        ->limit(10)
+                                        ->get()
+                                        ->mapWithKeys(function ($product) {
+                                            return [
+                                                $product->id => view('components.product-option', ['product' => $product])->render(),
+                                            ];
+                                        });
+                                })
+                                ->getOptionLabelUsing(function ($value) {
+                                    $product = Product::find($value);
+                                    if ($product) {
+                                        return view('components.product-option', ['product' => $product])->render();
+                                    }
+                                    return 'Product Not Found';  // Fallback if the product is not found
+                                })
+
                         ]),
 
                         Tab::make('SEO')->schema([

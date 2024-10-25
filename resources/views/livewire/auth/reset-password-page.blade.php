@@ -1,9 +1,15 @@
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
+@push('title')
+    Reset Password | {{ config('app.name') }}
+@endpush
 <div class="mb-14 pb-14">
     <div class="mb-4 pb-4"></div>
     <section class="login-register container">
         <ul class="nav nav-tabs mb-5" id="login_register" role="tablist">
             <li class="nav-item" role="presentation">
-                <h1 class="nav-link nav-link_underscore active">
+                <h1 id="forgot-h1" class="nav-link nav-link_underscore active">
                     Forgot password?
                 </h1>
             </li>

@@ -1,3 +1,9 @@
+@push('title')
+    My Orders | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 <div class="pb-14 mb-14">
     <div class="mb-4 pb-4"></div>
     <section class="my-account container">

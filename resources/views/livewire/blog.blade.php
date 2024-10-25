@@ -1,5 +1,15 @@
 @push('meta')
-    <meta name="description" content="Blog">
+    <meta name="description" content="Explore our blog at Little Sailors Malta for the latest updates on baby and children's clothing, accessories, and toys. Stay informed with tips, trends, and parenting advice.">
+    <meta name="keywords" content="baby clothing blog, kids accessories blog, Malta parenting blog, baby trends, children's fashion, kids clothing articles">
+    <meta property="og:title" content="Blog | {{ config('app.name') }}">
+    <meta property="og:description" content="Explore our blog at Little Sailors Malta for the latest updates on baby and children's clothing, accessories, and toys.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ url('storage/assets/site_logo.png') }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+@endpush
+@push('title')
+    Blog | {{ config('app.name') }}
 @endpush
 <section class="products-grid shop-checkout container mb-4 pb-4 pt-12">
     <div class="mw-930 ">
@@ -23,29 +33,9 @@
                             <a wire:navigate
                                href="/blog/{{ $post->slug }}">{{ $post->title }}</a>
                         </h2>
-
-
-{{--                        <div wire:click='addToCart({{ $product->product->id }})'--}}
-{{--                             class="anim_appear-bottom absolute bottom-0 left-0 flex items-center bg-body relative">--}}
-{{--                            <button id="add_to_cart_wishlist" class="btn-link btn-link_lg me-4 text-uppercase fw-medium"--}}
-{{--                                    data-aside="cartDrawer" title="Add To Cart">Add To Cart--}}
-{{--                            </button>--}}
-
-
-{{--                            <button--}}
-{{--                                wire:click.prevent="{{ $wishlistItems->contains('product_id', $product->product->id) ? 'removeFromWishlist('.$product->id.')' : 'addToWishlist('.$product->product->id.')' }}"--}}
-{{--                                class="pc__btn-wl bg-transparent border-0 absolute right-2" title="Add To Wishlist">--}}
-{{--                                <svg id="wishlist-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"--}}
-{{--                                     xmlns="http://www.w3.org/2000/svg">--}}
-{{--                                    <use href="#icon_heart_fill"/>--}}
-{{--                                </svg>--}}
-{{--                            </button>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
             </div>
-
-
         @empty
             <span class="text-center py-10 text-2xl font-semibold text-slate-600 mb-82">
                 No posts available in Blog!
@@ -56,3 +46,51 @@
         {{ $posts->links() }}
     </div>
 </section>
+
+<<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "headline": "Blog | {{ config('app.name') }}",
+  "description": "Explore the Little Sailors Malta blog for parenting tips, fashion trends, and baby clothing advice.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ config('app.name') }}",
+    "url": "{{ config('app.url') }}",
+    "logo": "{{ url('storage/assets/site_logo.png') }}"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url()->current() }}"
+  },
+  "image": "{{ url('storage/assets/site_logo.png') }}",
+  "url": "{{ url()->current() }}",
+  "datePublished": "{{ $posts->first()?->created_at->toIso8601String() ?? now()->toIso8601String() }}",
+  "author": {
+    "@type": "Organization",
+    "name": "{{ config('app.name') }}"
+  },
+  "sameAs": [
+    "{{ config('app.social.facebook') }}",
+    "{{ config('app.social.instagram') }}"
+  ],
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ url('/') }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "{{ url('/blog') }}"
+      }
+    ]
+  }
+}
+</script>
+

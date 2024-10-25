@@ -1,3 +1,13 @@
+@push('title')
+    Contact Us | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <!-- Meta Title -->
+    <title>Contact Us | {{ config('app.name') }}</title>
+
+    <!-- Meta Description -->
+    <meta name="description" content="Get in touch with the team at {{ config('app.name') }} for any inquiries or support. We are here to assist you with any questions about our products or services. Contact us today.">
+@endpush
 <div class="pb-14 mb-14">
     <div class="mb-4 pb-4"></div>
     <section class="contact-us container mb-16">
@@ -66,3 +76,42 @@
         </div>
     </section>
 </div>
+
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ config('app.url') }}/contact",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+356 7732 5545",
+          "contactType": "Customer Support"
+        },
+        "sameAs": [
+          "{{ config('app.social.facebook') }}",
+          "{{ config('app.social.instagram') }}"
+        ]
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ config('app.url') }}"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Contact Us",
+            "item": "{{ config('app.url') }}/contact"
+          }
+        ]
+      }
+    }
+</script>
+

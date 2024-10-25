@@ -83,8 +83,7 @@ address {
     font-style: normal;
     line-height: inherit; }
 
-ol,
-ul {
+ol{
     padding-left: 2rem; }
 
 ol,
@@ -5089,8 +5088,13 @@ th[align="right"] {
     transition: all 0.2s ease;
     font-size: 0.875rem;
     opacity: 0;
+    visibility: hidden; }
+
+.product-card .anim_appear-bottom {
+    opacity: 0;
     visibility: hidden;
-     }
+}
+
 .product-card:hover .anim_appear-bottom {
     bottom: 0.625rem;
     opacity: 1;
@@ -8380,7 +8384,7 @@ textarea.form-control-lg {
     border: 2px solid #222222; }
 
 .pc-labels {
-    padding: 0.625rem;
+    padding: 0.325rem;
     z-index: 3; }
 
 .pc-label {
@@ -8391,7 +8395,7 @@ textarea.form-control-lg {
         font-size: 0.875rem; } }
 
 .pc-label_sale {
-    background-color: #d6001c; }
+    background-color: #FF7F50; }
 
 .pc-label_sale-text {
     background-color: #222222;

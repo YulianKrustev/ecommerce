@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
-use App\Models\ContactMessage; // Import the model
-#[Title('Contact Us | Little Sailors Malta')]
+use App\Models\ContactMessage;
 class ContactForm extends Component
 {
     use LivewireAlert;
@@ -14,7 +14,8 @@ class ContactForm extends Component
     public $name;
     public $email;
     public $message;
-
+    #[Url]
+    public $order;
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
@@ -46,7 +47,22 @@ class ContactForm extends Component
 
     public function render()
     {
-        return view('livewire.contact-form');
+        if(Auth::check()) {
+            $this->name = Auth::user()->name;
+            $this->email = Auth::user()->email;
+        }
+
+        if($this->order){
+            $this->message = "We are sorry to hear that you want to return a product. Please provide the necessary details below to help us process your return as quickly as possible." . PHP_EOL .
+                PHP_EOL . "Order ID: $this->order" . PHP_EOL .
+                "Product SKU: " . PHP_EOL .
+                "(Please provide the SKU of the product you wish to return)" . PHP_EOL .
+                "Product size: " . PHP_EOL .
+                "Product quantity: " . PHP_EOL .
+                "Reason for Return: " . PHP_EOL .
+                "(Let us know why you're returning this product, so we can assist you better)" . PHP_EOL .
+                PHP_EOL . "Once we receive your request, our team will get back to you with further instructions on how to complete your return.";
+        }
+        return view('livewire.contact-form', ['message' => $this->message]);
     }
 }
-

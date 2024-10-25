@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class AboutPage extends Component
+class PrivacyPolicyPage extends Component
 {
     public function render()
     {
-        return view('livewire.about-page');
+        return view('livewire.privacy-policy-page');
     }
 }

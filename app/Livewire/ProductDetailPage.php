@@ -4,22 +4,21 @@ namespace App\Livewire;
 
 use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
+use App\Models\ContactMessage;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Product Detail - Little Sailors Malta')]
+
 class ProductDetailPage extends Component
 {
     use LivewireAlert;
 
     public $slug;
     public $quantity = 1;
-
     public $selectedSize = null;
 
     public function mount($slug)
@@ -107,6 +106,35 @@ class ProductDetailPage extends Component
         ]);
 
         $this->selectedSize = null;
+    }
+
+    public function notifyMeWhenAvailable($product_id)
+    {
+        if (!Auth::id()) {
+            return redirect('/login');
+        }
+
+        if (is_null($this->selectedSize)) {
+            $this->resetErrorBag('selectedSize');
+            $this->addError('selectedSize', 'Please select a size.');
+            return;
+        }
+
+        $user = Auth::user();
+
+        $sizeName = Size::where('id', $this->selectedSize)->first()->name;
+
+        ContactMessage::create([
+            'name' => $user->name,
+            'email' => $user->email,
+            'message' => "Product ID: $product_id, Size: $sizeName"
+        ]);
+
+        $this->alert('success', 'You will be notified when this product is back in stock!', [
+            'position' => 'top-end',
+            'timer' => 3000,
+            'toast' => true,
+        ]);
     }
 
     public function render()

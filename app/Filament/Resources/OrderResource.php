@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\OrdersWithItemsExport;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
@@ -31,6 +32,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Number;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class OrderResource extends Resource
 {
@@ -184,13 +187,27 @@ class OrderResource extends Resource
                                     ->formatStateUsing(function ($get) {
                                         $productId = $get('product_id');
                                         $product = Product::find($productId);
-                                        return $product ? ['image' => $product->first_image, 'slug' => $product->slug] : null;
+                                        return $product ? [
+                                            'image' => $product->first_image,
+                                            'slug' => $product->slug
+                                        ] : null;
                                     }),
 
 
                             ])
                             ->disabled()
                             ->columns(12)
+                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                $items = $get('items') ?? [];
+                                $total = 0;
+
+                                foreach ($items as $item) {
+                                    $total += $item['total_units_price'] ?? 0;
+                                }
+
+                                $shippingCost = $get('shipping_cost') ?? 0;
+                                $set('total_price', $total + $shippingCost);
+                            })
                             ->addActionLabel('Add new product'),
 
                         Placeholder::make('Subtotal')
@@ -229,7 +246,7 @@ class OrderResource extends Resource
                             ->extraAttributes(['style' => 'font-size: 1.5rem; font-weight: 500; text-decoration: underline;'])
                             ->content(function (Get $get, Set $set) {
 
-                                if ( $get('total_price') > 0) {
+                                if ($get('total_price') > 0) {
                                     return Number::currency($get('total_price'), 'EUR');
                                 }
 
@@ -332,14 +349,20 @@ class OrderResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ])->label('Delete'),
+                    ExportBulkAction::make('export')
+                        ->exports([
+                            OrdersWithItemsExport::make(), // Use the custom export class
+                        ]),
+
+
+                ])->label('Delete / Export'),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-           AddressRelationManager::class,
+            AddressRelationManager::class,
         ];
     }
 

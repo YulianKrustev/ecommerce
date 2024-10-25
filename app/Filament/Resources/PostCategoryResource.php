@@ -58,7 +58,7 @@ class PostCategoryResource extends Resource
                                         if ($operation == 'edit' || $state == null) {
                                             return;
                                         }
-                                        $set('meta_title', ASCII::to_ascii($state) . " - " . config("app.name"));
+                                        $set('meta_title', ASCII::to_ascii($state) . " | " . config("app.name"));
                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                         $set('image_alt', $state);
                                     }),

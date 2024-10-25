@@ -2,13 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderItem;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Order Detail')]
 class OrderDetailPage extends Component
 {
     public $order_id;

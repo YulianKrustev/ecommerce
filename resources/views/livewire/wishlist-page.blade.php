@@ -1,3 +1,10 @@
+@push('title')
+    Wishlist | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
+
 <section class="products-grid shop-checkout container mb-4 pb-4 pt-12">
     @php
         use Illuminate\Support\Facades\Auth;if (!Auth::id()) {
@@ -17,37 +24,69 @@
                             <img loading="lazy" src="{{ asset('storage/' . $product->product->first_image) }}"
                                  width="330" height="400"
                                  alt="{{ $product->product->name }}" class="pc__img">
+                            @if($product->product->on_sale)
+                                <div class="pc-labels position-absolute top-0 start-0 w-100 d-flex justify-content-between">
+                                    <div class="pc-labels__right ms-auto">
+                                        <span class="pc-label pc-label_sale d-block text-white">-{{ (int)$product->product->specialOffers[0]->discount_percentage }}%</span>
+                                    </div>
+                                </div>
+                            @endif
                         </a>
+                        <button id="add-to-cart-btn"
+                                class="pc__atc btn anim_appear-bottom absolute border-0 text-uppercase fw-medium"
+                                aria-haspopup="dialog" aria-expanded="false"
+                                aria-controls="modal-{{ $product->id }}"
+                                data-hs-overlay="#modal-{{ $product->id }}" data-aside="cartDrawer"
+                                title="Add To Cart" style=" background-color: #FF7F50; color: white;">
+                            @if($product->product->in_stock)
+                                Add To Cart
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke-width="1.5" stroke="currentColor" class="size-4 mb-1 inline">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                </svg>
+                                availability
+                            @endif
+                        </button>
                     </div>
 
                     <div class="pc__info relative">
-                        <h2 class="pc__title">
+                        <div class="product-card__price flex items-center">
+                            <div class="product-card__price flex items-center">
+                                    <span
+                                        class="pc__category text-sm">{{ $product->product->categories->first()->name }}</span>
+
+                                <button
+                                    wire:click.prevent="removeFromWishlist({{ $product->id }})"
+                                    class="pc__btn-wl bg-transparent border-0 absolute right-2"
+                                    title="Add To Wishlist">
+                                    <svg id="wishlist-icon" width="20" height="20" viewBox="0 0 20 20"
+                                         fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <use href="#icon_heart_fill"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>                        <h2 class="pc__title">
                             <a wire:navigate
                                href="/{{ $product->product->slug }}">{{ $product->product->name }}</a>
                         </h2>
                         <div class="product-card__price flex items-center">
                             @if($product->product->on_sale)
                                 <span
-                                    class="current-price mr-1">{{ Number::currency($product->product->on_sale_price, "EUR") }}</span>
+                                    class="current-price line-through text-gray-600 mr-1 opacity-80 decoration-orange-700">{{ Number::currency($product->product->price, "EUR") }}</span>
                                 <span
-                                    class="current-price line-through text-gray-600">{{ Number::currency($product->product->price, "EUR") }}</span>
+                                    class="current-price">{{ Number::currency($product->product->on_sale_price, "EUR") }}</span>
                             @else
                                 <span
                                     class="current-price">{{ Number::currency($product->product->price, "EUR") }}</span>
                             @endif
                         </div>
 
-                        <div class="anim_appear-bottom absolute bottom-0 left-0 flex items-center bg-body relative">
-                            <button type="button" class="btn-link btn-link_lg me-4 text-uppercase fw-medium"
-                                    aria-haspopup="dialog" aria-expanded="false"
-                                    aria-controls="modal-{{ $product->id }}"
-                                    data-hs-overlay="#modal-{{ $product->id }}">
-                                @if($product->product->in_stock)
-                                    Add To Cart
-                                @else
-                                    Notify Me When Available
-                                @endif
-                            </button>
+                        <div class="anim_appear-bottom bottom-0 left-0 flex items-center bg-body relative">
 
                             <div id="modal-{{ $product->id }}"
                                  class="flex justify-center items-center hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto "
@@ -87,34 +126,16 @@
                                                     @else
                                                         wire:click="notifyMeWhenAvailable({{ $product->product->id }}, {{ $productSize->size->id }})"
                                                     @endif
-                                                    @if(!$productSize->quantity && $product->in_stock) disabled @endif
+                                                    @if(!$productSize->quantity && $product->product->in_stock) disabled @endif
                                                 >
                                                     {{ $productSize->size->name }}
                                                 </button>
                                             @endforeach
 
                                         </div>
-                                        <div
-                                            class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
-                                            <button type="button"
-                                                    class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                                                    data-hs-overlay="#modal-{{ $product->id }}">
-                                                Close
-                                            </button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-
-                            <button
-                                wire:click.prevent="{{ $wishlistItems->contains('product_id', $product->product->id) ? 'removeFromWishlist('.$product->id.')' : 'addToWishlist('.$product->product->id.')' }}"
-                                class="pc__btn-wl bg-transparent border-0 absolute right-2" title="Add To Wishlist">
-                                <svg id="wishlist-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <use href="#icon_heart_fill"/>
-                                </svg>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -130,3 +151,4 @@
         {{ $wishlistItems->links() }}
     </div>
 </section>
+

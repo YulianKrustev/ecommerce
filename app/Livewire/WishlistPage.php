@@ -9,11 +9,9 @@ use App\Models\Size;
 use App\Models\Wishlist as WishlistModel;
 use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Title('Wishlist | Little Sailors Malta')]
 class WishlistPage extends Component
 {
     use LivewireAlert;

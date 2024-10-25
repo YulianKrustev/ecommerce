@@ -3,37 +3,28 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
-use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
-use function Termwind\render;
 
-#[Title('Checkout')]
 class CheckoutPage extends Component
 {
     use LivewireAlert;
-
     public $first_name;
     public $last_name;
 
     public $phone;
     public $street_address;
-
     public $city;
     public $zip_code;
-
     public $district;
-
     public $cuntry;
     public $payment_method;
 
@@ -51,7 +42,6 @@ class CheckoutPage extends Component
                 return [$item['name'], $item['size'], $availableQuantity];
             }
         }
-
         return false;
     }
 
@@ -162,7 +152,6 @@ class CheckoutPage extends Component
             ],
         ];
 
-
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $coupon = null;
@@ -216,7 +205,6 @@ class CheckoutPage extends Component
 
             return redirect()->route('login')->with('error', 'Something went wrong, please try again.');
         }
-
 
         $this->reset();
         return redirect($redirect_url);

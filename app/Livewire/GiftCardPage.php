@@ -4,10 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class AboutPage extends Component
+class GiftCardPage extends Component
 {
     public function render()
     {
-        return view('livewire.about-page');
+        return view('livewire.gift-card-page');
     }
 }

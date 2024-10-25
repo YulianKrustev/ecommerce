@@ -3,18 +3,19 @@
 namespace App\Livewire\Partials;
 
 use App\Helpers\CartManagement;
+use App\Models\Category;
 use App\Models\Product;
 use Joaopaulolndev\FilamentGeneralSettings\Models\GeneralSetting;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class Navbar extends Component
 {
     public $total_count = 0;
-
-    public $searchTerm = ''; // The input term for the search
-    public $searchResults = []; // Store search results
     protected $listeners = ['cartUpdated' => 'updateCartCount'];
+
+    public $search = '';
 
     public function mount()
     {
@@ -27,22 +28,16 @@ class Navbar extends Component
             ->sum('quantity');
     }
 
-    public function updatedSearchTerm()
+    public function redirectSearchToShop()
     {
-        // If the search term is longer than 1 character, fetch results
-        if (strlen($this->searchTerm) > 1) {
-            $this->searchResults = Product::where('name', 'like', '%' . $this->searchTerm . '%')
-                ->take(5) // Limit the number of results
-                ->get();
-        } else {
-            $this->searchResults = [];
-        }
+        $this->redirect('/shop?search=' . urlencode($this->search));
     }
 
     public function render()
     {
         return view('livewire.partials.navbar', [
-            'settings' => GeneralSetting::first()
+            'settings' => GeneralSetting::first(),
+            'categories' => Category::where('parent_id', null)->get(),
         ]);
     }
 }

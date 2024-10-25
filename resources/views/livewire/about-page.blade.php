@@ -1,8 +1,15 @@
 @push('meta')
     <meta name="description" content="Little Sailors Malta offers high-quality baby and children’s clothing, accessories, and toys. Shop sustainable, comfortable, and affordable products today.">
     <meta name="keywords" content="baby clothing, children's clothing, kids accessories, Malta, baby boy, baby girl, baby gifts">
+    <meta property="og:title" content="About Us | {{ config('app.name') }}">
+    <meta property="og:description" content="Little Sailors Malta offers high-quality baby and children’s clothing, accessories, and toys. Shop sustainable, comfortable, and affordable products today.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ url('storage\assets\about-1.jpg') }}">
 @endpush
-
+@push('title')
+    About Us | {{ config('app.name') }}
+@endpush
 <div>
     <div class="mb-4 pb-4"></div>
     <section class="about-us container">
@@ -13,7 +20,7 @@
         <div class="about-us__content pb-5 mb-5">
             <p class="mb-5">
                 <img loading="lazy" class="w-100 h-auto block" src="{{ url('storage\assets\about-1.jpg') }}" width="1410"
-                     height="550" alt="About Us | Little Sailors Malta"/>
+                     height="550" alt="About Us | {{ config('app.name') }}"/>
             </p>
             <div class="mw-930">
                 <h2 class="mb-4">OUR STORY</h2>
@@ -58,13 +65,31 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Little Sailors Malta",
-      "url": "https://littlesailorsmalta.com",
-      "logo": "https://littlesailorsmalta.com/storage/assets/site_logo.png",
-      "description": "We offer high-quality baby and children’s clothing, accessories, and toys in Malta.",
-      "sameAs": [
-        "https://www.facebook.com/littlesailorsmalta",
-        "https://www.instagram.com/littlesailorsmalta"
-      ]
-    }
+      "name": "{{ config('app.name') }}",
+  "url": "{{ config('app.url') }}",
+  "logo": "{{ config('app.url') }}/storage/assets/site_logo.png",
+  "description": "We offer high-quality baby and children’s clothing, accessories, and toys in Malta.",
+  "sameAs": [
+    "{{ config('app.social.facebook') }}",
+    "{{ config('app.social.instagram') }}"
+  ],
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ url('/') }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About Us",
+        "item": "{{ url('/about') }}"
+      }
+    ]
+  }
+}
 </script>
+

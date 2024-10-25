@@ -15,14 +15,15 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Joaopaulolndev\FilamentGeneralSettings\Models\GeneralSetting;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class HomePage extends Component
 {
     use LivewireAlert;
+    use WithPagination;
     public $carouselImages = [];
     public $settings;
     public $categories;
-    public $products;
     public $wishlistItems;
 
     public function mount()
@@ -30,15 +31,15 @@ class HomePage extends Component
         $this->carouselImages = CarouselItem::all()->toArray();
         $this->settings = GeneralSetting::first();
         $this->categories = Category::all();
-        $this->products = Product::where('is_active', 1)->get();
-
     }
 
     #[Title('Home Page | Little Sailors Malta')]
     public function render()
     {
         $this->wishlistItems = Wishlist::where('user_id', Auth::id())->get();
-        return view('livewire.home-page');
+        return view('livewire.home-page',[
+            'products' => Product::where('is_active', 1)->paginate(12)
+        ]);
     }
 
     public function addToCart($product_id, $size)

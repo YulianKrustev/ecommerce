@@ -3,20 +3,16 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
-use App\Livewire\Partials\Navbar;
 use App\Mail\OrderPlaced;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\Size;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
-#[Title('Success - Little Sailors Malta')]
 class SuccessPage extends Component
 {
     #[Url]

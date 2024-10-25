@@ -8,12 +8,9 @@ use App\Models\Size;
 use App\Models\Voucher;
 use Illuminate\Support\Number;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Component;
-use function PHPUnit\Framework\isNull;
 
 
-#[Title('Cart | Little Sailors Malta')]
 class CartPage extends Component
 {
     use LivewireAlert;

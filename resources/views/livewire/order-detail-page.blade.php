@@ -1,3 +1,9 @@
+@push('title')
+    Order Details | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 <div class="mb-14 pb-14">
     <div class="mb-4 pb-4"></div>
     <section class="my-account container">
@@ -82,7 +88,7 @@
                                 <th class="text-center">SKU</th>
                                 <th class="text-center">Size</th>
                                 <th class="text-center">Color</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center">Return</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -108,32 +114,34 @@
                                     <td class="text-center">{{ $item->size }}</td>
                                     <td class="text-center">{{ $item->color }}</td>
                                     <td class="text-center">
-                                        <a wire:navigate href="/{{ $item->product['slug'] }}" target="_blank">
-                                            <div class="list-icon-function view-icon">
-                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <use href="#icon_view"/>
-                                                </svg>
-                                            </div>
-                                        </a>
+                                        @if((new DateTime())->diff($order->created_at)->days <= 14)
+                                            <a href="/contact/return?order={{ $order->id }}" target="_blank">
+                                                <div class="flex justify-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                                    </svg>
+                                                </div>
+                                            </a>
+                                        @endif
+
                                     </td>
                                 </tr>
                             @endforeach
 
                             </tbody>
                         </table>
-                        <div class="wg-box mt-5 mb-5 ml-2">
-                            <h2>Shipping Address</h2>
-                            <div class="my-account__address-item col-md-6">
-                                <div class="my-account__address-item__detail">
-                                    <p>{{ $address->full_name }}</p>
-                                    <p>{{ $address->address }}</p>
-                                    <p>{{ $address->state }}</p>
-                                    <p>{{ $address->zip_code }}</p>
-                                    <p>{{ $address->phone }}</p>
-                                </div>
-                            </div>
-                        </div>
+{{--                        <div class="wg-box mt-5 mb-5 ml-2">--}}
+{{--                            <h2>Shipping Address</h2>--}}
+{{--                            <div class="my-account__address-item col-md-6">--}}
+{{--                                <div class="my-account__address-item__detail">--}}
+{{--                                    <p>{{ $address->full_name }}</p>--}}
+{{--                                    <p>{{ $address->address }}</p>--}}
+{{--                                    <p>{{ $address->state }}</p>--}}
+{{--                                    <p>{{ $address->zip_code }}</p>--}}
+{{--                                    <p>{{ $address->phone }}</p>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             </div>

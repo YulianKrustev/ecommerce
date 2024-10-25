@@ -1,19 +1,17 @@
 <?php
 
 namespace App\Livewire\Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Laravel\Socialite\Facades\Socialite;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Login')]
 class LoginPage extends Component
 {
     public $email;
@@ -33,6 +31,12 @@ class LoginPage extends Component
 
         if (!auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->rememberMe)) {
             RateLimiter::hit($this->throttleKey()); // Increment the failed login attempts
+            session()->flash('error', 'Wrong email or password');
+            return;
+        }
+
+        if (auth()->user()->hasRole('Admin')) {
+            auth()->logout();
             session()->flash('error', 'Wrong email or password');
             return;
         }

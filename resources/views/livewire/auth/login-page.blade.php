@@ -1,9 +1,16 @@
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
+@push('title')
+    Login | {{ config('app.name') }}
+@endpush
+
 <div class="pb-14 mb-14">
     <div class="mb-4 pb-4"></div>
     <section class="login-register container">
         <ul class="nav nav-tabs mb-5" id="login_register" role="tablist">
             <li class="nav-item" role="presentation">
-                <h1 class="nav-link nav-link_underscore active">Login</h1>
+                <h1 id="forgot-h1" class="nav-link nav-link_underscore active">Login</h1>
             </li>
         </ul>
         <div class="tab-content pt-2" id="login_register_tab_content">
@@ -62,7 +69,7 @@
                         <div class="customer-option mt-4 text-center">
 
                             <a wire:navigate href="/register" class="btn-text js-show-register">Create Account</a> | <a
-                                wire:navigate href="/forgot"
+                                wire:navigate href="/forgot-password"
                                 class="btn-text js-show-register">Forgot Password</a> | <a class="btn-text js-show-register" href="{{ url('/auth/google') }}">
                                 Sign in with Google
                             </a>

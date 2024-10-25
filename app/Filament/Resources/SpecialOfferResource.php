@@ -69,7 +69,7 @@ class SpecialOfferResource extends Resource
                                         if ($operation == 'edit' || $state == null) {
                                             return;
                                         }
-                                        $set('meta_title', ASCII::to_ascii($state) . " - " . config("app.name"));
+                                        $set('meta_title', ASCII::to_ascii($state) . " | " . config("app.name"));
                                         $set('slug', ASCII::to_ascii(Str::slug($state)));
                                         $set('image_alt', $state);
                                     }),
@@ -89,14 +89,14 @@ class SpecialOfferResource extends Resource
                                     }),
 
                                 Select::make('products')
-                                    ->relationship('products', 'name')
+                                    ->relationship('products', 'id')
                                     ->multiple()
                                     ->searchable()
                                     ->label('Select Products')
                                     ->preload()
-                                    ->placeholder(fn($record) => $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Products')
+                                    ->placeholder(fn($record) => isset($record->is_active) && $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Products')
                                     ->reactive()
-                                    ->disabled(fn($record) => $record->is_active !== 0),
+                                    ->disabled(fn($record) => isset($record->is_active) && $record->is_active !== 0),
 //                                    ->afterStateUpdated(function ($state, callable $set) {
 //                                        if (!empty($state)) {
 //                                            $set('categories', []);
@@ -118,8 +118,8 @@ class SpecialOfferResource extends Resource
                                     ->label('Select Categories')
                                     ->preload()
                                     ->reactive()
-                                    ->placeholder(fn($record) => $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Categories')
-                                    ->disabled(fn($record) => $record->is_active !== 0),
+                                    ->placeholder(fn($record) => isset($record->is_active) && $record->is_active !== 0 ? 'Deactivate and save the special offer to edit.' : 'Select Categories')
+                                    ->disabled(fn($record) => isset($record->is_active) && $record->is_active !== 0),
 //                                    ->afterStateUpdated(function ($state, callable $set) {
 //                                        if (!empty($state)) {
 //                                            $set('products', []);

@@ -1,4 +1,9 @@
-
+@push('title')
+    Success | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
 
 
 <div class="pb-3 mb-3">

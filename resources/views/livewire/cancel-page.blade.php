@@ -1,14 +1,17 @@
-<div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-    <section class="flex items-center font-poppins dark:bg-gray-800 ">
-        <div class="justify-center flex-1 max-w-6xl px-4 py-4 mx-auto bg-white border rounded-md dark:border-gray-900 dark:bg-gray-900 md:py-10 md:px-10">
-            <div>
-                <h1 class="px-4 text-center text-3xl font-semibold tracking-wide text-red-500 dark:text-gray-300 ">
-                    Payment Failed! Order Cancelled!
-                </h1>
-            </div>
+@push('title')
+    Cancel | {{ config('app.name') }}
+@endpush
+@push('meta')
+    <meta name="robots" content="noindex, nofollow">
+@endpush
+    <div class="flex items-center justify-center min-h-96 mb-5">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold text-gray-800 mb-4">Payment Failed! Order Cancelled!</h1>
+            <p class="text-lg text-gray-600 mb-6">Oops!</p>
+            <a wire:navigate href="/" class="btn btn-primary btn-checkout custom-button" x-data="{ buttonClicked: false }" x-on:click="buttonClicked = true" :class="{ 'opacity-50 text-orange-600': buttonClicked }">Go Back Home</a>
         </div>
-    </section>
-</div>
+    </div>
+
 
 
 

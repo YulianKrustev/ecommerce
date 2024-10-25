@@ -1,3 +1,26 @@
+@push('meta')
+    <!-- Meta Description -->
+    <meta name="description" content="{{ $product->meta_description ?? 'Explore quality and comfort for your child with this unique product.' }}">
+
+    <!-- Meta Keywords -->
+    <meta name="keywords" content="{{ $product->meta_keywords ? implode(', ', $product->meta_keywords) : 'baby clothing, children clothing, quality kids clothing' }}">
+
+    <!-- Open Graph Tags for Social Sharing -->
+    <meta property="og:title" content="{{ $product->name }} | {{ config('app.name') }}">
+    <meta property="og:description" content="{{ $product->meta_description ?? 'Explore quality and comfort for your child with this unique product.' }}">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="{{ url($product->slug) }}">
+    <meta property="og:image" content="{{ asset('storage/' . $product->first_image) }}">
+    <meta property="product:price:amount" content="{{ $product->on_sale ? $product->on_sale_price : $product->price }}">
+    <meta property="product:price:currency" content="EUR">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url($product->slug) }}">
+@endpush
+
+@push('title')
+    {{ $product->name }} | {{ config('app.name') }}
+@endpush
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <section class="product-single container">
         <div class="row">
@@ -12,6 +35,13 @@
                         </button>
                         @foreach(array_reverse ( $product->images) as $key => $image)
                             <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}" class="object-cover w-full lg:h-full mySlides">
+                            @if($product->on_sale)
+                                <div class="pc-labels position-absolute top-0 start-0 w-100 d-flex justify-content-between">
+                                    <div class="pc-labels__right ms-auto">
+                                        <span class="pc-label pc-label_sale d-block text-white">-{{ (int)$product->specialOffers[0]->discount_percentage }}%</span>
+                                    </div>
+                                </div>
+                            @endif
                         @endforeach
                         <button onclick="plusDivs(1)" type="button" class="absolute right-2 top-1/2 p-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-full hover:bg-white text-gray-800 shadow-lg disabled:opacity-50 disabled:pointer-events-none">
                             <div class="swiper-button-next"><svg width="9" height="11" viewBox="0 0 7 11"
@@ -75,7 +105,7 @@
                         @foreach($product->sizes as $productSize)
                             <button
                                 type="button"
-                                class="swatch-size btn btn-sm btn-outline-light mb-3 me-1 {{ $productSize->quantity == 0 ? 'disabled' : '' }} {{ $productSize->size->id == $selectedSize ? 'btn-primary' : '' }}"
+                                class="swatch-size btn btn-sm btn-outline-light mb-3 me-1 {{ $productSize->quantity == 0 && $product->in_stock ? 'disabled' : '' }} {{ $productSize->size->id == $selectedSize ? 'btn-primary' : '' }}"
                                 wire:click="selectSize({{ $productSize->size->id }})"
                             >
                                 {{ $productSize->size->name }}
@@ -105,8 +135,14 @@
                                 </button>
                             </div>
                         </div>
-                        <button wire:click="addToCart({{ $product->id }})" class="btn btn-primary btn-addtocart js-open-aside"
-                                data-aside="cartDrawer"><span wire:loading.remove wire:target="addToCart({{ $product->id }})">Add to cart</span>
+                        <button
+                            @if($product->in_stock)
+                                wire:click="addToCart({{ $product->id }}, {{ $productSize->size->id }})"
+                            @else
+                                wire:click="notifyMeWhenAvailable({{ $product->id }})"
+                            @endif
+                            class="btn btn-primary btn-addtocart js-open-aside"
+                                data-aside="cartDrawer"><span wire:loading.remove wire:target="addToCart({{ $product->id }})">{{ $product->in_stock ? "Add to cart" : "Watch availability" }}</span>
                             <span wire:loading wire:target="addToCart({{ $product->id }})">Adding...</span></button>
                         </button>
                     </div>
@@ -383,3 +419,65 @@
         x[slideIndex - 1].style.display = "block";
     }
 </script>
+
+<!-- Structured Data Schema (JSON-LD) -->
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "{{ $product->name }}",
+      "image": [
+        "{{ asset('storage/' . $product->first_image) }}"
+      ],
+      "description": "{{ $product->meta_description ?? 'Explore quality and comfort for your child with this unique product.' }}",
+      "sku": "{{ $product->sku }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ config('app.name') }}"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ url($product->slug) }}",
+        "priceCurrency": "EUR",
+        "price": "{{ $product->on_sale ? $product->on_sale_price : $product->price }}",
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "{{ $product->in_stock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "seller": {
+          "@type": "Organization",
+          "name": "{{ config('app.name') }}"
+        }
+      },
+      "additionalType": [
+        "https://schema.org/Product",
+        "https://schema.org/Thing"
+      ],
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ config('app.url') }}"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Shop",
+            "item": "{{ url('/shop') }}"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ $product->name }}",
+            "item": "{{ url($product->slug) }}"
+          }
+        ]
+      },
+      "sameAs": [
+        "{{ config('app.social.facebook') }}",
+        "{{ config('app.social.instagram') }}"
+      ]
+    }
+</script>
+

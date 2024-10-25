@@ -9,15 +9,14 @@ use App\Models\Color;
 use App\Models\ContactMessage;
 use App\Models\Product;
 use App\Models\Size;
+use App\Models\SpecialOffer;
 use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Wishlist;
 
-#[Title('Products - Little Sailors Malta')]
 class ProductsPage extends Component
 {
     use LivewireAlert;
@@ -25,6 +24,8 @@ class ProductsPage extends Component
 
     #[Url]
     public $selected_categories = [];
+    #[Url]
+    public $selected_sale = [];
     #[Url]
     public $in_stock;
     #[Url]
@@ -39,7 +40,11 @@ class ProductsPage extends Component
     #[Url]
     public $selectedSize = null;
 
+    #[Url]
+    public $search = '';
+
     public $temp_selected_categories = [];
+    public $temp_selected_sale = [];
 
     public $temp_in_stock;
 
@@ -142,12 +147,18 @@ class ProductsPage extends Component
         $this->on_sale = $this->temp_on_sale;
         $this->selectedColor = $this->temp_selectedColor;
         $this->selectedSize = $this->temp_selectedSize;
-
+        $this->selected_sale = $this->temp_selected_sale;
     }
 
     public function render()
     {
+        $this->search = request()->query('search');
+
         $productQuery = Product::query()->where('is_active', 1)->with('sizes');
+
+        if ($this->search) {
+            $productQuery->where('name', 'like', '%' . $this->search . '%');
+        }
 
         if ($this->in_stock) {
             $productQuery->where('in_stock', 1);
@@ -164,6 +175,12 @@ class ProductsPage extends Component
         if (!empty($this->selected_categories)) {
             $productQuery->whereHas('categories', function ($query) {
                 $query->whereIn('categories.id', $this->selected_categories);
+            });
+        }
+
+        if (!empty($this->selected_sale)) {
+            $productQuery->whereHas('specialOffers', function ($query) {
+                $query->whereIn('special_offers.id', $this->selected_sale);
             });
         }
 
@@ -189,6 +206,7 @@ class ProductsPage extends Component
             'sizes' => Size::all(),
             'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
             'wishlistItems' => Wishlist::where('user_id', Auth::id())->get(),
+            'special_offers' => SpecialOffer::where('is_active', 1)->get(['id', 'name']),
         ]);
     }
 }

@@ -3,10 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Post;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Post | Little Sailors Malta')]
 class BlogDetailPage extends Component
 {
     public $slug;

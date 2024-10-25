@@ -55,7 +55,12 @@ class CarouselImagesResource extends Resource
                     ->maxLength(255)
                     ->required(),
 
-
+                Forms\Components\Select::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
+                    ->required()
+                    ->placeholder('Select Category')
+                    ->preload()
             ]);
     }
 
@@ -67,7 +72,7 @@ class CarouselImagesResource extends Resource
                     ->label('Image')
                     ->alignCenter()
                     ->height(100)
-                ->width(150),
+                    ->width(150),
 
                 TextColumn::make('title')
                     ->alignCenter(),

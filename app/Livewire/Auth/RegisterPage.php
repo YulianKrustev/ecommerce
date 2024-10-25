@@ -4,13 +4,11 @@ namespace App\Livewire\Auth;
 
 use App\Mail\WelcomeEmail;
 use App\Models\User;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Attributes\Title;
 use Livewire\Component;
-#[Title('Register')]
+
 class RegisterPage extends Component
 {
     public $name;
